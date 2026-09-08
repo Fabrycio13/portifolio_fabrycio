@@ -1,0 +1,9 @@
+# Dependências e artefatos locais
+node_modules/
+.vercel/
+.hermes/
+
+# Sistema/editor
+.DS_Store
+Thumbs.db
+*.log
