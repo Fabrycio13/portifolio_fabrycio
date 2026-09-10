@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FaArrowUp, FaFacebookF, FaGithub, FaInstagram, FaLinkedinIn } from 'react-icons/fa'
 import { SiGmail } from 'react-icons/si'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ShaderVideo } from './ShaderVideo.jsx'
 import './WaveFooter.css'
 
@@ -121,6 +121,20 @@ export function WaveFooter() {
   const canvas = useRef(null)
   const name = useRef(null)
   const socials = useRef(null)
+  const [shouldPreloadVideo, setShouldPreloadVideo] = useState(false)
+
+  useEffect(() => {
+    const projects = document.querySelector('.projects')
+    if (!projects || typeof IntersectionObserver === 'undefined') return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShouldPreloadVideo(entry.isIntersecting),
+      { threshold: 0 },
+    )
+
+    observer.observe(projects)
+    return () => observer.disconnect()
+  }, [])
 
   useGSAP(
     () => {
@@ -134,6 +148,8 @@ export function WaveFooter() {
       let frame = 0
       let currentProgress = reducedMotion ? 1 : 0
       let targetProgress = reducedMotion ? 1 : 0
+      let elementVisible = false
+      let pageVisible = !document.hidden
 
       const resizeCanvas = () => {
         const bounds = stage.current.getBoundingClientRect()
@@ -148,7 +164,16 @@ export function WaveFooter() {
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
       }
 
+      const stopRender = () => {
+        if (!frame) return
+        window.cancelAnimationFrame(frame)
+        frame = 0
+      }
+
       const render = time => {
+        frame = 0
+        if (!elementVisible || !pageVisible) return
+
         currentProgress += (targetProgress - currentProgress) * 0.075
         const easedProgress = 1 - (1 - currentProgress) ** 3
         const movingPhase = reducedMotion ? 0 : time * 0.00032
@@ -197,8 +222,46 @@ export function WaveFooter() {
         frame = window.requestAnimationFrame(render)
       }
 
+      const scheduleRender = () => {
+        if (elementVisible && pageVisible && !frame) {
+          frame = window.requestAnimationFrame(render)
+        }
+      }
+
       resizeCanvas()
-      frame = window.requestAnimationFrame(render)
+
+      const visibilityObserver = typeof IntersectionObserver === 'undefined'
+        ? null
+        : new IntersectionObserver(
+            ([entry]) => {
+              elementVisible = entry.isIntersecting
+              if (elementVisible) {
+                resizeCanvas()
+                scheduleRender()
+              } else {
+                stopRender()
+              }
+            },
+            { rootMargin: '10% 0px', threshold: 0 },
+          )
+
+      if (visibilityObserver) {
+        visibilityObserver.observe(footer.current)
+      } else {
+        elementVisible = true
+        scheduleRender()
+      }
+
+      const handlePageVisibility = () => {
+        pageVisible = !document.hidden
+        if (pageVisible) {
+          scheduleRender()
+        } else {
+          stopRender()
+        }
+      }
+
+      document.addEventListener('visibilitychange', handlePageVisibility)
 
       const waveTrigger = ScrollTrigger.create({
         trigger: footer.current,
@@ -241,6 +304,7 @@ export function WaveFooter() {
       const handleResize = () => {
         resizeCanvas()
         ScrollTrigger.refresh()
+        scheduleRender()
       }
 
       window.addEventListener('resize', handleResize)
@@ -248,7 +312,9 @@ export function WaveFooter() {
 
       return () => {
         window.removeEventListener('resize', handleResize)
-        window.cancelAnimationFrame(frame)
+        document.removeEventListener('visibilitychange', handlePageVisibility)
+        visibilityObserver?.disconnect()
+        stopRender()
         window.cancelAnimationFrame(refreshFrame)
         revealTimeline?.scrollTrigger?.kill()
         revealTimeline?.kill()
@@ -263,6 +329,7 @@ export function WaveFooter() {
       <div className="wave-footer__stage" ref={stage}>
         <ShaderVideo
           className="wave-footer__video"
+          preloadRequested={shouldPreloadVideo}
           settings={{
             edgeHeight: -1,
             edgeWave: 0,

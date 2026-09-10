@@ -1,16 +1,23 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js'
-import { TexturePass } from 'three/addons/postprocessing/TexturePass.js'
+import {
+  getVideoSource,
+  reportVideoPerformance,
+  useQualityProfile,
+} from '../performance/qualityProfile.js'
 import { VideoShader } from '../shaders/videoShader.js'
 
 function VideoPostProcessing({ video, settings }) {
-  const { gl, size, viewport } = useThree()
-  const composerRef = useRef(null)
-  const shaderPassRef = useRef(null)
+  const { camera, gl, scene, size, viewport } = useThree()
+  const materialRef = useRef(null)
   const scrollProgressRef = useRef(0)
+  const performanceSampleRef = useRef({
+    frameCount: 0,
+    startDroppedFrames: null,
+    startTime: 0,
+    startVideoFrames: null,
+  })
 
   const videoTexture = useMemo(() => {
     const texture = new THREE.VideoTexture(video)
@@ -21,31 +28,46 @@ function VideoPostProcessing({ video, settings }) {
     return texture
   }, [video])
 
+  const uniforms = useMemo(() => {
+    const clonedUniforms = THREE.UniformsUtils.clone(VideoShader.uniforms)
+    clonedUniforms.tDiffuse.value = videoTexture
+    clonedUniforms.uColor.value = new THREE.Color()
+    clonedUniforms.uResolution.value = new THREE.Vector2(1, 1)
+    clonedUniforms.uVideoResolution.value = new THREE.Vector2(1, 1)
+    return clonedUniforms
+  }, [videoTexture])
+
   useEffect(() => {
-    const composer = new EffectComposer(gl)
-    const texturePass = new TexturePass(videoTexture)
-    const shaderPass = new ShaderPass(VideoShader)
+    const material = materialRef.current
+    if (!material) return
 
-    shaderPass.uniforms.uGridSize.value = settings.gridSize
-    shaderPass.uniforms.uDotSize.value = settings.dotSize
-    shaderPass.uniforms.uContrast.value = settings.contrast
-    shaderPass.uniforms.uBrightness.value = settings.brightness
-    shaderPass.uniforms.uEffectStrength.value = settings.effectStrength
-    shaderPass.uniforms.uColor.value = new THREE.Color(settings.color)
-    shaderPass.uniforms.uEdgeHeight.value = settings.edgeHeight
-    shaderPass.uniforms.uEdgeWave.value = settings.edgeWave
-    shaderPass.uniforms.uEdgeSoftness.value = settings.edgeSoftness
-    shaderPass.uniforms.uResolution.value = new THREE.Vector2(1, 1)
-    shaderPass.uniforms.uVideoResolution.value = new THREE.Vector2(1, 1)
+    material.uniforms.uGridSize.value = settings.gridSize
+    material.uniforms.uDotSize.value = settings.dotSize
+    material.uniforms.uContrast.value = settings.contrast
+    material.uniforms.uBrightness.value = settings.brightness
+    material.uniforms.uEffectStrength.value = settings.effectStrength
+    material.uniforms.uColor.value.set(settings.color)
+    material.uniforms.uEdgeHeight.value = settings.edgeHeight
+    material.uniforms.uEdgeWave.value = settings.edgeWave
+    material.uniforms.uEdgeSoftness.value = settings.edgeSoftness
+  }, [
+    settings.brightness,
+    settings.color,
+    settings.contrast,
+    settings.dotSize,
+    settings.effectStrength,
+    settings.edgeHeight,
+    settings.edgeSoftness,
+    settings.edgeWave,
+    settings.gridSize,
+  ])
 
-    composer.addPass(texturePass)
-    composer.addPass(shaderPass)
-
-    composerRef.current = composer
-    shaderPassRef.current = shaderPass
+  useEffect(() => {
+    const material = materialRef.current
+    if (!material) return
 
     const updateVideoResolution = () => {
-      shaderPass.uniforms.uVideoResolution.value.set(
+      material.uniforms.uVideoResolution.value.set(
         video.videoWidth || 1,
         video.videoHeight || 1,
       )
@@ -56,48 +78,59 @@ function VideoPostProcessing({ video, settings }) {
 
     return () => {
       video.removeEventListener('loadedmetadata', updateVideoResolution)
-      texturePass.dispose()
-      shaderPass.dispose()
-      composer.dispose()
-      composerRef.current = null
-      shaderPassRef.current = null
+      videoTexture.dispose()
     }
-  }, [
-    gl,
-    settings.brightness,
-    settings.color,
-    settings.contrast,
-    settings.dotSize,
-    settings.effectStrength,
-    settings.gridSize,
-    settings.edgeHeight,
-    settings.edgeSoftness,
-    settings.edgeWave,
-    video,
-    videoTexture,
-  ])
+  }, [video, videoTexture])
 
   useEffect(() => {
-    const composer = composerRef.current
-    const shaderPass = shaderPassRef.current
+    const material = materialRef.current
 
-    if (!composer || !shaderPass) return
+    if (!material) return
 
-    composer.setPixelRatio(viewport.dpr)
-    composer.setSize(size.width, size.height)
-    shaderPass.uniforms.uResolution.value.set(
-      size.width * viewport.dpr,
-      size.height * viewport.dpr,
-    )
-  }, [size.height, size.width, viewport.dpr])
-
-  useEffect(() => () => videoTexture.dispose(), [videoTexture])
+    const drawingBufferSize = new THREE.Vector2()
+    gl.getDrawingBufferSize(drawingBufferSize)
+    material.uniforms.uResolution.value.copy(drawingBufferSize)
+  }, [gl, size.height, size.width, viewport.dpr])
 
   useFrame(({ clock }, delta) => {
-    const composer = composerRef.current
-    const shaderPass = shaderPassRef.current
+    const material = materialRef.current
 
-    if (!composer || !shaderPass) return
+    if (!material) return
+
+    const now = performance.now()
+    const performanceSample = performanceSampleRef.current
+    const videoQuality = video.getVideoPlaybackQuality?.()
+
+    if (performanceSample.startTime === 0) {
+      performanceSample.startTime = now
+      performanceSample.startDroppedFrames = videoQuality?.droppedVideoFrames ?? 0
+      performanceSample.startVideoFrames = videoQuality?.totalVideoFrames ?? 0
+    }
+
+    performanceSample.frameCount += 1
+
+    if (now - performanceSample.startTime >= 5000) {
+      const elapsedSeconds = (now - performanceSample.startTime) / 1000
+      const totalVideoFrames = videoQuality?.totalVideoFrames ?? 0
+      const droppedVideoFrames = videoQuality?.droppedVideoFrames ?? 0
+
+      reportVideoPerformance({
+        renderFps: performanceSample.frameCount / elapsedSeconds,
+        droppedFrames: Math.max(
+          0,
+          droppedVideoFrames - (performanceSample.startDroppedFrames ?? 0),
+        ),
+        totalVideoFrames: Math.max(
+          0,
+          totalVideoFrames - (performanceSample.startVideoFrames ?? 0),
+        ),
+      })
+
+      performanceSample.frameCount = 0
+      performanceSample.startDroppedFrames = droppedVideoFrames
+      performanceSample.startTime = now
+      performanceSample.startVideoFrames = totalVideoFrames
+    }
 
     const targetScroll = window.scrollY / Math.max(window.innerHeight, 1)
     scrollProgressRef.current = THREE.MathUtils.damp(
@@ -107,12 +140,25 @@ function VideoPostProcessing({ video, settings }) {
       delta,
     )
 
-    shaderPass.uniforms.uTime.value = clock.getElapsedTime()
-    shaderPass.uniforms.uScrollProgress.value = scrollProgressRef.current
-    composer.render(delta)
+    material.uniforms.uTime.value = clock.getElapsedTime()
+    material.uniforms.uScrollProgress.value = scrollProgressRef.current
+    gl.render(scene, camera)
   }, 1)
 
-  return null
+  return (
+    <mesh frustumCulled={false}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={materialRef}
+        uniforms={uniforms}
+        vertexShader={VideoShader.vertexShader}
+        fragmentShader={VideoShader.fragmentShader}
+        depthTest={false}
+        depthWrite={false}
+        toneMapped
+      />
+    </mesh>
+  )
 }
 
 const defaultSettings = {
@@ -127,40 +173,103 @@ const defaultSettings = {
   edgeSoftness: 0.12,
 }
 
-export function ShaderVideo({ className = '', settings: settingsOverrides = {} }) {
+export function ShaderVideo({
+  className = '',
+  preloadRequested = false,
+  settings: settingsOverrides = {},
+}) {
   // Altere estes valores durante a aula para personalizar o efeito.
   const settings = { ...defaultSettings, ...settingsOverrides }
+  const qualityProfile = useQualityProfile()
+  const videoSource = getVideoSource(qualityProfile)
 
   const videoRef = useRef(null)
   const [videoElement, setVideoElement] = useState(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    const container = video?.parentElement
+
+    if (!container || typeof IntersectionObserver === 'undefined') return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0 },
+    )
+
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [])
+
+  const shouldRender = isVisible || typeof IntersectionObserver === 'undefined'
+  const shouldPlay = shouldRender || preloadRequested
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return undefined
+
+    setVideoElement(null)
+    video.load()
+    return undefined
+  }, [videoSource])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return undefined
+
+    const syncPlayback = () => {
+      if (shouldPlay && !document.hidden) {
+        const playPromise = video.play()
+        playPromise?.catch(() => undefined)
+      } else {
+        video.pause()
+      }
+    }
+
+    document.addEventListener('visibilitychange', syncPlayback)
+    syncPlayback()
+
+    return () => {
+      document.removeEventListener('visibilitychange', syncPlayback)
+      video.pause()
+    }
+  }, [shouldPlay, videoSource])
 
   return (
     <div className={`shader-video ${className}`.trim()}>
       <video
         ref={videoRef}
         className="shader-video__source"
-        src="/video.mp4"
-        autoPlay
+        src={videoSource}
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-hidden="true"
-        onLoadedMetadata={() => setVideoElement(videoRef.current)}
+        onLoadedMetadata={() => {
+          const video = videoRef.current
+          setVideoElement(video)
+          if (shouldPlay && !document.hidden) {
+            video?.play().catch(() => undefined)
+          }
+        }}
       />
 
-      {videoElement ? (
+      {shouldRender && videoElement ? (
         <Canvas
           className="shader-video__canvas"
+          orthographic
+          camera={{ position: [0, 0, 1], left: -1, right: 1, top: 1, bottom: -1, near: 0, far: 2 }}
           dpr={[1, 2]}
           gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
         >
-          {/* Os passes desenham direto na tela; não há mesh ou geometria da aplicação. */}
+          {/* Um único quad fullscreen aplica o shader direto sobre a textura do vídeo. */}
           <VideoPostProcessing video={videoElement} settings={settings} />
         </Canvas>
-      ) : (
+      ) : shouldRender ? (
         <p className="shader-video__loading">Carregando vídeo…</p>
-      )}
+      ) : null}
     </div>
   )
 }
