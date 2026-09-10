@@ -7,6 +7,7 @@ import { ThemeSwitch } from './components/ThemeSwitch.jsx'
 import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
+import { useEffect, useRef } from 'react'
 
 const menuItems = [
   { label: 'Sobre', href: '#sobre' },
@@ -79,6 +80,46 @@ function AnimatedMenuLink({ label, href }) {
 }
 
 function App() {
+  const lenisRef = useRef(null)
+
+  useEffect(() => {
+    const lenis = lenisRef.current?.lenis
+
+    const syncModalScroll = () => {
+      const isModalOpen = window.location.hash === '#sobre' || window.location.hash === '#contato'
+      document.documentElement.classList.toggle('modal-open', isModalOpen)
+      document.body.classList.toggle('modal-open', isModalOpen)
+
+      if (isModalOpen) {
+        lenis?.stop()
+      } else {
+        lenis?.start()
+      }
+    }
+
+    const blockBackgroundScroll = event => {
+      const target = event.target instanceof Element ? event.target : null
+      const isInsidePanel = target?.closest('.info-panel__content')
+      const isModalOpen = window.location.hash === '#sobre' || window.location.hash === '#contato'
+
+      if (isModalOpen && !isInsidePanel) event.preventDefault()
+    }
+
+    syncModalScroll()
+    window.addEventListener('hashchange', syncModalScroll)
+    document.addEventListener('wheel', blockBackgroundScroll, { passive: false })
+    document.addEventListener('touchmove', blockBackgroundScroll, { passive: false })
+
+    return () => {
+      window.removeEventListener('hashchange', syncModalScroll)
+      document.removeEventListener('wheel', blockBackgroundScroll)
+      document.removeEventListener('touchmove', blockBackgroundScroll)
+      document.documentElement.classList.remove('modal-open')
+      document.body.classList.remove('modal-open')
+      lenis?.start()
+    }
+  }, [])
+
   return (
     <ReactLenis root options={{ anchors: true, autoRaf: true, lerp: 0.08 }}>
       <main id="top" className="app">

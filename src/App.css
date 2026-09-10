@@ -424,6 +424,10 @@
   right: 0;
   width: 40%;
   height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
   padding: clamp(2rem, 6vw, 5rem);
   background: #050708;
   color: #f3f8f8;
