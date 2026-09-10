@@ -1,18 +1,18 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
-import { ReactLenis } from 'lenis/react'
+import { ReactLenis, useLenis } from 'lenis/react'
 import { ShaderVideo } from './components/ShaderVideo.jsx'
 import { StickyProjects } from './components/StickyProjects.jsx'
 import { ThemeSwitch } from './components/ThemeSwitch.jsx'
 import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 const menuItems = [
-  { label: 'Sobre', href: '#sobre' },
+  { label: 'Sobre', panel: 'sobre' },
   { label: 'Projetos', href: '#projetos' },
-  { label: 'Contato', href: '#contato' },
+  { label: 'Contato', panel: 'contato' },
 ]
 
 const placeholderProjects = [
@@ -53,11 +53,16 @@ const placeholderProjects = [
   },
 ]
 
-function AnimatedMenuLink({ label, href }) {
+function AnimatedMenuLink({ label, href = '#', onClick }) {
   const letters = [...label]
+  const handleClick = event => {
+    if (!onClick) return
+    event.preventDefault()
+    onClick()
+  }
 
   return (
-    <a className="menu-link" href={href}>
+    <a className="menu-link" href={href} onClick={handleClick}>
       <span className="span-mother" aria-hidden="true">
         {letters.map((letter, index) => (
           <span key={`${letter}-${index}`} style={{ '--letter-index': index }}>
@@ -79,55 +84,39 @@ function AnimatedMenuLink({ label, href }) {
   )
 }
 
-function App() {
-  const lenisRef = useRef(null)
+function PortfolioContent() {
+  const lenis = useLenis()
+  const [activePanel, setActivePanel] = useState(null)
 
   useEffect(() => {
-    const lenis = lenisRef.current?.lenis
+    const isModalOpen = activePanel !== null
+    document.documentElement.classList.toggle('modal-open', isModalOpen)
+    document.body.classList.toggle('modal-open', isModalOpen)
 
-    const syncModalScroll = () => {
-      const isModalOpen = window.location.hash === '#sobre' || window.location.hash === '#contato'
-      document.documentElement.classList.toggle('modal-open', isModalOpen)
-      document.body.classList.toggle('modal-open', isModalOpen)
-
-      if (isModalOpen) {
-        lenis?.stop()
-      } else {
-        lenis?.start()
-      }
+    if (isModalOpen) {
+      lenis?.stop()
+    } else {
+      lenis?.start()
     }
-
-    const blockBackgroundScroll = event => {
-      const target = event.target instanceof Element ? event.target : null
-      const isInsidePanel = target?.closest('.info-panel__content')
-      const isModalOpen = window.location.hash === '#sobre' || window.location.hash === '#contato'
-
-      if (isModalOpen && !isInsidePanel) event.preventDefault()
-    }
-
-    syncModalScroll()
-    window.addEventListener('hashchange', syncModalScroll)
-    document.addEventListener('wheel', blockBackgroundScroll, { passive: false })
-    document.addEventListener('touchmove', blockBackgroundScroll, { passive: false })
 
     return () => {
-      window.removeEventListener('hashchange', syncModalScroll)
-      document.removeEventListener('wheel', blockBackgroundScroll)
-      document.removeEventListener('touchmove', blockBackgroundScroll)
       document.documentElement.classList.remove('modal-open')
       document.body.classList.remove('modal-open')
       lenis?.start()
     }
-  }, [])
+  }, [activePanel, lenis])
 
   return (
-    <ReactLenis ref={lenisRef} root options={{ anchors: true, autoRaf: true, lerp: 0.08 }}>
-      <main id="top" className="app">
+    <main id="top" className="app">
       <ShaderVideo />
 
       <nav className="top-menu" aria-label="Navegação principal">
         {menuItems.map(item => (
-          <AnimatedMenuLink key={item.label} {...item} />
+          <AnimatedMenuLink
+            key={item.label}
+            {...item}
+            onClick={item.panel ? () => setActivePanel(item.panel) : undefined}
+          />
         ))}
       </nav>
 
@@ -137,6 +126,10 @@ function App() {
         <p className="hero__identity">
           <a
             href="#sobre"
+            onClick={event => {
+              event.preventDefault()
+              setActivePanel('sobre')
+            }}
             aria-label="Fabrycio Bermudes - Software Engineer"
           >
             <DecryptedText
@@ -216,12 +209,28 @@ function App() {
 
       <WaveFooter />
 
-      <aside id="sobre" className="info-panel" aria-labelledby="about-title">
-        <a className="info-panel__backdrop" href="#top" aria-label="Fechar Sobre" />
+      <aside
+        id="sobre"
+        className={`info-panel ${activePanel === 'sobre' ? 'is-open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={activePanel !== 'sobre'}
+        aria-labelledby="about-title"
+      >
+        <button
+          type="button"
+          className="info-panel__backdrop"
+          onClick={() => setActivePanel(null)}
+          aria-label="Fechar Sobre"
+        />
         <div className="info-panel__content">
-          <a className="info-panel__close" href="#top">
+          <button
+            type="button"
+            className="info-panel__close"
+            onClick={() => setActivePanel(null)}
+          >
             Fechar
-          </a>
+          </button>
           <p className="info-panel__label">Sobre</p>
           <h2 id="about-title">FABRYCIO BERMUDES</h2>
           <p>
@@ -232,12 +241,28 @@ function App() {
         </div>
       </aside>
 
-      <aside id="contato" className="info-panel" aria-labelledby="contact-title">
-        <a className="info-panel__backdrop" href="#top" aria-label="Fechar Contato" />
+      <aside
+        id="contato"
+        className={`info-panel ${activePanel === 'contato' ? 'is-open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={activePanel !== 'contato'}
+        aria-labelledby="contact-title"
+      >
+        <button
+          type="button"
+          className="info-panel__backdrop"
+          onClick={() => setActivePanel(null)}
+          aria-label="Fechar Contato"
+        />
         <div className="info-panel__content">
-          <a className="info-panel__close" href="#top">
+          <button
+            type="button"
+            className="info-panel__close"
+            onClick={() => setActivePanel(null)}
+          >
             Fechar
-          </a>
+          </button>
           <p className="info-panel__label">Contato</p>
           <h2 id="contact-title">VAMOS CONVERSAR.</h2>
           <p>
@@ -246,7 +271,14 @@ function App() {
           </p>
         </div>
       </aside>
-      </main>
+    </main>
+  )
+}
+
+function App() {
+  return (
+    <ReactLenis root options={{ anchors: true, autoRaf: true, lerp: 0.08 }}>
+      <PortfolioContent />
     </ReactLenis>
   )
 }

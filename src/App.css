@@ -111,7 +111,8 @@
 .menu-link:focus-visible,
 .hero__cta:focus-visible,
 .hero__identity a:focus-visible,
-.info-panel a:focus-visible {
+.info-panel a:focus-visible,
+.info-panel button:focus-visible {
   outline: 2px solid #050708;
   outline-offset: 3px;
 }
@@ -406,7 +407,7 @@
   transition: visibility 250ms ease, opacity 250ms ease;
 }
 
-.info-panel:target {
+.info-panel.is-open {
   visibility: visible;
   opacity: 1;
 }
@@ -414,7 +415,10 @@
 .info-panel__backdrop {
   position: absolute;
   inset: 0 40% 0 0;
+  border: 0;
+  padding: 0;
   background: rgba(5, 7, 8, 0.54);
+  cursor: pointer;
   backdrop-filter: blur(8px);
 }
 
@@ -435,16 +439,21 @@
   transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.info-panel:target .info-panel__content {
+.info-panel.is-open .info-panel__content {
   transform: translateX(0);
 }
 
 .info-panel__close {
+  border: 0;
+  padding: 0;
+  background: transparent;
   color: #b7c5c7;
+  font: inherit;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-underline-offset: 0.25em;
+  cursor: pointer;
 }
 
 .info-panel__label {
