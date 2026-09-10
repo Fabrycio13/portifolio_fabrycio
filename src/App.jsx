@@ -121,7 +121,7 @@ function App() {
   }, [])
 
   return (
-    <ReactLenis root options={{ anchors: true, autoRaf: true, lerp: 0.08 }}>
+    <ReactLenis ref={lenisRef} root options={{ anchors: true, autoRaf: true, lerp: 0.08 }}>
       <main id="top" className="app">
       <ShaderVideo />
 
