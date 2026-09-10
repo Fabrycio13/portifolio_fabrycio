@@ -1,48 +1,40 @@
-# Portfólio imersivo — Fabrycio
+# Portfólio imersivo — Fabrycio Bermudes
 
-Experiência autoral 2.5D para apresentar projetos, habilidades, trajetória e contato em um pequeno universo digital explorável.
+Portfólio experimental de **Fabrycio Bermudes — Software Engineer**, construído com React, Vite, Three.js, React Three Fiber, GLSL e GSAP.
 
-## Estado atual
-
-Protótipo funcional em evolução. A versão publicada contém textos e links ainda marcados para substituição por informações profissionais reais.
+A experiência combina vídeo processado em tempo real, tipografia animada, projetos em cards sticky e um footer progressivo com vídeo pixelado e ondas desenhadas em canvas.
 
 ## Recursos
 
-- cenário panorâmico autoral;
-- navegação por arraste e rolagem;
-- fumaça/neblina em camadas;
-- luzes e marcadores pulsantes;
-- painéis acessíveis por clique e teclado;
-- páginas editoriais de Projetos, Estúdio e Contato;
-- controle para reduzir movimentos;
-- adaptação para dispositivos móveis;
-- fallback compatível com `prefers-reduced-motion`.
+- Vídeo em `/public/video.mp4` processado por `THREE.VideoTexture`.
+- Pipeline de pós-processamento com `EffectComposer`, `TexturePass` e `ShaderPass`.
+- Pixelização, halftone, dithering, contraste e textura digital em GLSL.
+- Texto principal em Caacupe One, identidade com `DecryptedText` e linhas com `WarpText`.
+- Seção de projetos com cards sticky, GSAP e ScrollTrigger.
+- Footer revelado progressivamente após os projetos.
+- Ondas em canvas animadas por tempo e scroll, com máscara fechada nas bordas.
+- Layout responsivo e scrollbar visualmente oculta sem bloquear o scroll.
 
 ## Executar localmente
 
-O projeto não exige build nem dependências.
-
 ```bash
-python -m http.server 8765
+npm install
+npm run dev
 ```
 
-Depois acesse `http://localhost:8765`.
+Comandos de verificação:
 
-## Publicar na Vercel
+```bash
+npm run lint
+npm run build
+```
 
-1. Importe este repositório na Vercel.
-2. Selecione **Other** como framework.
-3. Não informe comando de build.
-4. Use `.` como diretório de saída.
-5. Publique.
+## Estrutura principal
 
-## Estrutura
-
-- `index.html` — experiência principal;
-- `assets/` — panorama e artes autorais;
-- `prototypes/` — evolução visual preservada;
-- `docs/` — plano, especificação e auditoria da referência.
-
-## Observação sobre a referência
-
-A experiência foi inspirada apenas em padrões gerais de navegação imersiva. Código, textos, identidade, imagens, modelos e demais assets de terceiros não foram reutilizados.
+- `src/App.jsx` — composição da página.
+- `src/components/ShaderVideo.jsx` — vídeo e pipeline WebGL.
+- `src/shaders/videoShader.js` — shader GLSL do vídeo.
+- `src/components/StickyProjects.jsx` — sequência sticky de projetos.
+- `src/components/WaveFooter.jsx` — footer, ondas, links sociais e retorno ao topo.
+- `public/video.mp4` — vídeo usado como fonte da textura.
+- `public/projects/` — imagens temporárias dos projetos.

@@ -1,0 +1,200 @@
+.wave-footer {
+  position: relative;
+  z-index: 2;
+  height: 160svh;
+  background: #071f2a;
+  color: #f3f8f8;
+}
+
+.wave-footer__stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wave-footer__video {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  height: 100%;
+  background: #071f2a;
+}
+
+.wave-footer__canvas {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.wave-footer__content {
+  position: absolute;
+  z-index: 2;
+  right: clamp(1.25rem, 5vw, 5rem);
+  bottom: clamp(2rem, 7svh, 5rem);
+  left: clamp(1.25rem, 5vw, 5rem);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.wave-footer__name {
+  max-width: 10ch;
+  margin: 0;
+  color: #f3f8f8;
+  font-family: "Caacupe One", sans-serif;
+  font-size: clamp(3.4rem, 10vw, 9rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 0.78;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  transform-origin: left center;
+  will-change: clip-path, opacity;
+}
+
+.wave-footer__socials {
+  display: flex;
+  flex: 0 0 auto;
+  gap: clamp(0.55rem, 1.4vw, 1rem);
+  will-change: transform, opacity;
+}
+
+.wave-footer__actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.wave-footer__social {
+  --social-color: #f3f8f8;
+  display: grid;
+  width: clamp(2.6rem, 4vw, 3.4rem);
+  height: clamp(2.6rem, 4vw, 3.4rem);
+  place-items: center;
+  border: 1px solid rgba(243, 248, 248, 0.45);
+  border-radius: 50%;
+  background: rgba(5, 7, 8, 0.34);
+  color: #f3f8f8;
+  text-decoration: none;
+  transition: color 220ms ease, background 220ms ease, border-color 220ms ease,
+    box-shadow 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wave-footer__social svg {
+  width: 42%;
+  height: 42%;
+}
+
+.wave-footer__social:hover,
+.wave-footer__social:focus-visible {
+  border-color: var(--social-color);
+  background: var(--social-color);
+  color: #fff;
+  box-shadow: 0 0.7rem 1.8rem color-mix(in srgb, var(--social-color) 38%, transparent);
+  transform: translateY(-0.4rem) scale(1.07);
+}
+
+.wave-footer__social:focus-visible {
+  outline: 2px solid #f3f8f8;
+  outline-offset: 4px;
+}
+
+.wave-footer__social--instagram {
+  --social-color: #e1306c;
+}
+
+.wave-footer__social--github {
+  --social-color: #6e7681;
+}
+
+.wave-footer__social--linkedin {
+  --social-color: #0a66c2;
+}
+
+.wave-footer__social--facebook {
+  --social-color: #1877f2;
+}
+
+.wave-footer__social--gmail {
+  --social-color: #ea4335;
+}
+
+.wave-footer__social--disabled {
+  cursor: default;
+}
+
+.wave-footer__top-link {
+  display: grid;
+  width: clamp(2.6rem, 4vw, 3.4rem);
+  height: clamp(2.6rem, 4vw, 3.4rem);
+  place-items: center;
+  border: 1px solid rgba(243, 248, 248, 0.7);
+  border-radius: 50%;
+  background: #f3f8f8;
+  color: #071f2a;
+  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  text-decoration: none;
+  transition: color 220ms ease, background 220ms ease, border-color 220ms ease,
+    box-shadow 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wave-footer__top-link:hover,
+.wave-footer__top-link:focus-visible {
+  border-color: #78aebc;
+  background: #78aebc;
+  color: #03090d;
+  box-shadow: 0 0.7rem 1.8rem rgba(120, 174, 188, 0.38);
+  transform: translateY(-0.4rem) scale(1.07);
+}
+
+.wave-footer__top-link:focus-visible {
+  outline: 2px solid #f3f8f8;
+  outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+  .wave-footer {
+    height: 150svh;
+  }
+
+  .wave-footer__content {
+    bottom: clamp(2rem, 6svh, 3.5rem);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.75rem;
+  }
+
+  .wave-footer__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .wave-footer__socials {
+    flex: 1 1 auto;
+  }
+
+  .wave-footer__name {
+    max-width: 8ch;
+    font-size: clamp(3rem, 16vw, 4.6rem);
+    line-height: 0.82;
+  }
+
+  .wave-footer__social {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-footer__social {
+    transition: none;
+  }
+}
