@@ -205,7 +205,7 @@ function PortfolioContent() {
         </a>
       </section>
 
-      <StickyProjects projects={placeholderProjects} />
+      <StickyProjects projects={placeholderProjects} onOpenProject={setActivePanel} />
 
       <WaveFooter />
 
@@ -240,6 +240,37 @@ function PortfolioContent() {
           </p>
         </div>
       </aside>
+
+      {placeholderProjects.map(project => (
+        <aside
+          key={project.number}
+          id={`projeto-${project.number}`}
+          className={`info-panel ${activePanel === project.number ? 'is-open' : ''}`}
+          role="dialog"
+          aria-modal="true"
+          aria-hidden={activePanel !== project.number}
+          aria-labelledby={`project-title-${project.number}`}
+        >
+          <button
+            type="button"
+            className="info-panel__backdrop"
+            onClick={() => setActivePanel(null)}
+            aria-label={`Fechar ${project.title}`}
+          />
+          <div className="info-panel__content">
+            <button
+              type="button"
+              className="info-panel__close"
+              onClick={() => setActivePanel(null)}
+            >
+              Fechar
+            </button>
+            <p className="info-panel__label">{project.detail}</p>
+            <h2 id={`project-title-${project.number}`}>{project.title}</h2>
+            <p>Em breve — conteúdo do projeto.</p>
+          </div>
+        </aside>
+      ))}
 
       <aside
         id="contato"

@@ -8,6 +8,33 @@ export const videoSources = {
   low: '/video-1080.mp4',
 }
 
+export const shaderSettingsByProfile = {
+  high: {
+    useVideo: true,
+    gridSize: 8,
+    dotSize: 1.9,
+    contrast: 1.05,
+    brightness: 0.34,
+    effectStrength: 0.6,
+    color: '#6df6ff',
+    edgeHeight: 0.1,
+    edgeWave: 0.06,
+    edgeSoftness: 0.12,
+  },
+  low: {
+    useVideo: false,
+    gridSize: 14,
+    dotSize: 1.9,
+    contrast: 1.05,
+    brightness: 0.34,
+    effectStrength: 0.3,
+    color: '#6df6ff',
+    edgeHeight: 0.1,
+    edgeWave: 0.02,
+    edgeSoftness: 0.12,
+  },
+}
+
 const listeners = new Set()
 let currentProfile = getInitialProfile()
 let detectionPromise

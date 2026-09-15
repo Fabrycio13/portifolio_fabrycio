@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import {
   getVideoSource,
   reportVideoPerformance,
+  shaderSettingsByProfile,
   useQualityProfile,
 } from '../performance/qualityProfile.js'
 import { VideoShader } from '../shaders/videoShader.js'
@@ -161,32 +162,49 @@ function VideoPostProcessing({ video, settings }) {
   )
 }
 
-const defaultSettings = {
-  gridSize: 8,
-  dotSize: 1.9,
-  contrast: 1.05,
-  brightness: 0.34,
-  effectStrength: 0.6,
-  color: '#6df6ff',
-  edgeHeight: 0.1,
-  edgeWave: 0.06,
-  edgeSoftness: 0.12,
-}
-
 export function ShaderVideo({
   className = '',
   preloadRequested = false,
   settings: settingsOverrides = {},
 }) {
-  // Altere estes valores durante a aula para personalizar o efeito.
-  const settings = { ...defaultSettings, ...settingsOverrides }
+  // base → profile → overrides (overrides sempre vencem)
   const qualityProfile = useQualityProfile()
+  const profileSettings = shaderSettingsByProfile[qualityProfile]
+  const settings = { ...profileSettings, ...settingsOverrides }
+
   const videoSource = getVideoSource(qualityProfile)
+  const useVideo = settings.useVideo
+  const dpr = qualityProfile === 'high' ? [1, 2] : [1, 1]
 
   const videoRef = useRef(null)
   const [videoElement, setVideoElement] = useState(null)
   const [isVisible, setIsVisible] = useState(false)
+  const [capturedPoster, setCapturedPoster] = useState(null)
 
+  // Captura um frame real quando o profile muda para low.
+  // Evita o "poster genérico" do atributo — usa o frame atual do vídeo.
+  useEffect(() => {
+    if (qualityProfile !== 'low') return
+
+    const video = videoRef.current
+    if (!video || video.readyState < 2) return
+
+    const canvas = document.createElement('canvas')
+    canvas.width = video.videoWidth || 1
+    canvas.height = video.videoHeight || 1
+    canvas.getContext('2d').drawImage(video, 0, 0)
+
+    canvas.toBlob((blob) => {
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      setCapturedPoster((prev) => {
+        if (prev) URL.revokeObjectURL(prev)
+        return url
+      })
+    })
+  }, [qualityProfile, videoElement])
+
+  // IntersectionObserver: só mostra conteúdo quando visível na tela.
   useEffect(() => {
     const video = videoRef.current
     const container = video?.parentElement
@@ -202,26 +220,27 @@ export function ShaderVideo({
     return () => observer.disconnect()
   }, [])
 
-  const shouldRender = isVisible || typeof IntersectionObserver === 'undefined'
-  const shouldPlay = shouldRender || preloadRequested
+  const shouldRenderCanvas = isVisible || typeof IntersectionObserver === 'undefined'
+  const shouldPlay = useVideo && (shouldRenderCanvas || preloadRequested)
 
+  // Recria o elemento quando a fonte muda.
   useEffect(() => {
     const video = videoRef.current
-    if (!video) return undefined
+    if (!video) return
 
     setVideoElement(null)
     video.load()
     return undefined
   }, [videoSource])
 
+  // Controla play/pause reativo ao profile e visibilidade.
   useEffect(() => {
     const video = videoRef.current
     if (!video) return undefined
 
     const syncPlayback = () => {
       if (shouldPlay && !document.hidden) {
-        const playPromise = video.play()
-        playPromise?.catch(() => undefined)
+        video.play().catch(() => undefined)
       } else {
         video.pause()
       }
@@ -236,8 +255,10 @@ export function ShaderVideo({
     }
   }, [shouldPlay, videoSource])
 
+  const effectivePoster = capturedPoster || undefined
+
   return (
-    <div className={`shader-video ${className}`.trim()}>
+    <div className={`shader-video${useVideo ? '' : ' shader-video--static'} ${className}`.trim()}>
       <video
         ref={videoRef}
         className="shader-video__source"
@@ -245,30 +266,34 @@ export function ShaderVideo({
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         aria-hidden="true"
+        poster={effectivePoster}
         onLoadedMetadata={() => {
           const video = videoRef.current
+          if (!video) return
+
           setVideoElement(video)
-          if (shouldPlay && !document.hidden) {
-            video?.play().catch(() => undefined)
+
+          if (qualityProfile === 'low') {
+            // Em modo estático, vai para o primeiro frame.
+            video.currentTime = 0
+          } else if (shouldPlay && !document.hidden) {
+            video.play().catch(() => undefined)
           }
         }}
       />
 
-      {shouldRender && videoElement ? (
+      {useVideo && shouldRenderCanvas && videoElement ? (
         <Canvas
           className="shader-video__canvas"
           orthographic
           camera={{ position: [0, 0, 1], left: -1, right: 1, top: 1, bottom: -1, near: 0, far: 2 }}
-          dpr={[1, 2]}
+          dpr={dpr}
           gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
         >
-          {/* Um único quad fullscreen aplica o shader direto sobre a textura do vídeo. */}
           <VideoPostProcessing video={videoElement} settings={settings} />
         </Canvas>
-      ) : shouldRender ? (
-        <p className="shader-video__loading">Carregando vídeo…</p>
       ) : null}
     </div>
   )
