@@ -424,7 +424,7 @@
 
 .info-panel__backdrop {
   position: absolute;
-  inset: 0 55% 0 0;
+  inset: 0 40% 0 0;
   border: 0;
   padding: 0;
   background: rgba(5, 7, 8, 0.54);
