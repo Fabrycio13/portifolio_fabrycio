@@ -33,7 +33,8 @@ const placeholderProjects = [
     technologies: [
       { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
       { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
-      { label: 'IA', stack: 'Edge Functions' },
+      { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
+      { label: 'IA', stack: 'Engenharia de prompt customizada' },
     ],
     image: '/projects/project-01.webp',
     alt: 'Screenshot da plataforma de recrutamento e seleção com IA da Usabit People',
