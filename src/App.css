@@ -450,8 +450,9 @@
 }
 
 .info-panel__close {
+  position: relative;
   border: 0;
-  padding: 0;
+  padding: 0 0 0.15rem;
   background: transparent;
   color: #b7c5c7;
   font: inherit;
@@ -460,6 +461,22 @@
   text-transform: uppercase;
   text-underline-offset: 0.25em;
   cursor: pointer;
+}
+
+.info-panel__close::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: #78aebc;
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.info-panel__close:hover::after {
+  width: 100%;
 }
 
 .info-panel__label {
