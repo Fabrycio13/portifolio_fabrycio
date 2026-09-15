@@ -8,6 +8,7 @@ import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
 import { useEffect, useState } from 'react'
+import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt } from 'react-icons/fa'
 
 const menuItems = [
   { label: 'Sobre', panel: 'sobre' },
@@ -21,9 +22,19 @@ const placeholderProjects = [
     title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
     detail: 'USABIT PEOPLE',
     description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
-    description2: 'A inteligência artificial analisa currículos em PDF e Word, identifica informações como habilidades e experiências e avalia a compatibilidade com a vaga.',
-    description3: 'Conta com pipeline Kanban, portal de carreiras, banco de talentos, dashboards e controle de acesso por perfil (RBAC).',
-    description4: 'Front-end em React, TypeScript, Vite e Tailwind CSS, integrado ao Supabase para autenticação, banco de dados PostgreSQL e armazenamento de arquivos.',
+    features: [
+      { icon: FaBrain, text: 'Análise de currículos com IA' },
+      { icon: FaColumns, text: 'Pipeline Kanban' },
+      { icon: FaGlobe, text: 'Portal de carreiras público' },
+      { icon: FaDatabase, text: 'Banco de talentos' },
+      { icon: FaChartBar, text: 'Dashboards de indicadores' },
+      { icon: FaShieldAlt, text: 'Controle de acesso (RBAC)' },
+    ],
+    technologies: [
+      { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
+      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
+      { label: 'IA', stack: 'Edge Functions' },
+    ],
     image: '/projects/project-01.webp',
     alt: 'Screenshot da plataforma de recrutamento e seleção com IA da Usabit People',
   },
@@ -272,9 +283,30 @@ function PortfolioContent() {
             <p className="info-panel__label">{project.detail}</p>
             <h2 id={`project-title-${project.number}`}>{project.title}</h2>
             {project.description && <p>{project.description}</p>}
-            {project.description2 && <p>{project.description2}</p>}
-            {project.description3 && <p>{project.description3}</p>}
-            {project.description4 && <p>{project.description4}</p>}
+            {project.features && (
+              <ul className="project-features">
+                {project.features.map((feature, i) => (
+                  <li key={i} className="project-features__item">
+                    <feature.icon className="project-features__icon" />
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {project.technologies && (
+              <div className="project-tech">
+                <h3 className="project-tech__title">
+                  <FaCode />
+                  Tecnologias
+                </h3>
+                {project.technologies.map((tech, i) => (
+                  <div key={i} className="project-tech__item">
+                    <span className="project-tech__label">{tech.label}</span>
+                    <span className="project-tech__stack">{tech.stack}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </aside>
       ))}

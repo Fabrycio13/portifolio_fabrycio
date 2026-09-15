@@ -486,6 +486,75 @@
   line-height: 1.7;
 }
 
+.project-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 1.5rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-features__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #c9d4d5;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.project-features__icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: #78aebc;
+}
+
+.project-tech {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(120, 174, 188, 0.25);
+}
+
+.project-tech__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #78aebc;
+}
+
+.project-tech__title svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.project-tech__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-tech__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8da2a5;
+}
+
+.project-tech__stack {
+  font-size: 0.9rem;
+  color: #c9d4d5;
+  line-height: 1.5;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
