@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { FaArrowUp, FaFacebookF, FaGithub, FaInstagram, FaLinkedinIn } from 'react-icons/fa'
+import { FaArrowUp, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
 import { SiGmail } from 'react-icons/si'
 import { useEffect, useRef, useState } from 'react'
 import { ShaderVideo } from './ShaderVideo.jsx'
@@ -29,10 +29,10 @@ const socialIcons = [
     className: 'wave-footer__social--linkedin',
   },
   {
-    label: 'Facebook',
-    Icon: FaFacebookF,
-    href: 'https://www.facebook.com/fabrycio.bermudes',
-    className: 'wave-footer__social--facebook',
+    label: 'WhatsApp',
+    Icon: FaWhatsapp,
+    href: 'https://wa.me/5521986866460',
+    className: 'wave-footer__social--whatsapp',
   },
   {
     label: 'Gmail',
