@@ -18,10 +18,11 @@ const menuItems = [
 const placeholderProjects = [
   {
     number: '01',
-    title: 'PROJETO CONCEITO 01',
-    detail: 'DESIGN · DESENVOLVIMENTO',
+    title: 'RECRUTAMENTO E SELEÇÃO COM INTELIGÊNCIA ARTIFICIAL',
+    detail: 'USABIT PEOPLE',
+    description: 'Plataforma de recrutamento e seleção com inteligência artificial para análise de currículos, gestão de vagas e acompanhamento de candidatos em pipeline Kanban. Inclui portal de carreiras, banco de talentos e dashboards, com front-end em React e TypeScript e integração com Supabase.',
     image: '/projects/project-01.webp',
-    alt: 'Imagem temporária do projeto conceito 01',
+    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da RH Corp',
   },
   {
     number: '02',
@@ -267,7 +268,7 @@ function PortfolioContent() {
             </button>
             <p className="info-panel__label">{project.detail}</p>
             <h2 id={`project-title-${project.number}`}>{project.title}</h2>
-            <p>Em breve — conteúdo do projeto.</p>
+            {project.description && <p>{project.description}</p>}
           </div>
         </aside>
       ))}
