@@ -436,7 +436,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 55%;
+  width: 40%;
   height: 100%;
   padding: clamp(2rem, 6vw, 5rem);
   background: #050708;
