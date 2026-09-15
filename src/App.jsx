@@ -8,7 +8,7 @@ import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
 import { useEffect, useState } from 'react'
-import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt } from 'react-icons/fa'
+import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt, FaTachometerAlt, FaUsers, FaCar, FaBox, FaComments, FaVoteYea } from 'react-icons/fa'
 
 const menuItems = [
   { label: 'Sobre', panel: 'sobre' },
@@ -41,10 +41,25 @@ const placeholderProjects = [
   },
   {
     number: '02',
-    title: 'PROJETO CONCEITO 02',
-    detail: 'PRODUTO · EXPERIÊNCIA',
+    title: 'CINDY — GESTÃO CONDOMINIAL',
+    detail: 'PLATAFORMA WEB',
+    description: 'A Cindy é uma plataforma completa para administração de condomínios, centralizando em um único sistema a gestão de moradores, unidades, veículos, vagas de garagem, encomendas, ocorrências e espaços compartilhados.',
+    features: [
+      { icon: FaTachometerAlt, text: 'Dashboard com indicadores' },
+      { icon: FaUsers, text: 'Gestão de moradores' },
+      { icon: FaCar, text: 'Controle de veículos e vagas' },
+      { icon: FaBox, text: 'Registro de encomendas' },
+      { icon: FaComments, text: 'Chat e comunicados' },
+      { icon: FaVoteYea, text: 'Assembleias digitais' },
+    ],
+    technologies: [
+      { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
+      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
+      { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
+      { label: 'Integrações', stack: 'Webhooks, n8n, WhatsApp, APIs externas' },
+    ],
     image: '/projects/project-02.webp',
-    alt: 'Imagem temporária do projeto conceito 02',
+    alt: 'Screenshot da plataforma de gestão condominial Cindy',
   },
   {
     number: '03',
