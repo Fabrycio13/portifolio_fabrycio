@@ -439,7 +439,6 @@
   width: 40%;
   height: 100%;
   overflow-y: auto;
-  overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: auto;
@@ -448,7 +447,6 @@
   color: #f3f8f8;
   transform: translateX(100%);
   transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
-  padding-bottom: 4rem;
 }
 
 .info-panel.is-open .info-panel__content {
@@ -469,17 +467,17 @@
 }
 
 .info-panel__label {
-  margin: clamp(4rem, 12vh, 8rem) 0 0.75rem;
+  margin: clamp(2rem, 6vh, 4rem) 0 0.5rem;
   color: #8da2a5;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .info-panel h2 {
-  margin: 0 0 1.5rem;
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  line-height: 1;
+  margin: 0 0 1rem;
+  font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+  line-height: 1.05;
 }
 
 .info-panel p:last-child {
@@ -491,8 +489,8 @@
 .project-features {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem 1.5rem;
-  margin: 1.5rem 0;
+  gap: 0.5rem 1rem;
+  margin: 0.75rem 0;
   padding: 0;
   list-style: none;
 }
@@ -500,31 +498,31 @@
 .project-features__item {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
   color: #c9d4d5;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  line-height: 1.3;
 }
 
 .project-features__icon {
   flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
+  width: 0.85rem;
+  height: 0.85rem;
   color: #78aebc;
 }
 
 .project-tech {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid rgba(120, 174, 188, 0.25);
 }
 
 .project-tech__title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 0 1rem;
-  font-size: 0.85rem;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -532,29 +530,29 @@
 }
 
 .project-tech__title svg {
-  width: 1rem;
-  height: 1rem;
+  width: 0.85rem;
+  height: 0.85rem;
 }
 
 .project-tech__item {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  margin-bottom: 0.75rem;
+  gap: 0.1rem;
+  margin-bottom: 0.4rem;
 }
 
 .project-tech__label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: #8da2a5;
 }
 
 .project-tech__stack {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #c9d4d5;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .visually-hidden {
