@@ -41,7 +41,7 @@ const placeholderProjects = [
   },
   {
     number: '02',
-    title: 'CINDY - GESTÃO CONDOMINIAL',
+    title: 'CINDY - GESTÃO CONDOMINIAL (COM IA)',
     detail: 'PLATAFORMA WEB',
     description: 'A Cindy é uma plataforma completa para administração de condomínios, centralizando em um único sistema a gestão de moradores, unidades, veículos, vagas de garagem, encomendas, ocorrências e espaços compartilhados.',
     features: [
