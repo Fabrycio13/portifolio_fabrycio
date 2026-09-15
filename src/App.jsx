@@ -20,7 +20,7 @@ const placeholderProjects = [
     number: '01',
     title: 'RECRUTAMENTO E SELEÇÃO COM INTELIGÊNCIA ARTIFICIAL',
     detail: 'USABIT PEOPLE',
-    description: 'Plataforma de recrutamento e seleção com inteligência artificial para análise de currículos, gestão de vagas e acompanhamento de candidatos em pipeline Kanban. Inclui portal de carreiras, banco de talentos e dashboards, com front-end em React e TypeScript e integração com Supabase.',
+    description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos. A inteligência artificial analisa currículos em PDF e Word, identifica informações como habilidades e experiências e avalia a compatibilidade com a vaga. Conta com pipeline Kanban, portal de carreiras, banco de talentos, dashboards e controle de acesso por perfil (RBAC). Front-end em React, TypeScript, Vite e Tailwind CSS, integrado ao Supabase para autenticação, banco de dados PostgreSQL e armazenamento de arquivos.',
     image: '/projects/project-01.webp',
     alt: 'Screenshot da plataforma de recrutamento e seleção com IA da RH Corp',
   },
