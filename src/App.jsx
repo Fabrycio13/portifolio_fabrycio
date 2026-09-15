@@ -18,11 +18,14 @@ const menuItems = [
 const placeholderProjects = [
   {
     number: '01',
-    title: 'RECRUTAMENTO E SELEÇÃO COM INTELIGÊNCIA ARTIFICIAL',
+    title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
     detail: 'USABIT PEOPLE',
-    description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos. A inteligência artificial analisa currículos em PDF e Word, identifica informações como habilidades e experiências e avalia a compatibilidade com a vaga. Conta com pipeline Kanban, portal de carreiras, banco de talentos, dashboards e controle de acesso por perfil (RBAC). Front-end em React, TypeScript, Vite e Tailwind CSS, integrado ao Supabase para autenticação, banco de dados PostgreSQL e armazenamento de arquivos.',
+    description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
+    description2: 'A inteligência artificial analisa currículos em PDF e Word, identifica informações como habilidades e experiências e avalia a compatibilidade com a vaga.',
+    description3: 'Conta com pipeline Kanban, portal de carreiras, banco de talentos, dashboards e controle de acesso por perfil (RBAC).',
+    description4: 'Front-end em React, TypeScript, Vite e Tailwind CSS, integrado ao Supabase para autenticação, banco de dados PostgreSQL e armazenamento de arquivos.',
     image: '/projects/project-01.webp',
-    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da RH Corp',
+    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da Usabit People',
   },
   {
     number: '02',
@@ -269,6 +272,9 @@ function PortfolioContent() {
             <p className="info-panel__label">{project.detail}</p>
             <h2 id={`project-title-${project.number}`}>{project.title}</h2>
             {project.description && <p>{project.description}</p>}
+            {project.description2 && <p>{project.description2}</p>}
+            {project.description3 && <p>{project.description3}</p>}
+            {project.description4 && <p>{project.description4}</p>}
           </div>
         </aside>
       ))}
