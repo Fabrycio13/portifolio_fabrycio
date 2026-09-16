@@ -44,11 +44,14 @@ const socialIcons = [
 function drawWaveLine(context, width, height, options) {
   const { base, amplitude, frequency, phase, stroke } = options
   const waveY = x => base + Math.sin(x * frequency + phase) * amplitude
+  const edgePadding = 6
+  const left = -edgePadding
+  const right = width + edgePadding
 
   context.beginPath()
-  context.moveTo(0, waveY(0))
+  context.moveTo(left, waveY(left))
 
-  for (let x = 0; x <= width; x += 4) {
+  for (let x = left + 4; x <= right; x += 4) {
     context.lineTo(x, waveY(x))
   }
 
@@ -60,13 +63,16 @@ function drawWaveLine(context, width, height, options) {
 function drawTopWave(context, width, height, options) {
   const { base, amplitude, frequency, phase, fill, stroke } = options
   const waveY = x => base + Math.sin(x * frequency + phase) * amplitude
+  const edgePadding = 6
+  const left = -edgePadding
+  const right = width + edgePadding
 
   context.beginPath()
-  context.moveTo(0, 0)
-  context.lineTo(width, 0)
-  context.lineTo(width, waveY(width))
+  context.moveTo(left, 0)
+  context.lineTo(right, 0)
+  context.lineTo(right, waveY(right))
 
-  for (let x = width; x >= 0; x -= 4) {
+  for (let x = right; x >= left; x -= 4) {
     context.lineTo(x, waveY(x))
   }
 
