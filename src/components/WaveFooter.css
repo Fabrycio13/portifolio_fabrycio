@@ -165,7 +165,11 @@
 
 @media (max-width: 640px) {
   .wave-footer {
-    height: 150svh;
+    height: 100svh;
+  }
+
+  .wave-footer__stage {
+    height: 100%;
   }
 
   .wave-footer__content {
