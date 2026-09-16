@@ -159,7 +159,10 @@ function PortfolioContent() {
 
       <header className={`site-header ${isHeaderScrolled ? 'is-scrolled' : ''}`}>
         <a className="site-header__brand" href="#top" aria-label="Voltar ao início">
-          <img src="/logo-header.png" alt="Fabrycio Bermudes" />
+          <picture>
+            <source media="(max-width: 900px)" srcSet="/logo-mark.png" />
+            <img src="/logo-header.png" alt="Fabrycio Bermudes" />
+          </picture>
         </a>
 
         <nav className="top-menu" aria-label="Navegação principal">
