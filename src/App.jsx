@@ -339,8 +339,8 @@ function PortfolioContent() {
             desenvolver desde landing pages de alta conversão até sistemas SaaS
             completos, cuidando de toda a interface e integração de banco de
             dados. No último ano, dediquei minha atuação a implementar IA e
-            automações (via n8n e engenharia de prompts) para criar negócios
-            mais inteligentes e autônomos.
+            automações (n8n, engenharia de prompts, hardness, graph e loop enginner)
+            para criar negócios mais inteligentes e autônomos.
           </p>
 
           <section className="about-toolkit" aria-labelledby="about-toolkit-title">
