@@ -129,8 +129,7 @@ export const VideoShader = {
         clamp(uEffectStrength, 0.0, 1.0)
       );
 
-      float veil = mix(0.84, 0.46, smoothstep(0.0, 0.48, vUv.x));
-      veil = mix(veil, 0.04, smoothstep(0.48, 0.78, vUv.x));
+      float veil = 0.04;
       finalColor = mix(finalColor, vec3(0.91, 0.969, 0.969), veil);
 
       vec2 screenUv = gl_FragCoord.xy / uResolution;
@@ -142,8 +141,7 @@ export const VideoShader = {
       float edge = uEdgeHeight + wave * uEdgeWave;
       edge += sin(scrollPhase * 0.65) * 0.018;
       float softAlpha = smoothstep(edge, edge + uEdgeSoftness, screenUv.y);
-      float ditherAlpha = step(bayer4(gl_FragCoord.xy) + 0.001, softAlpha);
-      float edgeAlpha = mix(softAlpha, ditherAlpha, 0.62);
+      float edgeAlpha = softAlpha;
       vec3 pageColor = vec3(0.002125, 0.013702, 0.023153);
 
       gl_FragColor = vec4(mix(pageColor, finalColor, edgeAlpha), 1.0);

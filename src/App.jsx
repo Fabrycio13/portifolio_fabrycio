@@ -1,9 +1,7 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis, useLenis } from 'lenis/react'
-import { ShaderVideo } from './components/ShaderVideo.jsx'
 import { StickyProjects } from './components/StickyProjects.jsx'
-import { ThemeSwitch } from './components/ThemeSwitch.jsx'
 import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
@@ -118,6 +116,16 @@ function AnimatedMenuLink({ label, href = '#', onClick }) {
 function PortfolioContent() {
   const lenis = useLenis()
   const [activePanel, setActivePanel] = useState(null)
+  const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
+
+  useEffect(() => {
+    const updateHeader = () => setIsHeaderScrolled(window.scrollY > 24)
+
+    updateHeader()
+    window.addEventListener('scroll', updateHeader, { passive: true })
+
+    return () => window.removeEventListener('scroll', updateHeader)
+  }, [])
 
   useEffect(() => {
     const isModalOpen = activePanel !== null
@@ -139,19 +147,31 @@ function PortfolioContent() {
 
   return (
     <main id="top" className="app">
-      <ShaderVideo />
+      <div className="hero-media" aria-hidden="true">
+        <img
+          src="/novo portifolio.png"
+          alt=""
+          decoding="async"
+          fetchPriority="high"
+        />
+      </div>
 
-      <nav className="top-menu" aria-label="Navegação principal">
-        {menuItems.map(item => (
-          <AnimatedMenuLink
-            key={item.label}
-            {...item}
-            onClick={item.panel ? () => setActivePanel(item.panel) : undefined}
-          />
-        ))}
-      </nav>
+      <header className={`site-header ${isHeaderScrolled ? 'is-scrolled' : ''}`}>
+        <a className="site-header__brand" href="#top" aria-label="Voltar ao início">
+          <img src="/logo-header.png" alt="Fabrycio Bermudes" />
+        </a>
 
-      <ThemeSwitch />
+        <nav className="top-menu" aria-label="Navegação principal">
+          {menuItems.map(item => (
+            <AnimatedMenuLink
+              key={item.label}
+              {...item}
+              onClick={item.panel ? () => setActivePanel(item.panel) : undefined}
+            />
+          ))}
+        </nav>
+
+      </header>
 
       <section className="hero" aria-label="Apresentação">
         <p className="hero__identity">
@@ -186,7 +206,7 @@ function PortfolioContent() {
           <WarpText
             className="hero__warp-line hero__warp-line--short"
             text="IMAGINAR É O COMEÇO."
-            color="#000000"
+            color="#f3f8f8"
             warpStrength={0.1}
             warpScale={1.5}
             speed={0.45}
@@ -204,7 +224,7 @@ function PortfolioContent() {
           <WarpText
             className="hero__warp-line hero__warp-line--long"
             text="FAZER FUNCIONAR É ENGENHARIA."
-            color="#000000"
+            color="#f3f8f8"
             warpStrength={0.085}
             warpScale={1.65}
             speed={0.4}
