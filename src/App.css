@@ -678,26 +678,26 @@
   }
 
   .hero-media img {
-    object-position: 64% 25%;
+    object-position: 68% 25%;
   }
 
   .site-header {
-    height: 6.5rem;
+    height: clamp(4.5rem, 7vw, 5.5rem);
   }
 
   .site-header__brand {
-    left: 1rem;
-    top: 0.9rem;
-    width: clamp(7rem, 24vw, 9rem);
-    transform: none;
+    left: 0.75rem;
+    top: 50%;
+    width: clamp(5.5rem, 27vw, 8rem);
+    transform: translateY(-50%);
   }
 
   .top-menu {
-    top: auto;
-    left: 50%;
-    bottom: 0.7rem;
-    gap: clamp(0.5rem, 2.5vw, 1rem);
-    transform: translateX(-50%);
+    top: 50%;
+    right: 0.75rem;
+    left: auto;
+    gap: clamp(0.3rem, 1.7vw, 0.7rem);
+    transform: translateY(-50%);
   }
 
   .menu-link {
@@ -705,11 +705,11 @@
     height: 44px;
     padding-right: 0.1rem;
     padding-left: 0.1rem;
-    font-size: clamp(0.78rem, 2.8vw, 1.1rem);
+    font-size: clamp(0.68rem, 2.55vw, 0.95rem);
   }
 
   .hero {
-    top: 52svh;
+    top: 61svh;
     width: calc(100% - 2.5rem);
     transform: translateY(-44%);
   }
