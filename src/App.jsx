@@ -10,6 +10,7 @@ import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCod
 
 const menuItems = [
   { label: 'Sobre', panel: 'sobre' },
+  { label: 'Serviços', panel: 'servicos' },
   { label: 'Projetos', href: '#projetos' },
   { label: 'Contato', panel: 'contato' },
 ]
@@ -288,6 +289,37 @@ function PortfolioContent() {
             Transformo ideias ambiciosas em produtos digitais inteligentes,
             visualmente marcantes e tecnicamente sólidos feitos para funcionar
             no mundo real.
+          </p>
+        </div>
+      </aside>
+
+      <aside
+        id="servicos"
+        className={`info-panel ${activePanel === 'servicos' ? 'is-open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={activePanel !== 'servicos'}
+        aria-labelledby="services-title"
+      >
+        <button
+          type="button"
+          className="info-panel__backdrop"
+          onClick={() => setActivePanel(null)}
+          aria-label="Fechar Serviços"
+        />
+        <div className="info-panel__content">
+          <button
+            type="button"
+            className="info-panel__close"
+            onClick={() => setActivePanel(null)}
+          >
+            Fechar
+          </button>
+          <p className="info-panel__label">Serviços</p>
+          <h2 id="services-title">PRODUTOS DIGITAIS QUE FUNCIONAM</h2>
+          <p>
+            Estratégia, design e engenharia para transformar ideias ambiciosas
+            em experiências digitais inteligentes e consistentes.
           </p>
         </div>
       </aside>
