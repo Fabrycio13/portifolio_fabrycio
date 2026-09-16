@@ -115,17 +115,50 @@ const placeholderProjects = [
   },
   {
     number: '03',
-    title: 'PROJETO CONCEITO 03',
-    detail: 'WEBGL · INTERAÇÃO',
+    title: 'PHX / MDS CRÉDITO IMOBILIÁRIO',
+    detail: 'GERADOR DE LAUDOS · ANÁLISE DE CRÉDITO',
+    description: 'O Projeto PHX / MDS Crédito Imobiliário é uma aplicação frontend para gerar laudos de análise de crédito imobiliário. Enquanto os dados são preenchidos, o sistema atualiza um preview visual do documento, permitindo gerar e baixar o laudo em PDF.',
+    features: [
+      { icon: FaFileAlt, text: 'Dados do imóvel e empreendimento' },
+      { icon: FaUsers, text: 'Proponentes, renda e documentos' },
+      { icon: FaChartBar, text: 'Financiamento, subsídio e FGTS' },
+      { icon: FaDatabase, text: 'PRICE/SAC, juros, prazo e cotas' },
+      { icon: FaGlobe, text: 'Preview do laudo em tempo real' },
+      { icon: FaCode, text: 'Geração de PDF' },
+    ],
+    technologies: [
+      { label: 'Front-end', stack: 'HTML, CSS e JavaScript puro' },
+      { label: 'Build', stack: 'Vite para desenvolvimento e produção' },
+      { label: 'PDF', stack: 'jsPDF e html2canvas' },
+      { label: 'Formulários', stack: 'Flatpickr para campos de data' },
+      { label: 'Arquitetura', stack: 'Aplicação frontend estática, sem backend próprio' },
+    ],
     image: '/projects/project-03.webp',
-    alt: 'Imagem temporária do projeto conceito 03',
+    alt: 'Screenshot do gerador de laudos de análise de crédito imobiliário PHX e MDS',
   },
   {
     number: '04',
-    title: 'PROJETO CONCEITO 04',
-    detail: 'ESTRATÉGIA · TECNOLOGIA',
+    title: 'NEXUS AI - ORQUESTRAÇÃO DE IA',
+    detail: 'EMBEDDINGS · RAG · AGENTES DE IA',
+    description: 'O Nexus AI é um laboratório de processos inteligentes que conecta dados, modelos de linguagem e automações em um único fluxo. O sistema transforma documentos em embeddings, busca o contexto mais relevante e orquestra diferentes agentes para classificar, responder, validar e executar tarefas.',
+    features: [
+      { icon: FaFileAlt, text: 'Processamento e fragmentação de documentos' },
+      { icon: FaDatabase, text: 'Embeddings e busca semântica' },
+      { icon: FaBrain, text: 'Fluxos de RAG com contexto' },
+      { icon: FaComments, text: 'Roteamento entre modelos e agentes' },
+      { icon: FaCode, text: 'Integração com APIs e webhooks' },
+      { icon: FaShieldAlt, text: 'Validação, fallback e monitoramento' },
+    ],
+    technologies: [
+      { label: 'Backend', stack: 'Python e FastAPI' },
+      { label: 'Modelos', stack: 'OpenAI API para embeddings e LLMs' },
+      { label: 'Banco vetorial', stack: 'Supabase, PostgreSQL e pgvector' },
+      { label: 'Orquestração', stack: 'LangChain e LangGraph' },
+      { label: 'Automações', stack: 'n8n, webhooks e APIs externas' },
+      { label: 'Infraestrutura', stack: 'Docker para execução dos serviços' },
+    ],
     image: '/projects/project-04.webp',
-    alt: 'Imagem temporária do projeto conceito 04',
+    alt: 'Imagem conceitual do laboratório Nexus AI de embeddings e orquestração de agentes',
   },
 ]
 
@@ -491,7 +524,10 @@ function PortfolioContent() {
 
 function App() {
   return (
-    <ReactLenis root options={{ anchors: true, autoRaf: true, lerp: 0.08 }}>
+    <ReactLenis
+      root
+      options={{ anchors: true, autoRaf: true, lerp: 0.08, allowNestedScroll: true }}
+    >
       <PortfolioContent />
     </ReactLenis>
   )
