@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLenis } from 'lenis/react'
 import { useRef } from 'react'
+import { FaCog } from 'react-icons/fa'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
@@ -88,6 +89,11 @@ export function StickyProjects({ projects, onOpenProject }) {
         <header className="projects__header">
           <p>Seleção inicial</p>
           <h2 id="projects-title">PROJETOS</h2>
+          <span className="section-header__divider" aria-hidden="true">
+            <span className="section-header__ornament">
+              <FaCog />
+            </span>
+          </span>
         </header>
 
         <div className="sticky-projects__deck">

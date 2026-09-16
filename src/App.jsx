@@ -1,18 +1,71 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
-import { ReactLenis, useLenis } from 'lenis/react'
+import { ReactLenis } from 'lenis/react'
 import { StickyProjects } from './components/StickyProjects.jsx'
+import { StickyServices } from './components/StickyServices.jsx'
 import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
 import { useEffect, useState } from 'react'
-import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt, FaTachometerAlt, FaUsers, FaCar, FaBox, FaComments, FaVoteYea } from 'react-icons/fa'
+import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt, FaTachometerAlt, FaUsers, FaCar, FaBox, FaComments, FaVoteYea, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
+import { SiGmail } from 'react-icons/si'
 
 const menuItems = [
   { label: 'Sobre', panel: 'sobre' },
-  { label: 'Serviços', panel: 'servicos' },
+  { label: 'Serviços', href: '#servicos' },
   { label: 'Projetos', href: '#projetos' },
   { label: 'Contato', panel: 'contato' },
+]
+
+const contactLinks = [
+  {
+    label: 'LinkedIn',
+    Icon: FaLinkedinIn,
+    href: null,
+    className: 'contact-link--linkedin',
+  },
+  {
+    label: 'GitHub',
+    Icon: FaGithub,
+    href: 'https://github.com/Fabrycio13',
+    className: 'contact-link--github',
+  },
+  {
+    label: 'WhatsApp',
+    Icon: FaWhatsapp,
+    href: 'https://wa.me/5521986866460',
+    className: 'contact-link--whatsapp',
+  },
+  {
+    label: 'Instagram',
+    Icon: FaInstagram,
+    href: 'https://www.instagram.com/fabrycio.bermudes',
+    className: 'contact-link--instagram',
+  },
+  {
+    label: 'Gmail',
+    Icon: SiGmail,
+    href: 'https://mail.google.com/mail/?view=cm&fs=1&to=fabrycio.bermudes%40gmail.com',
+    className: 'contact-link--gmail',
+  },
+]
+
+const aboutToolkit = [
+  {
+    icon: FaCode,
+    title: 'Front-end Ágil',
+    description: 'Next.js, React, JavaScript, TypeScript, Tailwind CSS e Vite.',
+  },
+  {
+    icon: FaDatabase,
+    title: 'Back-end & Dados',
+    description: 'Supabase (Auth, PostgreSQL) para escalar rápido.',
+  },
+  {
+    icon: FaBrain,
+    title: 'Automação & IA',
+    description: 'Fluxos no n8n e Engenharia de Prompt para Chatbots e integrações.',
+  },
 ]
 
 const placeholderProjects = [
@@ -74,13 +127,6 @@ const placeholderProjects = [
     image: '/projects/project-04.webp',
     alt: 'Imagem temporária do projeto conceito 04',
   },
-  {
-    number: '05',
-    title: 'PROJETO CONCEITO 05',
-    detail: 'DIREÇÃO · ENGENHARIA',
-    image: '/projects/project-05.webp',
-    alt: 'Imagem temporária do projeto conceito 05',
-  },
 ]
 
 function AnimatedMenuLink({ label, href = '#', onClick }) {
@@ -115,7 +161,6 @@ function AnimatedMenuLink({ label, href = '#', onClick }) {
 }
 
 function PortfolioContent() {
-  const lenis = useLenis()
   const [activePanel, setActivePanel] = useState(null)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
 
@@ -133,18 +178,11 @@ function PortfolioContent() {
     document.documentElement.classList.toggle('modal-open', isModalOpen)
     document.body.classList.toggle('modal-open', isModalOpen)
 
-    if (isModalOpen) {
-      lenis?.stop()
-    } else {
-      lenis?.start()
-    }
-
     return () => {
       document.documentElement.classList.remove('modal-open')
       document.body.classList.remove('modal-open')
-      lenis?.start()
     }
-  }, [activePanel, lenis])
+  }, [activePanel])
 
   return (
     <main id="top" className="app">
@@ -260,6 +298,8 @@ function PortfolioContent() {
         </a>
       </section>
 
+      <StickyServices />
+
       <StickyProjects projects={placeholderProjects} onOpenProject={setActivePanel} />
 
       <WaveFooter />
@@ -278,7 +318,7 @@ function PortfolioContent() {
           onClick={() => setActivePanel(null)}
           aria-label="Fechar Sobre"
         />
-        <div className="info-panel__content">
+        <div className="info-panel__content" data-lenis-prevent>
           <button
             type="button"
             className="info-panel__close"
@@ -287,43 +327,38 @@ function PortfolioContent() {
             Fechar
           </button>
           <p className="info-panel__label">Sobre</p>
-          <h2 id="about-title">FABRYCIO BERMUDES</h2>
-          <p>
-            Transformo ideias ambiciosas em produtos digitais inteligentes,
-            visualmente marcantes e tecnicamente sólidos feitos para funcionar
-            no mundo real.
+          <h2 id="about-title">Muito prazer !</h2>
+          <p className="about-copy">
+            Sou Fabrycio, engenheiro de Software especializado em construir
+            ecossistemas web e automatizar rotinas através de IA. Acredito que o
+            código bom é aquele que resolve o problema rápido e funciona bem na
+            mão do usuário.
           </p>
-        </div>
-      </aside>
+          <p className="about-copy">
+            Tenho foco total em produtividade. Utilizo uma stack moderna para
+            desenvolver desde landing pages de alta conversão até sistemas SaaS
+            completos, cuidando de toda a interface e integração de banco de
+            dados. No último ano, dediquei minha atuação a implementar IA e
+            automações (via n8n e engenharia de prompts) para criar negócios
+            mais inteligentes e autônomos.
+          </p>
 
-      <aside
-        id="servicos"
-        className={`info-panel ${activePanel === 'servicos' ? 'is-open' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-hidden={activePanel !== 'servicos'}
-        aria-labelledby="services-title"
-      >
-        <button
-          type="button"
-          className="info-panel__backdrop"
-          onClick={() => setActivePanel(null)}
-          aria-label="Fechar Serviços"
-        />
-        <div className="info-panel__content">
-          <button
-            type="button"
-            className="info-panel__close"
-            onClick={() => setActivePanel(null)}
-          >
-            Fechar
-          </button>
-          <p className="info-panel__label">Serviços</p>
-          <h2 id="services-title">PRODUTOS DIGITAIS QUE FUNCIONAM</h2>
-          <p>
-            Estratégia, design e engenharia para transformar ideias ambiciosas
-            em experiências digitais inteligentes e consistentes.
-          </p>
+          <section className="about-toolkit" aria-labelledby="about-toolkit-title">
+            <h3 id="about-toolkit-title">Meu cinto de utilidades:</h3>
+            <ul className="about-toolkit__list">
+              {aboutToolkit.map(({ icon: Icon, title, description }) => (
+                <li className="about-toolkit__item" key={title}>
+                  <Icon className="about-toolkit__icon" aria-hidden="true" />
+                  <div>
+                    <strong>{title}</strong>
+                    <p>{description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <p className="about-closing">Vamos construir algo novo hoje?</p>
         </div>
       </aside>
 
@@ -343,7 +378,7 @@ function PortfolioContent() {
             onClick={() => setActivePanel(null)}
             aria-label={`Fechar ${project.title}`}
           />
-          <div className="info-panel__content">
+          <div className="info-panel__content" data-lenis-prevent>
             <button
               type="button"
               className="info-panel__close"
@@ -396,7 +431,7 @@ function PortfolioContent() {
           onClick={() => setActivePanel(null)}
           aria-label="Fechar Contato"
         />
-        <div className="info-panel__content">
+        <div className="info-panel__content" data-lenis-prevent>
           <button
             type="button"
             className="info-panel__close"
@@ -406,10 +441,48 @@ function PortfolioContent() {
           </button>
           <p className="info-panel__label">Contato</p>
           <h2 id="contact-title">VAMOS CONVERSAR.</h2>
-          <p>
-            Os canais de contato entram aqui na próxima etapa. Por enquanto, este
-            painel mantém a estrutura visual pronta para receber o conteúdo.
+          <p className="contact-message">
+            Vamos construir algo incrível. Do código à conversão. Se você precisa
+            tirar uma ideia do papel ou escalar um projeto existente, me mande uma
+            mensagem. Escolha um canal abaixo e vamos conversar.
           </p>
+          <div className="contact-links" aria-label="Canais de contato">
+            {contactLinks.map(({ label, Icon, href, className }) => {
+              if (!href) {
+                return (
+                  <span
+                    className={`contact-link ${className} contact-link--disabled`}
+                    key={label}
+                    aria-label={`${label}: link será adicionado`}
+                    title={`${label}: link será adicionado`}
+                    aria-disabled="true"
+                  >
+                    <span className="contact-link__icon">
+                      <Icon aria-hidden="true" />
+                    </span>
+                    <span className="contact-link__label">- {label}</span>
+                  </span>
+                )
+              }
+
+              return (
+                <a
+                  className={`contact-link ${className}`}
+                  href={href}
+                  key={label}
+                  aria-label={label}
+                  title={label}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span className="contact-link__icon">
+                    <Icon aria-hidden="true" />
+                  </span>
+                  <span className="contact-link__label">- {label}</span>
+                </a>
+              )
+            })}
+          </div>
         </div>
       </aside>
     </main>
