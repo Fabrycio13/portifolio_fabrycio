@@ -1,7 +1,7 @@
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { FaArrowUp, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
+import { FaArrowUp, FaCog, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
 import { SiGmail } from 'react-icons/si'
 import { useRef } from 'react'
 import './WaveFooter.css'
@@ -40,6 +40,8 @@ const socialIcons = [
     className: 'wave-footer__social--gmail',
   },
 ]
+
+const footerServices = ['Automações', 'SaaS', 'Landing Page', 'Sites']
 
 function drawWaveLine(context, width, height, options) {
   const { base, amplitude, frequency, phase, stroke } = options
@@ -329,6 +331,20 @@ export function WaveFooter() {
               <FaArrowUp aria-hidden="true" />
             </a>
           </div>
+        </div>
+
+        <div className="wave-footer__meta">
+          <div className="wave-footer__services" aria-label="O que eu faço">
+            {footerServices.map((service, index) => (
+              <span className="wave-footer__service" key={service}>
+                {index > 0 && (
+                  <FaCog className="wave-footer__service-gear" aria-hidden="true" />
+                )}
+                <span>{service}</span>
+              </span>
+            ))}
+          </div>
+          <p className="wave-footer__copyright">© 2026 Fabrycio Bermudes</p>
         </div>
       </div>
     </footer>

@@ -382,7 +382,7 @@
 .projects {
   position: relative;
   z-index: 2;
-  margin-top: 145svh;
+  margin-top: clamp(2rem, 4svh, 3rem);
   color: #f3f8f8;
   scroll-margin-top: 0;
 }
@@ -403,13 +403,16 @@
 .projects__header {
   position: absolute;
   z-index: 6;
-  top: clamp(1.5rem, 5svh, 3rem);
-  left: clamp(1.25rem, 5vw, 5rem);
+  top: clamp(1rem, 2svh, 1.5rem);
+  left: 50%;
+  width: max-content;
   pointer-events: none;
+  text-align: center;
+  transform: translateX(-50%);
 }
 
 .projects__header p {
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.65rem;
   color: #8da2a5;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
@@ -422,6 +425,56 @@
   font-size: clamp(2.8rem, 7vw, 6rem);
   font-weight: 400;
   line-height: 0.9;
+}
+
+.section-header__divider {
+  display: flex;
+  width: min(20rem, 70vw);
+  height: 0.75rem;
+  margin: clamp(1.25rem, 2.2vw, 1.8rem) auto 0;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.section-header__divider::before,
+.section-header__divider::after {
+  flex: 1;
+  height: 2px;
+  background: rgba(141, 162, 165, 0.72);
+  content: '';
+}
+
+.section-header__ornament {
+  display: flex;
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 1.15rem;
+  align-items: center;
+  justify-content: center;
+  color: #78aebc;
+  animation: section-header-gear-spin 8s linear infinite;
+}
+
+.section-header__ornament svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes section-header-gear-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 901px) {
+  .sticky-projects__stage {
+    padding-top: clamp(6rem, 10svh, 7.5rem);
+  }
+
+  .sticky-projects__deck {
+    margin-top: clamp(8rem, 12svh, 10rem);
+  }
 }
 
 .sticky-projects__deck {
@@ -526,6 +579,10 @@
   width: 40%;
   height: 100%;
   padding: clamp(2rem, 6vw, 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   background: #050708;
   color: #f3f8f8;
   transform: translateX(100%);
@@ -580,10 +637,197 @@
   line-height: 1.05;
 }
 
+.info-panel p.about-copy {
+  max-width: 30rem;
+  margin: 0;
+  color: #c9d4d5;
+  line-height: 1.7;
+}
+
+.info-panel p.about-copy + p.about-copy {
+  margin-top: 1rem;
+}
+
+.about-toolkit {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(120, 174, 188, 0.25);
+}
+
+.about-toolkit h3 {
+  margin: 0 0 1rem;
+  color: #78aebc;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.about-toolkit__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-toolkit__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  color: #c9d4d5;
+  line-height: 1.45;
+}
+
+.about-toolkit__icon {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.15rem;
+  color: #78aebc;
+}
+
+.about-toolkit__item strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #f3f8f8;
+  font-size: 0.9rem;
+}
+
+.about-toolkit__item p {
+  margin: 0;
+  color: #aebfc2;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.info-panel p.about-closing:last-child {
+  margin: 2rem 0 0;
+  color: #f3f8f8;
+  font-weight: 600;
+}
+
 .info-panel p:last-child {
   margin: 0;
   color: #c9d4d5;
   line-height: 1.7;
+}
+
+.info-panel p.contact-message {
+  max-width: 30rem;
+  margin: 0;
+  color: #c9d4d5;
+  line-height: 1.7;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.contact-link {
+  --contact-color: #78aebc;
+  display: flex;
+  min-width: 12rem;
+  min-height: 3.35rem;
+  padding: 0;
+  align-items: center;
+  gap: 0.9rem;
+  border: 0;
+  background: transparent;
+  color: #f3f8f8;
+  font: inherit;
+  text-decoration: none;
+  transition: color 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-link__icon {
+  display: grid;
+  width: 3.35rem;
+  height: 3.35rem;
+  flex: 0 0 3.35rem;
+  place-items: center;
+  border: 1px solid rgba(243, 248, 248, 0.45);
+  border-radius: 50%;
+  background: rgba(120, 174, 188, 0.08);
+  color: #f3f8f8;
+  transition: color 220ms ease, background 220ms ease, border-color 220ms ease,
+    box-shadow 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-link__icon svg {
+  width: 42%;
+  height: 42%;
+}
+
+.contact-link__label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+  color: var(--contact-color);
+  transform: translateX(0.35rem);
+}
+
+.contact-link:hover .contact-link__icon,
+.contact-link:focus-visible .contact-link__icon {
+  border-color: var(--contact-color);
+  background: var(--contact-color);
+  color: #fff;
+  box-shadow: 0 0.7rem 1.8rem color-mix(in srgb, var(--contact-color) 38%, transparent);
+  transform: scale(1.07);
+}
+
+.contact-link:focus-visible {
+  outline: 2px solid #f3f8f8;
+  outline-offset: 4px;
+}
+
+.contact-link--linkedin {
+  --contact-color: #0a66c2;
+}
+
+.contact-link--github {
+  --contact-color: #6e7681;
+}
+
+.contact-link--whatsapp {
+  --contact-color: #25d366;
+}
+
+.contact-link--instagram {
+  --contact-color: #e1306c;
+}
+
+.contact-link--gmail {
+  --contact-color: #ea4335;
+}
+
+.contact-link--disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.contact-link--disabled:hover,
+.contact-link--disabled:focus-visible {
+  color: #f3f8f8;
+  transform: none;
+}
+
+.contact-link--disabled:hover .contact-link__icon,
+.contact-link--disabled:focus-visible .contact-link__icon {
+  border-color: rgba(243, 248, 248, 0.45);
+  background: rgba(120, 174, 188, 0.08);
+  color: #f3f8f8;
+  box-shadow: none;
+  transform: none;
 }
 
 .project-features {
@@ -750,6 +994,7 @@
 
   .sticky-projects__deck {
     width: 100%;
+    margin-top: clamp(3rem, 8svh, 4rem);
   }
 
   .project-stack-card__copy h3 {
@@ -766,6 +1011,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .section-header__ornament {
+    animation: none;
+  }
+
   .site-header,
   .menu-link span,
   .hero__cta,

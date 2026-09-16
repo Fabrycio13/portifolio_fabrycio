@@ -40,12 +40,67 @@
   position: absolute;
   z-index: 2;
   right: clamp(1.25rem, 5vw, 5rem);
-  bottom: clamp(2rem, 7svh, 5rem);
+  bottom: clamp(5.5rem, 12svh, 8rem);
   left: clamp(1.25rem, 5vw, 5rem);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 2rem;
+}
+
+.wave-footer__meta {
+  position: absolute;
+  z-index: 2;
+  right: clamp(1.25rem, 5vw, 5rem);
+  bottom: clamp(1rem, 3svh, 2rem);
+  left: clamp(1.25rem, 5vw, 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(243, 248, 248, 0.2);
+}
+
+.wave-footer__services {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  color: rgba(243, 248, 248, 0.7);
+  font-size: clamp(0.65rem, 1vw, 0.8rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wave-footer__service {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  white-space: nowrap;
+}
+
+.wave-footer__service-gear {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: #78aebc;
+  animation: wave-footer-gear-spin 8s linear infinite;
+}
+
+@keyframes wave-footer-gear-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wave-footer__copyright {
+  flex: 0 0 auto;
+  margin: 0;
+  color: rgba(243, 248, 248, 0.62);
+  font-size: clamp(0.62rem, 0.9vw, 0.75rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .wave-footer__name {
@@ -173,7 +228,7 @@
   }
 
   .wave-footer__content {
-    bottom: clamp(2rem, 6svh, 3.5rem);
+    bottom: clamp(9rem, 18svh, 11rem);
     flex-direction: column;
     align-items: flex-start;
     gap: 1.75rem;
@@ -182,6 +237,36 @@
   .wave-footer__actions {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .wave-footer__meta {
+    right: 1.25rem;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .wave-footer__services {
+    justify-content: center;
+    gap: 0.55rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  .wave-footer__service {
+    gap: 0.55rem;
+  }
+
+  .wave-footer__service-gear {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .wave-footer__copyright {
+    font-size: 0.58rem;
   }
 
   .wave-footer__socials {
@@ -201,7 +286,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wave-footer__social {
+  .wave-footer__social,
+  .wave-footer__service-gear {
     transition: none;
+    animation: none;
   }
 }
