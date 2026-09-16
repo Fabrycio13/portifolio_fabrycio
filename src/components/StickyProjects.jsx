@@ -6,7 +6,7 @@ import { useRef } from 'react'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
-export function StickyProjects({ projects }) {
+export function StickyProjects({ projects, onOpenProject }) {
   const container = useRef(null)
   const stage = useRef(null)
   const cardRefs = useRef([])
@@ -95,6 +95,7 @@ export function StickyProjects({ projects }) {
             <article
               className="project-stack-card"
               key={project.number}
+              onClick={() => onOpenProject(project.number)}
               ref={element => {
                 cardRefs.current[index] = element
               }}

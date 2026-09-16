@@ -1,7 +1,7 @@
 .wave-footer {
   position: relative;
   z-index: 2;
-  height: 160svh;
+  height: 120svh;
   background: #071f2a;
   color: #f3f8f8;
 }
@@ -15,12 +15,15 @@
   isolation: isolate;
 }
 
-.wave-footer__video {
+.wave-footer__image {
   position: absolute;
   z-index: 0;
   inset: 0;
+  display: block;
   height: 100%;
-  background: #071f2a;
+  width: 100%;
+  object-fit: cover;
+  object-position: center center;
 }
 
 .wave-footer__canvas {
@@ -119,8 +122,8 @@
   --social-color: #0a66c2;
 }
 
-.wave-footer__social--facebook {
-  --social-color: #1877f2;
+.wave-footer__social--whatsapp {
+  --social-color: #25D366;
 }
 
 .wave-footer__social--gmail {

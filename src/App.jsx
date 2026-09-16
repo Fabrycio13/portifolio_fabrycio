@@ -1,16 +1,16 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis, useLenis } from 'lenis/react'
-import { ShaderVideo } from './components/ShaderVideo.jsx'
 import { StickyProjects } from './components/StickyProjects.jsx'
-import { ThemeSwitch } from './components/ThemeSwitch.jsx'
 import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
 import { useEffect, useState } from 'react'
+import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt, FaTachometerAlt, FaUsers, FaCar, FaBox, FaComments, FaVoteYea } from 'react-icons/fa'
 
 const menuItems = [
   { label: 'Sobre', panel: 'sobre' },
+  { label: 'Serviços', panel: 'servicos' },
   { label: 'Projetos', href: '#projetos' },
   { label: 'Contato', panel: 'contato' },
 ]
@@ -18,17 +18,47 @@ const menuItems = [
 const placeholderProjects = [
   {
     number: '01',
-    title: 'PROJETO CONCEITO 01',
-    detail: 'DESIGN · DESENVOLVIMENTO',
+    title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
+    detail: 'USABIT PEOPLE',
+    description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
+    features: [
+      { icon: FaBrain, text: 'Análise de currículos com IA' },
+      { icon: FaColumns, text: 'Pipeline Kanban' },
+      { icon: FaGlobe, text: 'Portal de carreiras público' },
+      { icon: FaDatabase, text: 'Banco de talentos' },
+      { icon: FaChartBar, text: 'Dashboards de indicadores' },
+      { icon: FaShieldAlt, text: 'Controle de acesso (RBAC)' },
+    ],
+    technologies: [
+      { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
+      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
+      { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
+      { label: 'IA', stack: 'Engenharia de prompt customizada' },
+    ],
     image: '/projects/project-01.webp',
-    alt: 'Imagem temporária do projeto conceito 01',
+    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da Usabit People',
   },
   {
     number: '02',
-    title: 'PROJETO CONCEITO 02',
-    detail: 'PRODUTO · EXPERIÊNCIA',
+    title: 'CINDY - GESTÃO CONDOMINIAL',
+    detail: 'PLATAFORMA WEB',
+    description: 'A Cindy é uma plataforma completa para administração de condomínios, centralizando em um único sistema a gestão de moradores, unidades, veículos, vagas de garagem, encomendas, ocorrências e espaços compartilhados. Utiliza IA para automatizar o cadastro de veículos e registro de encomendas.',
+    features: [
+      { icon: FaTachometerAlt, text: 'Dashboard com indicadores' },
+      { icon: FaUsers, text: 'Gestão de moradores' },
+      { icon: FaCar, text: 'Controle de veículos e vagas' },
+      { icon: FaBox, text: 'Registro de encomendas' },
+      { icon: FaComments, text: 'Chat e comunicados' },
+      { icon: FaVoteYea, text: 'Assembleias digitais' },
+    ],
+    technologies: [
+      { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
+      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
+      { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
+      { label: 'Integrações', stack: 'Webhooks, n8n, WhatsApp, APIs externas' },
+    ],
     image: '/projects/project-02.webp',
-    alt: 'Imagem temporária do projeto conceito 02',
+    alt: 'Screenshot da plataforma de gestão condominial Cindy',
   },
   {
     number: '03',
@@ -87,6 +117,16 @@ function AnimatedMenuLink({ label, href = '#', onClick }) {
 function PortfolioContent() {
   const lenis = useLenis()
   const [activePanel, setActivePanel] = useState(null)
+  const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
+
+  useEffect(() => {
+    const updateHeader = () => setIsHeaderScrolled(window.scrollY > 24)
+
+    updateHeader()
+    window.addEventListener('scroll', updateHeader, { passive: true })
+
+    return () => window.removeEventListener('scroll', updateHeader)
+  }, [])
 
   useEffect(() => {
     const isModalOpen = activePanel !== null
@@ -108,19 +148,31 @@ function PortfolioContent() {
 
   return (
     <main id="top" className="app">
-      <ShaderVideo />
+      <div className="hero-media" aria-hidden="true">
+        <img
+          src="/novo portifolio.png"
+          alt=""
+          decoding="async"
+          fetchPriority="high"
+        />
+      </div>
 
-      <nav className="top-menu" aria-label="Navegação principal">
-        {menuItems.map(item => (
-          <AnimatedMenuLink
-            key={item.label}
-            {...item}
-            onClick={item.panel ? () => setActivePanel(item.panel) : undefined}
-          />
-        ))}
-      </nav>
+      <header className={`site-header ${isHeaderScrolled ? 'is-scrolled' : ''}`}>
+        <a className="site-header__brand" href="#top" aria-label="Voltar ao início">
+          <img src="/logo-header.png" alt="Fabrycio Bermudes" />
+        </a>
 
-      <ThemeSwitch />
+        <nav className="top-menu" aria-label="Navegação principal">
+          {menuItems.map(item => (
+            <AnimatedMenuLink
+              key={item.label}
+              {...item}
+              onClick={item.panel ? () => setActivePanel(item.panel) : undefined}
+            />
+          ))}
+        </nav>
+
+      </header>
 
       <section className="hero" aria-label="Apresentação">
         <p className="hero__identity">
@@ -155,7 +207,7 @@ function PortfolioContent() {
           <WarpText
             className="hero__warp-line hero__warp-line--short"
             text="IMAGINAR É O COMEÇO."
-            color="#000000"
+            color="#f3f8f8"
             warpStrength={0.1}
             warpScale={1.5}
             speed={0.45}
@@ -173,7 +225,7 @@ function PortfolioContent() {
           <WarpText
             className="hero__warp-line hero__warp-line--long"
             text="FAZER FUNCIONAR É ENGENHARIA."
-            color="#000000"
+            color="#f3f8f8"
             warpStrength={0.085}
             warpScale={1.65}
             speed={0.4}
@@ -205,7 +257,7 @@ function PortfolioContent() {
         </a>
       </section>
 
-      <StickyProjects projects={placeholderProjects} />
+      <StickyProjects projects={placeholderProjects} onOpenProject={setActivePanel} />
 
       <WaveFooter />
 
@@ -240,6 +292,92 @@ function PortfolioContent() {
           </p>
         </div>
       </aside>
+
+      <aside
+        id="servicos"
+        className={`info-panel ${activePanel === 'servicos' ? 'is-open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={activePanel !== 'servicos'}
+        aria-labelledby="services-title"
+      >
+        <button
+          type="button"
+          className="info-panel__backdrop"
+          onClick={() => setActivePanel(null)}
+          aria-label="Fechar Serviços"
+        />
+        <div className="info-panel__content">
+          <button
+            type="button"
+            className="info-panel__close"
+            onClick={() => setActivePanel(null)}
+          >
+            Fechar
+          </button>
+          <p className="info-panel__label">Serviços</p>
+          <h2 id="services-title">PRODUTOS DIGITAIS QUE FUNCIONAM</h2>
+          <p>
+            Estratégia, design e engenharia para transformar ideias ambiciosas
+            em experiências digitais inteligentes e consistentes.
+          </p>
+        </div>
+      </aside>
+
+      {placeholderProjects.map(project => (
+        <aside
+          key={project.number}
+          id={`projeto-${project.number}`}
+          className={`info-panel ${activePanel === project.number ? 'is-open' : ''}`}
+          role="dialog"
+          aria-modal="true"
+          aria-hidden={activePanel !== project.number}
+          aria-labelledby={`project-title-${project.number}`}
+        >
+          <button
+            type="button"
+            className="info-panel__backdrop"
+            onClick={() => setActivePanel(null)}
+            aria-label={`Fechar ${project.title}`}
+          />
+          <div className="info-panel__content">
+            <button
+              type="button"
+              className="info-panel__close"
+              onClick={() => setActivePanel(null)}
+            >
+              Fechar
+            </button>
+            <p className="info-panel__label">{project.detail}</p>
+            <h2 id={`project-title-${project.number}`}>{project.title}</h2>
+            {project.description && <p>{project.description}</p>}
+            {project.features && (
+              <ul className="project-features">
+                {project.features.map((feature, i) => (
+                  <li key={i} className="project-features__item">
+                    <feature.icon className="project-features__icon" />
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {project.technologies && (
+              <div className="project-tech">
+                <h3 className="project-tech__title">
+                  <FaCode />
+                  Tecnologias
+                </h3>
+                {project.technologies.map((tech, i) => (
+                  <div key={i} className="project-tech__item">
+                    <span className="project-tech__label">{tech.label}</span>
+                    <span className="project-tech__stack">{tech.stack}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </aside>
+      ))}
 
       <aside
         id="contato"

@@ -1,10 +1,9 @@
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { FaArrowUp, FaFacebookF, FaGithub, FaInstagram, FaLinkedinIn } from 'react-icons/fa'
+import { FaArrowUp, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
 import { SiGmail } from 'react-icons/si'
 import { useRef } from 'react'
-import { ShaderVideo } from './ShaderVideo.jsx'
 import './WaveFooter.css'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
@@ -29,10 +28,10 @@ const socialIcons = [
     className: 'wave-footer__social--linkedin',
   },
   {
-    label: 'Facebook',
-    Icon: FaFacebookF,
-    href: 'https://www.facebook.com/fabrycio.bermudes',
-    className: 'wave-footer__social--facebook',
+    label: 'WhatsApp',
+    Icon: FaWhatsapp,
+    href: 'https://wa.me/5521986866460',
+    className: 'wave-footer__social--whatsapp',
   },
   {
     label: 'Gmail',
@@ -42,39 +41,29 @@ const socialIcons = [
   },
 ]
 
-function drawWave(context, width, height, options) {
-  const { base, amplitude, frequency, phase, fill, stroke } = options
+function drawWaveLine(context, width, height, options) {
+  const { base, amplitude, frequency, phase, stroke } = options
   const waveY = x => base + Math.sin(x * frequency + phase) * amplitude
+  const edgePadding = 6
+  const left = -edgePadding
+  const right = width + edgePadding
 
   context.beginPath()
-  context.moveTo(0, height)
-  context.lineTo(0, waveY(0))
+  context.moveTo(left, waveY(left))
 
-  for (let x = 0; x <= width; x += 4) {
-    context.lineTo(x, waveY(x))
-  }
-
-  context.lineTo(width, height)
-  context.closePath()
-  context.fillStyle = fill
-  context.fill()
-
-  context.beginPath()
-  context.moveTo(0, waveY(0))
-
-  for (let x = 0; x <= width; x += 4) {
+  for (let x = left + 4; x <= right; x += 4) {
     context.lineTo(x, waveY(x))
   }
 
   context.strokeStyle = stroke
-  context.lineWidth = 1.5
+  context.lineWidth = 1.75
   context.stroke()
 }
 
 function drawTopWave(context, width, height, options) {
   const { base, amplitude, frequency, phase, fill, stroke } = options
   const waveY = x => base + Math.sin(x * frequency + phase) * amplitude
-  const edgePadding = 4
+  const edgePadding = 6
   const left = -edgePadding
   const right = width + edgePadding
 
@@ -87,32 +76,11 @@ function drawTopWave(context, width, height, options) {
     context.lineTo(x, waveY(x))
   }
 
-  context.lineTo(left, waveY(left))
-  context.lineTo(left, 0)
   context.closePath()
   context.fillStyle = fill
   context.fill()
 
-  // Reforça apenas o topo das laterais para impedir uma coluna transparente.
-  context.fillRect(0, 0, edgePadding, Math.max(0, waveY(0) + 1))
-  context.fillRect(
-    Math.max(0, width - edgePadding),
-    0,
-    edgePadding,
-    Math.max(0, waveY(width) + 1),
-  )
-
-  context.beginPath()
-  context.moveTo(left, waveY(left))
-
-  for (let x = left + 4; x <= right; x += 4) {
-    context.lineTo(x, waveY(x))
-  }
-
-  context.lineTo(right, waveY(right))
-  context.strokeStyle = stroke
-  context.lineWidth = 1.5
-  context.stroke()
+  drawWaveLine(context, width, height, { ...options, stroke })
 }
 
 export function WaveFooter() {
@@ -121,7 +89,6 @@ export function WaveFooter() {
   const canvas = useRef(null)
   const name = useRef(null)
   const socials = useRef(null)
-
   useGSAP(
     () => {
       const context = canvas.current?.getContext('2d')
@@ -134,6 +101,8 @@ export function WaveFooter() {
       let frame = 0
       let currentProgress = reducedMotion ? 1 : 0
       let targetProgress = reducedMotion ? 1 : 0
+      let elementVisible = false
+      let pageVisible = !document.hidden
 
       const resizeCanvas = () => {
         const bounds = stage.current.getBoundingClientRect()
@@ -148,57 +117,94 @@ export function WaveFooter() {
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
       }
 
+      const stopRender = () => {
+        if (!frame) return
+        window.cancelAnimationFrame(frame)
+        frame = 0
+      }
+
       const render = time => {
+        frame = 0
+        if (!elementVisible || !pageVisible) return
+
         currentProgress += (targetProgress - currentProgress) * 0.075
         const easedProgress = 1 - (1 - currentProgress) ** 3
         const movingPhase = reducedMotion ? 0 : time * 0.00032
         const scrollPhase = currentProgress * 2.4
-        const base = height * (1.1 - easedProgress * 0.62)
-        const topBase = height * (0.1 + easedProgress * 0.025)
+        const topBase = height * (0.12 + easedProgress * 0.025)
+        const middleBase = height * (0.25 + easedProgress * 0.04)
+        const lowerBase = height * (0.37 + easedProgress * 0.04)
 
         context.clearRect(0, 0, width, height)
 
         drawTopWave(context, width, height, {
           base: topBase,
-          amplitude: height * 0.045,
+          amplitude: height * 0.095,
           frequency: 0.009,
           phase: -movingPhase * 0.8 - scrollPhase,
           fill: '#071f2a',
-          stroke: 'rgba(52, 112, 126, 0.86)',
+          stroke: 'rgba(52, 112, 126, 0.9)',
         })
 
-        drawWave(context, width, height, {
-          base: base - height * 0.08,
-          amplitude: height * 0.045,
-          frequency: 0.008,
-          phase: movingPhase + scrollPhase,
-          fill: 'rgba(92, 151, 164, 0.18)',
-          stroke: 'rgba(170, 214, 220, 0.82)',
-        })
-
-        drawWave(context, width, height, {
-          base: base - height * 0.035,
-          amplitude: height * 0.055,
+        drawWaveLine(context, width, height, {
+          base: middleBase,
+          amplitude: height * 0.075,
           frequency: 0.011,
-          phase: -movingPhase * 1.3 + scrollPhase + 1.8,
-          fill: 'rgba(18, 77, 92, 0.24)',
-          stroke: 'rgba(99, 164, 176, 0.9)',
+          phase: movingPhase + scrollPhase + 1.1,
+          stroke: 'rgba(82, 155, 172, 0.78)',
         })
 
-        drawWave(context, width, height, {
-          base: base + height * 0.025,
-          amplitude: height * 0.04,
-          frequency: 0.014,
-          phase: movingPhase * 1.65 + scrollPhase + 3.2,
-          fill: '#071f2a',
+        drawWaveLine(context, width, height, {
+          base: lowerBase,
+          amplitude: height * 0.085,
+          frequency: 0.009,
+          phase: -movingPhase * 1.15 + scrollPhase + 2.2,
           stroke: 'rgba(52, 112, 126, 0.9)',
         })
 
         frame = window.requestAnimationFrame(render)
       }
 
+      const scheduleRender = () => {
+        if (elementVisible && pageVisible && !frame) {
+          frame = window.requestAnimationFrame(render)
+        }
+      }
+
       resizeCanvas()
-      frame = window.requestAnimationFrame(render)
+
+      const visibilityObserver = typeof IntersectionObserver === 'undefined'
+        ? null
+        : new IntersectionObserver(
+            ([entry]) => {
+              elementVisible = entry.isIntersecting
+              if (elementVisible) {
+                resizeCanvas()
+                scheduleRender()
+              } else {
+                stopRender()
+              }
+            },
+            { rootMargin: '10% 0px', threshold: 0 },
+          )
+
+      if (visibilityObserver) {
+        visibilityObserver.observe(footer.current)
+      } else {
+        elementVisible = true
+        scheduleRender()
+      }
+
+      const handlePageVisibility = () => {
+        pageVisible = !document.hidden
+        if (pageVisible) {
+          scheduleRender()
+        } else {
+          stopRender()
+        }
+      }
+
+      document.addEventListener('visibilitychange', handlePageVisibility)
 
       const waveTrigger = ScrollTrigger.create({
         trigger: footer.current,
@@ -241,6 +247,7 @@ export function WaveFooter() {
       const handleResize = () => {
         resizeCanvas()
         ScrollTrigger.refresh()
+        scheduleRender()
       }
 
       window.addEventListener('resize', handleResize)
@@ -248,7 +255,9 @@ export function WaveFooter() {
 
       return () => {
         window.removeEventListener('resize', handleResize)
-        window.cancelAnimationFrame(frame)
+        document.removeEventListener('visibilitychange', handlePageVisibility)
+        visibilityObserver?.disconnect()
+        stopRender()
         window.cancelAnimationFrame(refreshFrame)
         revealTimeline?.scrollTrigger?.kill()
         revealTimeline?.kill()
@@ -261,13 +270,10 @@ export function WaveFooter() {
   return (
     <footer id="footer" className="wave-footer" ref={footer}>
       <div className="wave-footer__stage" ref={stage}>
-        <ShaderVideo
-          className="wave-footer__video"
-          settings={{
-            edgeHeight: -1,
-            edgeWave: 0,
-            edgeSoftness: 0.01,
-          }}
+        <img
+          className="wave-footer__image"
+          src="/footer.png"
+          alt="Paisagem de montanhas ao entardecer"
         />
 
         <canvas className="wave-footer__canvas" ref={canvas} aria-hidden="true" />
