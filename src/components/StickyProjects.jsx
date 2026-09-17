@@ -101,7 +101,15 @@ export function StickyProjects({ projects, onOpenProject }) {
             <article
               className="project-stack-card"
               key={project.number}
+              role="button"
+              tabIndex={0}
+              aria-label={`Abrir detalhes do projeto ${project.title}`}
               onClick={() => onOpenProject(project.number)}
+              onKeyDown={event => {
+                if (event.key !== 'Enter' && event.key !== ' ') return
+                event.preventDefault()
+                onOpenProject(project.number)
+              }}
               ref={element => {
                 cardRefs.current[index] = element
               }}

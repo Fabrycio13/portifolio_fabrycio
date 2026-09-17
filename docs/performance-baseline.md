@@ -2,92 +2,67 @@
 
 ## Escopo
 
-Esta baseline registra o comportamento da implementação atual após as otimizações estruturais de carregamento, visibilidade e renderização direta do shader.
+Esta baseline descreve a arquitetura atual do portfólio após a remoção do fluxo legado de vídeos e a adoção de carregamento por proximidade do viewport.
 
-O vídeo master não foi alterado: `public/video.mp4` continua sendo a fonte 4K usada pela aplicação.
+- O Hero usa a imagem estática otimizada `public/novo portifolio.webp`.
+- O Footer usa `public/footer.webp` e o canvas visual do `WaveFooter`.
+- `WarpText` continua usando OGL para o efeito de texto; os canvases ativos não são vídeos.
+- Serviços, Projetos e Footer são carregados sob demanda com `IntersectionObserver` e mantêm placeholders estruturais para evitar layout shift.
+- Lenis, GSAP/ScrollTrigger, Motion, OGL e os canvases atuais permanecem preservados.
+
+Não há dependência ou referência ativa a `ShaderVideo`, `video.mp4`, `video-1080.mp4` ou `qualityProfile`.
 
 ## Método
 
-- Servidor principal da baseline inicial: prévia de produção em `http://127.0.0.1:5184/`, criada após `npm run build`.
-- Referência adicional: Vite dev em `http://127.0.0.1:5182/`.
-- Navegador da baseline inicial: Chrome headless `152.0.7977.83`.
-- Viewport reportado pela página: `innerHeight=805px`.
-- Janela: 5 segundos de amostra após aquecimento da página.
-- Cenários:
-  - `hero`: topo da página, vídeo principal permitido;
-  - `projects`: início da seção de projetos, usado para validar o pré-aquecimento do footer;
-  - `footer`: rolagem para o footer, vídeo principal permitido;
-  - `blocked`: requisições a `video.mp4` bloqueadas para isolar a interface.
-- Comando:
+A sonda usa Chrome via CDP em uma prévia de produção. Ela mede RAF, long tasks, exceções JavaScript, canvases, imagens, recursos carregados, estado dos placeholders e posição de rolagem.
 
 ```bash
-node scripts/perf-audit.mjs http://127.0.0.1:5184/
-node scripts/perf-audit.mjs http://127.0.0.1:5184/ --projects
-node scripts/perf-audit.mjs http://127.0.0.1:5184/ --footer
-node scripts/perf-audit.mjs http://127.0.0.1:5184/ --blocked
-node scripts/perf-audit.mjs http://127.0.0.1:5184/ --headed
+npm run build
+npm run preview -- --host 127.0.0.1 --port 5187
+
+node scripts/perf-audit.mjs http://127.0.0.1:5187/ --duration-ms=2000
+node scripts/perf-audit.mjs http://127.0.0.1:5187/ --projects --duration-ms=2000
+node scripts/perf-audit.mjs http://127.0.0.1:5187/ --footer --duration-ms=2000
+node scripts/perf-audit.mjs http://127.0.0.1:5187/ --headed --duration-ms=5000
 ```
 
-A sonda mede RAF, estado dos elementos `<video>`, resolução, contadores de frames do vídeo, Canvas presentes, long tasks, requests de mídia e exceções de runtime. `--headed` usa uma janela Chrome isolada com o caminho normal de composição; `--duration-ms=N` altera a duração da amostra; `--force-low` é apenas um modo de teste para validar o perfil baixo.
+- `hero` mede a página no topo.
+- `projects` envia eventos de roda até a seção Projetos.
+- `footer` envia eventos de roda até o Footer; esse caminho é compatível com o Lenis ativo.
+- `--duration-ms=N` altera a janela de amostragem, com mínimo de 1000 ms.
+- `--headed` usa uma janela Chrome isolada para inspeção manual.
 
-## Resultados oficiais — build de produção
+## Resultados verificados
 
-| Cenário | RAF | Vídeo ativo | Resolução | Frames do vídeo | Frames perdidos | Canvas | Long tasks | Exceções |
-|---|---:|---|---|---:|---:|---:|---:|---:|
-| Hero | 60,12 FPS | principal | 3840×2160 | 201 | 4 | 4 | 0 | 0 |
-| Footer | 59,57 FPS | footer | 3840×2160 | 219 | 5 | 4 | 0 | 0 |
-| Sem vídeo | 59,93 FPS | nenhum | — | 0 | 0 | 3 | 0 | 0 |
+A execução local mais recente, em build de produção, usou viewport de `1280×900` e janela de amostragem de 2 segundos:
 
-### Referência — servidor de desenvolvimento
+| Cenário | RAF | Long tasks | Exceções | Scroll final | Canvas | Footer lazy |
+|---|---:|---:|---:|---:|---:|---|
+| Hero | 59,54 FPS | 0 | 0 | 0 px | 2 | placeholder |
+| Projetos | 59,99 FPS | 0 | 0 | 4974 px | 3 | montado |
+| Footer | 60,46 FPS | 0 | 0 | 4974 px | 3 | montado |
 
-O mesmo teste no Vite dev apresentou `53,62 FPS` no hero, com `8` frames perdidos e `2` long tasks. Esse resultado não é usado como baseline oficial porque HMR e o pipeline de desenvolvimento alteram o custo de inicialização.
+No cenário de Projetos, a sonda também encontrou quatro cards com `role="button"` e `tabIndex=0`, confirmando o contrato de teclado no DOM produzido.
 
-### Estado validado no footer
+Esses números são uma amostra local de regressão, não uma garantia para todos os dispositivos. O resultado deve ser repetido em hardware de menor capacidade antes de tomar decisões de design ou trocar efeitos visuais.
 
-- `scrollY=5675px`.
-- Footer visível na viewport.
-- Vídeo do hero pausado.
-- Vídeo do footer reproduzindo.
-- Os dois vídeos mantêm metadados 3840×2160, mas apenas a pipeline visível decodifica frames no momento final da amostra.
+## Critérios de regressão
 
-## Leitura dos dados
+Uma execução deve ser investigada quando ocorrer qualquer um destes sinais:
 
-1. A política de visibilidade está funcionando: a segunda pipeline não permanece reproduzindo enquanto o footer está ativo.
-2. O cenário sem vídeo mantém aproximadamente 60 FPS, isolando o custo principal no caminho de mídia/WebGL e não na estrutura básica da interface.
-3. O hero 4K apresentou perda de frames mesmo na build de produção, embora o RAF tenha permanecido próximo de 60 FPS no Chrome headless. Isso justifica repetir a medição na Intel HD 4600 real antes de escolher uma política adaptativa.
-4. Não houve exceção JavaScript durante as amostras; o Canvas do shader foi montado nos cenários com mídia ativa.
-5. Os contadores de frames são acumulados desde o carregamento do elemento, não apenas durante os 5 segundos finais.
+- `runtimeIssues` maior que zero;
+- build ou lint falhar;
+- long task inesperada durante o cenário;
+- o Footer continuar em placeholder depois do cenário `footer`;
+- o número de canvases diminuir sem decisão explícita;
+- imagens principais não reportarem `complete=true` e dimensões naturais válidas;
+- cards de Projetos perderem `role="button"` ou `tabIndex=0`.
 
-## Política adaptativa implementada
-
-O arquivo `public/video.mp4` continua sendo o master 4K e é a escolha padrão. O arquivo `public/video-1080.mp4` é um derivado separado, com `1920×1080`, 29,97 FPS, 33,045 s, H.264 High e aproximadamente 63,55 MB; ele não substitui nem altera o master de aproximadamente 102,85 MB.
-
-A aplicação usa `src/performance/qualityProfile.js` para tomar uma decisão única compartilhada pelo hero e pelo footer:
-
-1. `Save-Data` inicia diretamente no perfil baixo.
-2. `MediaCapabilities.decodingInfo()` testa o master com codec H.264 High nível 5.2 (`avc1.640034`). Se o navegador declarar o vídeo não suportado ou não fluido, o perfil baixo é selecionado.
-3. Quando o perfil alto está ativo, cada pipeline visível mede janelas de 5 segundos. Duas amostras ruins consecutivas (`<55 FPS` ou `≥5%` de frames de vídeo perdidos) selecionam o perfil baixo.
-4. A decisão não volta para 4K durante a sessão, evitando alternância de fonte e oscilação visual.
-5. Ao entrar na seção `.projects`, o vídeo do footer começa a ser preparado. O Canvas/WebGL do footer só é montado quando o elemento está realmente visível, e o hero é pausado ao sair da viewport.
-
-### Validação do perfil baixo
-
-No Chrome headed isolado, com `--force-low --footer`, a aplicação:
-
-- requisitou `video-1080.mp4` via `206 Partial Content`;
-- apresentou ambos os vídeos em `1920×1080`;
-- manteve o vídeo do hero pausado e o vídeo do footer reproduzindo;
-- mediu `59,98 FPS` e `0` frames perdidos no vídeo ativo;
-- não registrou exceções JavaScript.
-
-Esse modo `--force-low` não é uma regra de produção; ele existe para validar deterministicamente a rota de fallback.
+A sonda não transforma esses sinais em uma conclusão automática de qualidade: eles indicam o ponto que precisa ser reproduzido e investigado.
 
 ## Limitações
 
-- Chrome headless não reproduz necessariamente o mesmo driver, compositor e carga de GPU da máquina física com Intel HD 4600.
-- O Chrome faz requests `206 Partial Content` para o MP4; o `encodedDataLength` do CDP não representa sozinho o tamanho total baixado pelo pipeline de mídia. Por isso, bytes de rede do vídeo não são usados como conclusão nesta baseline.
-- Esta medição não substitui uma gravação manual no Chrome DevTools Performance em uma máquina fraca real.
-
-## Próxima validação
-
-A política adaptativa já está implementada sem degradação fixa para todos os visitantes. Falta validar a decisão automática em uma máquina física com Intel HD 4600; o teste headed local confirmou o caminho real de composição, mas não substitui uma máquina com o hardware-alvo. O master 4K permanece preservado para o perfil alto.
+- Chrome headless não representa necessariamente o driver, compositor e carga de GPU da máquina física.
+- O Lenis intercepta rolagem; por isso a sonda usa eventos de roda CDP em vez de depender apenas de `window.scrollTo`.
+- FPS medido por `requestAnimationFrame` representa o ritmo de pintura observado, não uma medição completa de energia ou memória.
+- A medição atual não substitui uma gravação manual no Chrome DevTools Performance em um dispositivo de baixo desempenho.

@@ -68,6 +68,7 @@ O Vite exibirá a URL local no terminal, normalmente `http://localhost:5173`.
 | --- | --- |
 | `npm run dev` | Inicia o servidor de desenvolvimento. |
 | `npm run lint` | Executa o Oxlint. |
+| `npm test` | Executa os testes de contrato com o runner nativo do Node. |
 | `npm run build` | Gera a build de produção em `dist/`. |
 | `npm run preview` | Serve a build de produção localmente. |
 | `npm run perf:audit` | Mede FPS, long tasks, canvases e erros de runtime no Chrome. |
@@ -75,6 +76,7 @@ O Vite exibirá a URL local no terminal, normalmente `http://localhost:5173`.
 Validação completa antes de publicar:
 
 ```bash
+npm test
 npm run lint
 npm run build
 npm run perf:audit

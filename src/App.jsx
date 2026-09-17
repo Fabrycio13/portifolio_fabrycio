@@ -3,7 +3,7 @@ import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { cloneElement, lazy, Suspense, useEffect, useRef, useState } from 'react'
 
 const ProjectDetailsPanel = lazy(() => import('./components/ProjectDetailsPanel.jsx'))
 const InfoPanels = lazy(() => import('./components/InfoPanels.jsx'))
@@ -23,6 +23,74 @@ const menuItems = [
   { label: 'Projetos', href: '#projetos' },
   { label: 'Contato', panel: 'contato' },
 ]
+
+function DeferredSection({ children, fallback, rootMargin = '800px 0px' }) {
+  const [anchorNode, setAnchorNode] = useState(null)
+  const [shouldRender, setShouldRender] = useState(() => (
+    typeof window === 'undefined' || !('IntersectionObserver' in window)
+  ))
+
+  useEffect(() => {
+    if (shouldRender || !anchorNode) return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setShouldRender(true)
+        observer.disconnect()
+      },
+      { rootMargin },
+    )
+
+    observer.observe(anchorNode)
+    return () => observer.disconnect()
+  }, [anchorNode, rootMargin, shouldRender])
+
+  if (shouldRender) {
+    return <Suspense fallback={fallback}>{children}</Suspense>
+  }
+  return cloneElement(fallback, { ref: setAnchorNode })
+}
+
+function PanelLoadingFallback({ label, onClose }) {
+  return (
+    <aside
+      className="info-panel info-panel--loading is-open"
+      role="dialog"
+      aria-modal="true"
+      aria-busy="true"
+      aria-label={`${label} — carregando`}
+    >
+      <button
+        type="button"
+        className="info-panel__backdrop"
+        onClick={onClose}
+        aria-label={`Fechar ${label}`}
+      />
+      <div className="info-panel__content">
+        <button
+          type="button"
+          className="info-panel__close"
+          onClick={onClose}
+          data-dialog-initial-focus
+          autoFocus
+        >
+          Fechar
+        </button>
+        <p className="info-panel__label">{label}</p>
+        <p className="info-panel__loading-status" role="status">
+          Carregando conteúdo...
+        </p>
+      </div>
+    </aside>
+  )
+}
+
+function getFocusableElements(container) {
+  return [...container.querySelectorAll(
+    'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+  )].filter(element => element.getClientRects().length > 0)
+}
 
 const projectCards = [
   {
@@ -89,7 +157,17 @@ function AnimatedMenuLink({ label, href = '#', onClick }) {
 function PortfolioContent() {
   const [activePanel, setActivePanel] = useState(null)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
+  const lastTriggerRef = useRef(null)
   const activeProject = projectCards.find(project => project.number === activePanel)
+
+  const openPanel = (panel, { preserveTrigger = false } = {}) => {
+    if (!preserveTrigger) {
+      lastTriggerRef.current = document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null
+    }
+    setActivePanel(panel)
+  }
 
   useEffect(() => {
     const updateHeader = () => setIsHeaderScrolled(window.scrollY > 24)
@@ -105,7 +183,56 @@ function PortfolioContent() {
     document.documentElement.classList.toggle('modal-open', isModalOpen)
     document.body.classList.toggle('modal-open', isModalOpen)
 
+    if (!isModalOpen) {
+      lastTriggerRef.current?.focus()
+      lastTriggerRef.current = null
+      return undefined
+    }
+
+    const focusInitialElement = () => {
+      const dialog = document.querySelector('.info-panel.is-open')
+      const initialFocus = dialog?.querySelector('[data-dialog-initial-focus]')
+      initialFocus?.focus()
+    }
+    const frameId = requestAnimationFrame(focusInitialElement)
+    const handleDialogKeyDown = event => {
+      const dialog = document.querySelector('.info-panel.is-open')
+      if (!dialog) return
+
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setActivePanel(null)
+        return
+      }
+
+      if (event.key !== 'Tab') return
+
+      const focusableElements = getFocusableElements(dialog)
+      if (!focusableElements.length) {
+        event.preventDefault()
+        return
+      }
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      if (!dialog.contains(document.activeElement)) {
+        event.preventDefault()
+        firstElement.focus()
+      } else if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleDialogKeyDown)
+
     return () => {
+      cancelAnimationFrame(frameId)
+      document.removeEventListener('keydown', handleDialogKeyDown)
       document.documentElement.classList.remove('modal-open')
       document.body.classList.remove('modal-open')
     }
@@ -138,7 +265,7 @@ function PortfolioContent() {
             <AnimatedMenuLink
               key={item.label}
               {...item}
-              onClick={item.panel ? () => setActivePanel(item.panel) : undefined}
+              onClick={item.panel ? () => openPanel(item.panel) : undefined}
             />
           ))}
         </nav>
@@ -151,7 +278,7 @@ function PortfolioContent() {
             href="#sobre"
             onClick={event => {
               event.preventDefault()
-              setActivePanel('sobre')
+              openPanel('sobre')
             }}
             aria-label="Fabrycio Bermudes - Software Engineer"
           >
@@ -219,16 +346,29 @@ function PortfolioContent() {
           mundo real.
         </p>
 
-        <a className="hero__cta" href="#projetos">
-          <span className="hero__cta-key hero__cta-key--top" />
-          <span className="hero__cta-line" />
-          <span className="hero__cta-text">EXPLORAR MEU TRABALHO</span>
-          <span className="hero__cta-key hero__cta-key--bottom-one" />
-          <span className="hero__cta-key hero__cta-key--bottom-two" />
-        </a>
+        <div className="hero__actions">
+          <a className="hero__cta" href="#servicos">
+            <span className="hero__cta-key hero__cta-key--top" />
+            <span className="hero__cta-line" />
+            <span className="hero__cta-text">EXPLORAR MEU TRABALHO</span>
+            <span className="hero__cta-key hero__cta-key--bottom-one" />
+            <span className="hero__cta-key hero__cta-key--bottom-two" />
+          </a>
+          <button
+            className="hero__cta hero__cta--contact"
+            type="button"
+            onClick={() => openPanel('contato')}
+          >
+            <span className="hero__cta-key hero__cta-key--top" />
+            <span className="hero__cta-line" />
+            <span className="hero__cta-text">ENTRAR EM CONTATO</span>
+            <span className="hero__cta-key hero__cta-key--bottom-one" />
+            <span className="hero__cta-key hero__cta-key--bottom-two" />
+          </button>
+        </div>
       </section>
 
-      <Suspense
+      <DeferredSection
         fallback={(
           <section
             id="servicos"
@@ -238,9 +378,9 @@ function PortfolioContent() {
         )}
       >
         <StickyServices />
-      </Suspense>
+      </DeferredSection>
 
-      <Suspense
+      <DeferredSection
         fallback={(
           <section
             id="projetos"
@@ -249,10 +389,10 @@ function PortfolioContent() {
           />
         )}
       >
-        <StickyProjects projects={projectCards} onOpenProject={setActivePanel} />
-      </Suspense>
+        <StickyProjects projects={projectCards} onOpenProject={openPanel} />
+      </DeferredSection>
 
-      <Suspense
+      <DeferredSection
         fallback={(
           <footer
             id="footer"
@@ -262,10 +402,17 @@ function PortfolioContent() {
         )}
       >
         <WaveFooter />
-      </Suspense>
+      </DeferredSection>
 
       {activeProject && (
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={(
+            <PanelLoadingFallback
+              label={activeProject.title}
+              onClose={() => setActivePanel(null)}
+            />
+          )}
+        >
           <ProjectDetailsPanel
             projectNumber={activeProject.number}
             onClose={() => setActivePanel(null)}
@@ -274,8 +421,19 @@ function PortfolioContent() {
       )}
 
       {(activePanel === 'sobre' || activePanel === 'contato') && (
-        <Suspense fallback={null}>
-          <InfoPanels activePanel={activePanel} onClose={() => setActivePanel(null)} />
+        <Suspense
+          fallback={(
+            <PanelLoadingFallback
+              label={activePanel === 'sobre' ? 'Sobre' : 'Contato'}
+              onClose={() => setActivePanel(null)}
+            />
+          )}
+        >
+          <InfoPanels
+            activePanel={activePanel}
+            onClose={() => setActivePanel(null)}
+            onOpenContact={() => openPanel('contato', { preserveTrigger: true })}
+          />
         </Suspense>
       )}
 
