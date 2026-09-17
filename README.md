@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/footer.webp" alt="Paisagem do footer do portfólio de Fabrycio Bermudes" width="100%" />
+  <img src="./public/readme-banner.webp" alt="Banner do portfólio de Fabrycio Bermudes" width="760" />
 
   <h1>Fabrycio Bermudes</h1>
   <p><strong>Software Engineer · Produtos web · Automação · Experiências digitais</strong></p>
