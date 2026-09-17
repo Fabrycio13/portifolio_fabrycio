@@ -202,13 +202,23 @@
 
   .services-card__title {
     justify-content: center;
+    min-height: clamp(4.75rem, 5.5vw, 6.25rem);
+    align-content: flex-start;
     font-size: clamp(2rem, 3vw, 4rem);
+  }
+
+  .services-card__detail {
+    min-height: 2.1rem;
+    position: relative;
+    top: -1rem;
   }
 
   .services-card__description {
     align-self: center;
     margin-top: clamp(1.5rem, 2vw, 2rem);
     font-size: clamp(1rem, 1.25vw, 1.3rem);
+    position: relative;
+    top: -1rem;
   }
 }
 

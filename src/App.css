@@ -69,49 +69,6 @@
   image-rendering: auto;
 }
 
-.shader-video {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 135svh;
-}
-
-.shader-video__canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.shader-video__source {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.shader-video--static .shader-video__source {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 1;
-  object-fit: cover;
-}
-
-.shader-video__loading {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  margin: 0;
-  color: #d9e5e7;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .site-header {
   position: fixed;
   z-index: 8;
@@ -310,11 +267,19 @@
   line-height: 1.45;
 }
 
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: clamp(1.4rem, 3vw, 2.2rem);
+}
+
 .hero__cta {
   position: relative;
   display: inline-block;
   box-sizing: border-box;
-  margin-top: clamp(1.4rem, 3vw, 2.2rem);
+  margin-top: 0;
   padding: 1.25em 2em;
   border: 2px solid #f3f8f8;
   border-radius: 0;
@@ -332,6 +297,10 @@
   user-select: none;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+}
+
+.hero__cta--contact {
+  appearance: none;
 }
 
 .hero__cta-line {
@@ -529,6 +498,11 @@
   cursor: pointer;
 }
 
+.project-stack-card:focus-visible {
+  outline: 2px solid #f3f8f8;
+  outline-offset: 4px;
+}
+
 .project-stack-card:first-child {
   visibility: visible;
 }
@@ -621,6 +595,19 @@
 
 .info-panel.is-open .info-panel__content {
   transform: translateX(0);
+}
+
+.info-panel--loading .info-panel__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-panel__loading-status {
+  margin: 2rem 0 0;
+  color: #8da2a5;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .info-panel__close {
@@ -731,10 +718,37 @@
   line-height: 1.5;
 }
 
-.info-panel p.about-closing:last-child {
-  margin: 2rem 0 0;
-  color: #f3f8f8;
-  font-weight: 600;
+.about-contact-cta {
+  display: flex;
+  width: fit-content;
+  margin-top: 2.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #d9ffff;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  gap: 0.8rem;
+  letter-spacing: 0.08em;
+  text-align: left;
+  cursor: pointer;
+  text-shadow: 0 0 0.55rem rgba(145, 232, 232, 0.7);
+  transition: color 220ms ease, transform 220ms ease;
+}
+
+.about-contact-cta__icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: 0 0 1.35rem;
+  animation: section-header-gear-spin 4s linear infinite;
+}
+
+.about-contact-cta:hover,
+.about-contact-cta:focus-visible {
+  color: #ffffff;
+  text-shadow: 0 0 0.8rem rgba(191, 255, 255, 0.95);
+  transform: translateX(0.25rem);
 }
 
 .info-panel p:last-child {
@@ -748,6 +762,10 @@
   margin: 0;
   color: #c9d4d5;
   line-height: 1.7;
+}
+
+.info-panel p.contact-message + p.contact-message {
+  margin-top: 1.25rem;
 }
 
 .contact-links {
@@ -1013,8 +1031,31 @@
 
   .hero__cta {
     min-height: 44px;
-    margin-top: 1.25rem;
     font-size: 0.68rem;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .hero__actions .hero__cta {
+    flex: 0 0 auto;
+    width: fit-content;
+    max-width: 100%;
+    font-size: 0.75rem;
+  }
+
+  .hero__actions .hero__cta-line {
+    left: 1.5em;
+    width: 1.5625rem;
+  }
+
+  .hero__actions .hero__cta-text {
+    padding-left: 2em;
+    white-space: nowrap;
   }
 
   .sticky-projects__stage {
@@ -1040,8 +1081,41 @@
   }
 }
 
+@media (hover: none) {
+  .hero__cta:hover {
+    background: transparent;
+    color: #fff;
+  }
+
+  .hero__cta:hover .hero__cta-line {
+    width: 1.5625rem;
+    background: #f3f8f8;
+  }
+
+  .hero__cta:hover .hero__cta-text {
+    padding-left: 2em;
+    color: #f3f8f8;
+  }
+
+  .hero__cta:hover .hero__cta-key--top {
+    left: 0.625rem;
+    width: 1.5625rem;
+  }
+
+  .hero__cta:hover .hero__cta-key--bottom-one {
+    right: 1.875rem;
+    width: 1.5625rem;
+  }
+
+  .hero__cta:hover .hero__cta-key--bottom-two {
+    right: 0.625rem;
+    width: 0.625rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .section-header__ornament {
+  .section-header__ornament,
+  .about-contact-cta__icon {
     animation: none;
   }
 

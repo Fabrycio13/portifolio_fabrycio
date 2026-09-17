@@ -35,7 +35,7 @@ const services = [
     number: '04',
     title: 'SITES',
     description:
-      'Presença digital com personalidade, estrutura e velocidade. Sites pensados para representar sua marca e funcionar bem em qualquer tela.',
+      'Sites com personalidade, estrutura e performance para representar sua marca e funcionar bem em qualquer tela.',
     detail: 'IDENTIDADE · EXPERIÊNCIA · WEB',
   },
 ]

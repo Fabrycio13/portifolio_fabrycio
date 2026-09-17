@@ -32,7 +32,7 @@ const projectDetails = {
       { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
       { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
       { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
-      { label: 'IA', stack: 'Engenharia de prompt customizada' },
+      { label: 'IA', stack: 'Prompts estruturados para análise inteligente de currículos' },
     ],
   },
   '02': {
@@ -118,7 +118,13 @@ export default function ProjectDetailsPanel({ projectNumber, onClose }) {
         aria-label={`Fechar ${project.title}`}
       />
       <div className="info-panel__content" data-lenis-prevent>
-        <button type="button" className="info-panel__close" onClick={onClose}>
+        <button
+          type="button"
+          className="info-panel__close"
+          onClick={onClose}
+          data-dialog-initial-focus
+          autoFocus
+        >
           Fechar
         </button>
         <p className="info-panel__label">{project.detail}</p>

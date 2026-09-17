@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
+    "test": "node --test scripts/test.mjs",
     "perf:audit": "node scripts/perf-audit.mjs"
   },
   "dependencies": {
