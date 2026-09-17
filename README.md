@@ -30,8 +30,8 @@ O projeto combina navegação suave, tipografia animada, seções sticky, cards 
 
 | Projeto | Área |
 | --- | --- |
-| **Usabit People** | Recrutamento e seleção com inteligência artificial |
-| **Cindy** | Gestão condominial |
+| **People** | Recrutamento e seleção com inteligência artificial |
+| **Gestão condominial com IA** | Plataforma web confidencial |
 | **PHX / MDS** | Laudos e análise de crédito imobiliário |
 | **Nexus AI** | Embeddings, RAG e orquestração de agentes |
 

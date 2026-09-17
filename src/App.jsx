@@ -3,10 +3,10 @@ import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
+import InfoPanels from './components/InfoPanels.jsx'
+import ProjectDetailsPanel from './components/ProjectDetailsPanel.jsx'
 import { cloneElement, lazy, Suspense, useEffect, useRef, useState } from 'react'
 
-const ProjectDetailsPanel = lazy(() => import('./components/ProjectDetailsPanel.jsx'))
-const InfoPanels = lazy(() => import('./components/InfoPanels.jsx'))
 const StickyServices = lazy(() => import('./components/StickyServices.jsx').then(module => ({
   default: module.StickyServices,
 })))
@@ -52,40 +52,6 @@ function DeferredSection({ children, fallback, rootMargin = '800px 0px' }) {
   return cloneElement(fallback, { ref: setAnchorNode })
 }
 
-function PanelLoadingFallback({ label, onClose }) {
-  return (
-    <aside
-      className="info-panel info-panel--loading is-open"
-      role="dialog"
-      aria-modal="true"
-      aria-busy="true"
-      aria-label={`${label} — carregando`}
-    >
-      <button
-        type="button"
-        className="info-panel__backdrop"
-        onClick={onClose}
-        aria-label={`Fechar ${label}`}
-      />
-      <div className="info-panel__content">
-        <button
-          type="button"
-          className="info-panel__close"
-          onClick={onClose}
-          data-dialog-initial-focus
-          autoFocus
-        >
-          Fechar
-        </button>
-        <p className="info-panel__label">{label}</p>
-        <p className="info-panel__loading-status" role="status">
-          Carregando conteúdo...
-        </p>
-      </div>
-    </aside>
-  )
-}
-
 function getFocusableElements(container) {
   return [...container.querySelectorAll(
     'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
@@ -96,16 +62,16 @@ const projectCards = [
   {
     number: '01',
     title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
-    detail: 'USABIT PEOPLE',
+    detail: 'PEOPLE',
     image: '/projects/project-01.webp',
-    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da Usabit People',
+    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da People',
   },
   {
     number: '02',
-    title: 'CINDY - GESTÃO CONDOMINIAL',
-    detail: 'PLATAFORMA WEB',
+    title: 'GESTÃO CONDOMINIAL COM IA',
+    detail: 'PROJETO CONFIDENCIAL · PLATAFORMA WEB',
     image: '/projects/project-02.webp',
-    alt: 'Screenshot da plataforma de gestão condominial Cindy',
+    alt: 'Screenshot da plataforma de gestão condominial com IA',
   },
   {
     number: '03',
@@ -166,6 +132,7 @@ function PortfolioContent() {
         ? document.activeElement
         : null
     }
+
     setActivePanel(panel)
   }
 
@@ -405,36 +372,18 @@ function PortfolioContent() {
       </DeferredSection>
 
       {activeProject && (
-        <Suspense
-          fallback={(
-            <PanelLoadingFallback
-              label={activeProject.title}
-              onClose={() => setActivePanel(null)}
-            />
-          )}
-        >
-          <ProjectDetailsPanel
-            projectNumber={activeProject.number}
-            onClose={() => setActivePanel(null)}
-          />
-        </Suspense>
+        <ProjectDetailsPanel
+          projectNumber={activeProject.number}
+          onClose={() => setActivePanel(null)}
+        />
       )}
 
       {(activePanel === 'sobre' || activePanel === 'contato') && (
-        <Suspense
-          fallback={(
-            <PanelLoadingFallback
-              label={activePanel === 'sobre' ? 'Sobre' : 'Contato'}
-              onClose={() => setActivePanel(null)}
-            />
-          )}
-        >
-          <InfoPanels
-            activePanel={activePanel}
-            onClose={() => setActivePanel(null)}
-            onOpenContact={() => openPanel('contato', { preserveTrigger: true })}
-          />
-        </Suspense>
+        <InfoPanels
+          activePanel={activePanel}
+          onClose={() => setActivePanel(null)}
+          onOpenContact={() => openPanel('contato', { preserveTrigger: true })}
+        />
       )}
 
     </main>
