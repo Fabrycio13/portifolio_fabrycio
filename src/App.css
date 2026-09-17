@@ -7,6 +7,12 @@
   background: #071f2a;
 }
 
+a,
+button,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .services--loading {
   height: 400svh;
   margin-top: 115svh;
