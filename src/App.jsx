@@ -1,14 +1,21 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
-import { StickyProjects } from './components/StickyProjects.jsx'
-import { StickyServices } from './components/StickyServices.jsx'
-import { WaveFooter } from './components/WaveFooter.jsx'
 import WarpText from './components/WarpText.jsx'
 import DecryptedText from './components/DecryptedText.jsx'
-import { useEffect, useState } from 'react'
-import { FaBrain, FaColumns, FaGlobe, FaDatabase, FaChartBar, FaShieldAlt, FaCode, FaFileAlt, FaTachometerAlt, FaUsers, FaCar, FaBox, FaComments, FaVoteYea, FaGithub, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
-import { SiGmail } from 'react-icons/si'
+import { lazy, Suspense, useEffect, useState } from 'react'
+
+const ProjectDetailsPanel = lazy(() => import('./components/ProjectDetailsPanel.jsx'))
+const InfoPanels = lazy(() => import('./components/InfoPanels.jsx'))
+const StickyServices = lazy(() => import('./components/StickyServices.jsx').then(module => ({
+  default: module.StickyServices,
+})))
+const StickyProjects = lazy(() => import('./components/StickyProjects.jsx').then(module => ({
+  default: module.StickyProjects,
+})))
+const WaveFooter = lazy(() => import('./components/WaveFooter.jsx').then(module => ({
+  default: module.WaveFooter,
+})))
 
 const menuItems = [
   { label: 'Sobre', panel: 'sobre' },
@@ -17,77 +24,11 @@ const menuItems = [
   { label: 'Contato', panel: 'contato' },
 ]
 
-const contactLinks = [
-  {
-    label: 'LinkedIn',
-    Icon: FaLinkedinIn,
-    href: null,
-    className: 'contact-link--linkedin',
-  },
-  {
-    label: 'GitHub',
-    Icon: FaGithub,
-    href: 'https://github.com/Fabrycio13',
-    className: 'contact-link--github',
-  },
-  {
-    label: 'WhatsApp',
-    Icon: FaWhatsapp,
-    href: 'https://wa.me/5521986866460',
-    className: 'contact-link--whatsapp',
-  },
-  {
-    label: 'Instagram',
-    Icon: FaInstagram,
-    href: 'https://www.instagram.com/fabrycio.bermudes',
-    className: 'contact-link--instagram',
-  },
-  {
-    label: 'Gmail',
-    Icon: SiGmail,
-    href: 'https://mail.google.com/mail/?view=cm&fs=1&to=fabrycio.bermudes%40gmail.com',
-    className: 'contact-link--gmail',
-  },
-]
-
-const aboutToolkit = [
-  {
-    icon: FaCode,
-    title: 'Front-end Ágil',
-    description: 'Next.js, React, JavaScript, TypeScript, Tailwind CSS e Vite.',
-  },
-  {
-    icon: FaDatabase,
-    title: 'Back-end & Dados',
-    description: 'Supabase (Auth, PostgreSQL) para escalar rápido.',
-  },
-  {
-    icon: FaBrain,
-    title: 'Automação & IA',
-    description: 'Fluxos no n8n e Engenharia de Prompt para Chatbots e integrações.',
-  },
-]
-
-const placeholderProjects = [
+const projectCards = [
   {
     number: '01',
     title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
     detail: 'USABIT PEOPLE',
-    description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
-    features: [
-      { icon: FaBrain, text: 'Análise de currículos com IA' },
-      { icon: FaColumns, text: 'Pipeline Kanban' },
-      { icon: FaGlobe, text: 'Portal de carreiras público' },
-      { icon: FaDatabase, text: 'Banco de talentos' },
-      { icon: FaChartBar, text: 'Dashboards de indicadores' },
-      { icon: FaShieldAlt, text: 'Controle de acesso (RBAC)' },
-    ],
-    technologies: [
-      { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
-      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
-      { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
-      { label: 'IA', stack: 'Engenharia de prompt customizada' },
-    ],
     image: '/projects/project-01.webp',
     alt: 'Screenshot da plataforma de recrutamento e seleção com IA da Usabit People',
   },
@@ -95,21 +36,6 @@ const placeholderProjects = [
     number: '02',
     title: 'CINDY - GESTÃO CONDOMINIAL',
     detail: 'PLATAFORMA WEB',
-    description: 'A Cindy é uma plataforma completa para administração de condomínios, centralizando em um único sistema a gestão de moradores, unidades, veículos, vagas de garagem, encomendas, ocorrências e espaços compartilhados. Utiliza IA para automatizar o cadastro de veículos e registro de encomendas.',
-    features: [
-      { icon: FaTachometerAlt, text: 'Dashboard com indicadores' },
-      { icon: FaUsers, text: 'Gestão de moradores' },
-      { icon: FaCar, text: 'Controle de veículos e vagas' },
-      { icon: FaBox, text: 'Registro de encomendas' },
-      { icon: FaComments, text: 'Chat e comunicados' },
-      { icon: FaVoteYea, text: 'Assembleias digitais' },
-    ],
-    technologies: [
-      { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
-      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
-      { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
-      { label: 'Integrações', stack: 'Webhooks, n8n, WhatsApp, APIs externas' },
-    ],
     image: '/projects/project-02.webp',
     alt: 'Screenshot da plataforma de gestão condominial Cindy',
   },
@@ -117,22 +43,6 @@ const placeholderProjects = [
     number: '03',
     title: 'PHX / MDS CRÉDITO IMOBILIÁRIO',
     detail: 'GERADOR DE LAUDOS · ANÁLISE DE CRÉDITO',
-    description: 'O Projeto PHX / MDS Crédito Imobiliário é uma aplicação frontend para gerar laudos de análise de crédito imobiliário. Enquanto os dados são preenchidos, o sistema atualiza um preview visual do documento, permitindo gerar e baixar o laudo em PDF.',
-    features: [
-      { icon: FaFileAlt, text: 'Dados do imóvel e empreendimento' },
-      { icon: FaUsers, text: 'Proponentes, renda e documentos' },
-      { icon: FaChartBar, text: 'Financiamento, subsídio e FGTS' },
-      { icon: FaDatabase, text: 'PRICE/SAC, juros, prazo e cotas' },
-      { icon: FaGlobe, text: 'Preview do laudo em tempo real' },
-      { icon: FaCode, text: 'Geração de PDF' },
-    ],
-    technologies: [
-      { label: 'Front-end', stack: 'HTML, CSS e JavaScript puro' },
-      { label: 'Build', stack: 'Vite para desenvolvimento e produção' },
-      { label: 'PDF', stack: 'jsPDF e html2canvas' },
-      { label: 'Formulários', stack: 'Flatpickr para campos de data' },
-      { label: 'Arquitetura', stack: 'Aplicação frontend estática, sem backend próprio' },
-    ],
     image: '/projects/project-03.webp',
     alt: 'Screenshot do gerador de laudos de análise de crédito imobiliário PHX e MDS',
   },
@@ -140,23 +50,6 @@ const placeholderProjects = [
     number: '04',
     title: 'NEXUS AI - ORQUESTRAÇÃO DE IA',
     detail: 'EMBEDDINGS · RAG · AGENTES DE IA',
-    description: 'O Nexus AI é um laboratório de processos inteligentes que conecta dados, modelos de linguagem e automações em um único fluxo. O sistema transforma documentos em embeddings, busca o contexto mais relevante e orquestra diferentes agentes para classificar, responder, validar e executar tarefas.',
-    features: [
-      { icon: FaFileAlt, text: 'Processamento e fragmentação de documentos' },
-      { icon: FaDatabase, text: 'Embeddings e busca semântica' },
-      { icon: FaBrain, text: 'Fluxos de RAG com contexto' },
-      { icon: FaComments, text: 'Roteamento entre modelos e agentes' },
-      { icon: FaCode, text: 'Integração com APIs e webhooks' },
-      { icon: FaShieldAlt, text: 'Validação, fallback e monitoramento' },
-    ],
-    technologies: [
-      { label: 'Backend', stack: 'Python e FastAPI' },
-      { label: 'Modelos', stack: 'OpenAI API para embeddings e LLMs' },
-      { label: 'Banco vetorial', stack: 'Supabase, PostgreSQL e pgvector' },
-      { label: 'Orquestração', stack: 'LangChain e LangGraph' },
-      { label: 'Automações', stack: 'n8n, webhooks e APIs externas' },
-      { label: 'Infraestrutura', stack: 'Docker para execução dos serviços' },
-    ],
     image: '/projects/project-04.webp',
     alt: 'Imagem conceitual do laboratório Nexus AI de embeddings e orquestração de agentes',
   },
@@ -196,6 +89,7 @@ function AnimatedMenuLink({ label, href = '#', onClick }) {
 function PortfolioContent() {
   const [activePanel, setActivePanel] = useState(null)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
+  const activeProject = projectCards.find(project => project.number === activePanel)
 
   useEffect(() => {
     const updateHeader = () => setIsHeaderScrolled(window.scrollY > 24)
@@ -220,12 +114,15 @@ function PortfolioContent() {
   return (
     <main id="top" className="app">
       <div className="hero-media" aria-hidden="true">
-        <img
-          src="/novo portifolio.png"
-          alt=""
-          decoding="async"
-          fetchPriority="high"
-        />
+        <picture>
+          <source type="image/webp" srcSet="/novo%20portifolio.webp" />
+          <img
+            src="/novo portifolio.png"
+            alt=""
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
       </div>
 
       <header className={`site-header ${isHeaderScrolled ? 'is-scrolled' : ''}`}>
@@ -331,193 +228,57 @@ function PortfolioContent() {
         </a>
       </section>
 
-      <StickyServices />
-
-      <StickyProjects projects={placeholderProjects} onOpenProject={setActivePanel} />
-
-      <WaveFooter />
-
-      <aside
-        id="sobre"
-        className={`info-panel ${activePanel === 'sobre' ? 'is-open' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-hidden={activePanel !== 'sobre'}
-        aria-labelledby="about-title"
-      >
-        <button
-          type="button"
-          className="info-panel__backdrop"
-          onClick={() => setActivePanel(null)}
-          aria-label="Fechar Sobre"
-        />
-        <div className="info-panel__content" data-lenis-prevent>
-          <button
-            type="button"
-            className="info-panel__close"
-            onClick={() => setActivePanel(null)}
-          >
-            Fechar
-          </button>
-          <p className="info-panel__label">Sobre</p>
-          <h2 id="about-title">Muito prazer !</h2>
-          <p className="about-copy">
-            Sou Fabrycio, engenheiro de Software especializado em construir
-            ecossistemas web e automatizar rotinas através de IA. Acredito que o
-            código bom é aquele que resolve o problema rápido e funciona bem na
-            mão do usuário.
-          </p>
-          <p className="about-copy">
-            Tenho foco total em produtividade. Utilizo uma stack moderna para
-            desenvolver desde landing pages de alta conversão até sistemas SaaS
-            completos, cuidando de toda a interface e integração de banco de
-            dados. No último ano, dediquei minha atuação a implementar IA e
-            automações (n8n, engenharia de prompts, hardness, graph e loop enginner)
-            para criar negócios mais inteligentes e autônomos.
-          </p>
-
-          <section className="about-toolkit" aria-labelledby="about-toolkit-title">
-            <h3 id="about-toolkit-title">Meu cinto de utilidades:</h3>
-            <ul className="about-toolkit__list">
-              {aboutToolkit.map(({ icon: Icon, title, description }) => (
-                <li className="about-toolkit__item" key={title}>
-                  <Icon className="about-toolkit__icon" aria-hidden="true" />
-                  <div>
-                    <strong>{title}</strong>
-                    <p>{description}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <p className="about-closing">Vamos construir algo novo hoje?</p>
-        </div>
-      </aside>
-
-      {placeholderProjects.map(project => (
-        <aside
-          key={project.number}
-          id={`projeto-${project.number}`}
-          className={`info-panel ${activePanel === project.number ? 'is-open' : ''}`}
-          role="dialog"
-          aria-modal="true"
-          aria-hidden={activePanel !== project.number}
-          aria-labelledby={`project-title-${project.number}`}
-        >
-          <button
-            type="button"
-            className="info-panel__backdrop"
-            onClick={() => setActivePanel(null)}
-            aria-label={`Fechar ${project.title}`}
+      <Suspense
+        fallback={(
+          <section
+            id="servicos"
+            className="services services--loading"
+            aria-hidden="true"
           />
-          <div className="info-panel__content" data-lenis-prevent>
-            <button
-              type="button"
-              className="info-panel__close"
-              onClick={() => setActivePanel(null)}
-            >
-              Fechar
-            </button>
-            <p className="info-panel__label">{project.detail}</p>
-            <h2 id={`project-title-${project.number}`}>{project.title}</h2>
-            {project.description && <p>{project.description}</p>}
-            {project.features && (
-              <ul className="project-features">
-                {project.features.map((feature, i) => (
-                  <li key={i} className="project-features__item">
-                    <feature.icon className="project-features__icon" />
-                    <span>{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {project.technologies && (
-              <div className="project-tech">
-                <h3 className="project-tech__title">
-                  <FaCode />
-                  Tecnologias
-                </h3>
-                {project.technologies.map((tech, i) => (
-                  <div key={i} className="project-tech__item">
-                    <span className="project-tech__label">{tech.label}</span>
-                    <span className="project-tech__stack">{tech.stack}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </aside>
-      ))}
-
-      <aside
-        id="contato"
-        className={`info-panel ${activePanel === 'contato' ? 'is-open' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-hidden={activePanel !== 'contato'}
-        aria-labelledby="contact-title"
+        )}
       >
-        <button
-          type="button"
-          className="info-panel__backdrop"
-          onClick={() => setActivePanel(null)}
-          aria-label="Fechar Contato"
-        />
-        <div className="info-panel__content" data-lenis-prevent>
-          <button
-            type="button"
-            className="info-panel__close"
-            onClick={() => setActivePanel(null)}
-          >
-            Fechar
-          </button>
-          <p className="info-panel__label">Contato</p>
-          <h2 id="contact-title">VAMOS CONVERSAR.</h2>
-          <p className="contact-message">
-            Vamos construir algo incrível. Do código à conversão. Se você precisa
-            tirar uma ideia do papel ou escalar um projeto existente, me mande uma
-            mensagem. Escolha um canal abaixo e vamos conversar.
-          </p>
-          <div className="contact-links" aria-label="Canais de contato">
-            {contactLinks.map(({ label, Icon, href, className }) => {
-              if (!href) {
-                return (
-                  <span
-                    className={`contact-link ${className} contact-link--disabled`}
-                    key={label}
-                    aria-label={`${label}: link será adicionado`}
-                    title={`${label}: link será adicionado`}
-                    aria-disabled="true"
-                  >
-                    <span className="contact-link__icon">
-                      <Icon aria-hidden="true" />
-                    </span>
-                    <span className="contact-link__label">- {label}</span>
-                  </span>
-                )
-              }
+        <StickyServices />
+      </Suspense>
 
-              return (
-                <a
-                  className={`contact-link ${className}`}
-                  href={href}
-                  key={label}
-                  aria-label={label}
-                  title={label}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <span className="contact-link__icon">
-                    <Icon aria-hidden="true" />
-                  </span>
-                  <span className="contact-link__label">- {label}</span>
-                </a>
-              )
-            })}
-          </div>
-        </div>
-      </aside>
+      <Suspense
+        fallback={(
+          <section
+            id="projetos"
+            className="projects projects--loading"
+            aria-hidden="true"
+          />
+        )}
+      >
+        <StickyProjects projects={projectCards} onOpenProject={setActivePanel} />
+      </Suspense>
+
+      <Suspense
+        fallback={(
+          <footer
+            id="footer"
+            className="wave-footer wave-footer--loading"
+            aria-hidden="true"
+          />
+        )}
+      >
+        <WaveFooter />
+      </Suspense>
+
+      {activeProject && (
+        <Suspense fallback={null}>
+          <ProjectDetailsPanel
+            projectNumber={activeProject.number}
+            onClose={() => setActivePanel(null)}
+          />
+        </Suspense>
+      )}
+
+      {(activePanel === 'sobre' || activePanel === 'contato') && (
+        <Suspense fallback={null}>
+          <InfoPanels activePanel={activePanel} onClose={() => setActivePanel(null)} />
+        </Suspense>
+      )}
+
     </main>
   )
 }

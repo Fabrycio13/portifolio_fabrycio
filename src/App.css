@@ -7,6 +7,36 @@
   background: #071f2a;
 }
 
+.services--loading {
+  height: 400svh;
+  margin-top: 115svh;
+  background: #071f2a;
+}
+
+.projects--loading {
+  height: 400svh;
+  background: #071f2a;
+}
+
+.wave-footer--loading {
+  position: relative;
+  z-index: 2;
+  height: 120svh;
+  background: #071f2a;
+  color: #f3f8f8;
+}
+
+@media (min-width: 901px) {
+  .services--loading {
+    height: calc(
+      clamp(24rem, 54svh, 34rem) +
+      clamp(8rem, 12svh, 10rem) +
+      clamp(6rem, 10svh, 7.5rem) +
+      3rem
+    );
+  }
+}
+
 .hero-media {
   position: absolute;
   top: 0;
