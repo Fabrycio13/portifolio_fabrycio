@@ -26,6 +26,8 @@ test('PortfolioContent mantém gerenciamento de foco e Escape nos dialogs', asyn
   assert.match(source, /const firstElement = focusableElements\[0\]/)
   assert.match(source, /firstElement\.focus\(\)/)
   assert.match(source, /lastTriggerRef\.current\?\.focus\(\)/)
+  assert.match(source, /import InfoPanels from '\.\/components\/InfoPanels\.jsx'/)
+  assert.match(source, /import ProjectDetailsPanel from '\.\/components\/ProjectDetailsPanel\.jsx'/)
   assert.match(source, /className="hero__cta" href="#servicos"/)
   assert.match(source, /className="hero__cta hero__cta--contact"/)
   assert.match(source, /onClick=\{\(\) => openPanel\('contato'\)\}/)
@@ -60,6 +62,19 @@ test('Sobre mantém a copy aprovada e CTA para Contato', async () => {
   assert.match(source, /prompts estruturados e fluxos inteligentes/)
   assert.match(source, /CONVERSAR SOBRE UM PROJETO/)
   assert.match(source, /onClick=\{onOpenContact\}/)
+})
+
+test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/ProjectDetailsPanel.jsx')
+
+  assert.match(app, /GESTÃO CONDOMINIAL COM IA/)
+  assert.match(app, /PROJETO CONFIDENCIAL · PLATAFORMA WEB/)
+  assert.match(details, /Uma plataforma web criada para centralizar a administração de condomínios/)
+  assert.match(details, /A solução também utiliza IA e integrações automatizadas/)
+  assert.match(details, /Gestão de moradores e unidades/)
+  assert.match(details, /Gestão de espaços compartilhados/)
+  assert.match(details, /IA & Integrações/)
 })
 
 test('CSS e sonda não reintroduzem o fluxo legado de vídeo', async () => {

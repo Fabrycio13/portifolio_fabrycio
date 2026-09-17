@@ -18,8 +18,8 @@ import {
 const projectDetails = {
   '01': {
     title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
-    detail: 'USABIT PEOPLE',
-    description: 'O Usabit People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
+    detail: 'PEOPLE',
+    description: 'O People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
     features: [
       { icon: FaBrain, text: 'Análise de currículos com IA' },
       { icon: FaColumns, text: 'Pipeline Kanban' },
@@ -36,22 +36,26 @@ const projectDetails = {
     ],
   },
   '02': {
-    title: 'CINDY - GESTÃO CONDOMINIAL',
-    detail: 'PLATAFORMA WEB',
-    description: 'A Cindy é uma plataforma completa para administração de condomínios, centralizando em um único sistema a gestão de moradores, unidades, veículos, vagas de garagem, encomendas, ocorrências e espaços compartilhados. Utiliza IA para automatizar o cadastro de veículos e registro de encomendas.',
+    title: 'GESTÃO CONDOMINIAL COM IA',
+    detail: 'PROJETO CONFIDENCIAL · PLATAFORMA WEB',
+    description: [
+      'Uma plataforma web criada para centralizar a administração de condomínios em um único ambiente, reunindo moradores, unidades, veículos, vagas, encomendas, ocorrências e espaços compartilhados.',
+      'A solução também utiliza IA e integrações automatizadas para agilizar o cadastro de veículos e o registro de encomendas.',
+    ],
     features: [
       { icon: FaTachometerAlt, text: 'Dashboard com indicadores' },
-      { icon: FaUsers, text: 'Gestão de moradores' },
+      { icon: FaUsers, text: 'Gestão de moradores e unidades' },
       { icon: FaCar, text: 'Controle de veículos e vagas' },
       { icon: FaBox, text: 'Registro de encomendas' },
-      { icon: FaComments, text: 'Chat e comunicados' },
+      { icon: FaComments, text: 'Ocorrências, chat e comunicados' },
+      { icon: FaGlobe, text: 'Gestão de espaços compartilhados' },
       { icon: FaVoteYea, text: 'Assembleias digitais' },
     ],
     technologies: [
       { label: 'Front-end', stack: 'React, TypeScript, Vite, Tailwind CSS' },
-      { label: 'Back-end', stack: 'Supabase (Auth, PostgreSQL, Storage)' },
+      { label: 'Back-end & Dados', stack: 'Supabase, Auth, PostgreSQL e Storage' },
       { label: 'Infraestrutura', stack: 'Supabase Edge Functions' },
-      { label: 'Integrações', stack: 'Webhooks, n8n, WhatsApp, APIs externas' },
+      { label: 'IA & Integrações', stack: 'Automação do cadastro de veículos, registro de encomendas, Webhooks, n8n, WhatsApp e APIs externas' },
     ],
   },
   '03': {
@@ -129,7 +133,13 @@ export default function ProjectDetailsPanel({ projectNumber, onClose }) {
         </button>
         <p className="info-panel__label">{project.detail}</p>
         <h2 id={`project-title-${projectNumber}`}>{project.title}</h2>
-        <p>{project.description}</p>
+        {Array.isArray(project.description)
+          ? project.description.map((paragraph, index) => (
+            <p className="project-description" key={`${projectNumber}-description-${index}`}>
+              {paragraph}
+            </p>
+          ))
+          : <p className="project-description">{project.description}</p>}
         <ul className="project-features">
           {project.features.map((feature, index) => {
             const Icon = feature.icon

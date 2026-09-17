@@ -598,19 +598,6 @@
   transform: translateX(0);
 }
 
-.info-panel--loading .info-panel__content {
-  display: flex;
-  flex-direction: column;
-}
-
-.info-panel__loading-status {
-  margin: 2rem 0 0;
-  color: #8da2a5;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .info-panel__close {
   position: relative;
   border: 0;
@@ -653,6 +640,17 @@
   margin: 0 0 1rem;
   font-size: clamp(1.8rem, 4vw, 3.2rem);
   line-height: 1.05;
+}
+
+.info-panel p.project-description {
+  max-width: 30rem;
+  margin: 0;
+  color: #c9d4d5;
+  line-height: 1.7;
+}
+
+.info-panel p.project-description + p.project-description {
+  margin-top: 1rem;
 }
 
 .info-panel p.about-copy {
