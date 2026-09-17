@@ -150,6 +150,7 @@
   line-height: 1;
   letter-spacing: 0.025em;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   transition: color 220ms ease;
 }
 

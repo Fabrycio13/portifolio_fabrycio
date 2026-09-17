@@ -67,6 +67,7 @@ test('CSS e sonda não reintroduzem o fluxo legado de vídeo', async () => {
   const auditScript = await read('scripts/perf-audit.mjs')
 
   assert.doesNotMatch(css, /shader-video/i)
+  assert.match(css, /-webkit-tap-highlight-color:\s*transparent/)
   assert.doesNotMatch(auditScript, /video\.mp4|ShaderVideo|qualityProfile/i)
   assert.match(auditScript, /Input\.dispatchMouseEvent/)
   assert.match(auditScript, /--footer/)
