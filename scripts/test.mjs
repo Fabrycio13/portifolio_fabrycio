@@ -45,11 +45,14 @@ test('dialogs definem um foco inicial nativo', async () => {
 
 test('Contato mantém a copy aprovada e os cinco canais', async () => {
   const source = await read('src/components/InfoPanels.jsx')
+  const footer = await read('src/components/WaveFooter.jsx')
 
   assert.match(source, /VAMOS CONSTRUIR ALGO QUE FUNCIONE\./)
   assert.match(source, /Tem uma ideia para tirar do papel/)
   assert.match(source, /Escolha um canal abaixo e vamos conversar\./)
   assert.equal((source.match(/label: '/g) ?? []).length, 5)
+  assert.match(source, /https:\/\/www\.linkedin\.com\/in\/fabrycio-bermudes-b79a01216\//)
+  assert.match(footer, /https:\/\/www\.linkedin\.com\/in\/fabrycio-bermudes-b79a01216\//)
 })
 
 test('Sobre mantém a copy aprovada e CTA para Contato', async () => {

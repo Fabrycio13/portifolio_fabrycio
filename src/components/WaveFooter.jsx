@@ -24,7 +24,7 @@ const socialIcons = [
   {
     label: 'LinkedIn',
     Icon: FaLinkedinIn,
-    href: null,
+    href: 'https://www.linkedin.com/in/fabrycio-bermudes-b79a01216/',
     className: 'wave-footer__social--linkedin',
   },
   {
