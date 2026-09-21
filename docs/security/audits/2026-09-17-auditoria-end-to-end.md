@@ -1,5 +1,7 @@
 # Auditoria End-to-End do Portfólio Fabrycio Bermudes
 
+> Relatório histórico: os caminhos de assets e componentes abaixo representam o snapshot de 17 de setembro de 2026. A estrutura atual foi reorganizada posteriormente; as referências preservadas aqui documentam o estado auditado naquela data.
+
 > **Data:** 2026-09-17  
 > **Escopo:** Auditoria compatível com o projeto atual: frontend React/Vite, acessibilidade, superfície client-side, dependências, assets, lazy loading, documentação, copy, build e smoke de produção.  
 > **Origem:** Pipeline adaptado da skill `audit-project`; as fases específicas de IA RH/Supabase não se aplicam a este repositório.  

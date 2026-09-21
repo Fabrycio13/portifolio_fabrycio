@@ -23,7 +23,7 @@ const contactLinks = [
   {
     label: 'LinkedIn',
     Icon: FaLinkedinIn,
-    href: null,
+    href: 'https://www.linkedin.com/in/fabrycio-bermudes-b79a01216/',
     className: 'contact-link--linkedin',
   },
   {
