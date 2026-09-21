@@ -43,4 +43,4 @@ A auditoria de performance usa Chrome local e deve ser executada contra a rota r
 
 ## Deploy
 
-O deploy recomendado é via integração da Vercel ou pelo workflow de deploy configurado em `.github/workflows/deploy.yml`. O workflow exige os secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` e `VERCEL_PROJECT_ID`; nenhum deles deve ser salvo no repositório.
+O deploy é feito pela integração nativa da Vercel conectada ao repositório. Configure no painel da Vercel a branch de produção, o comando `npm run build` e o diretório de saída `dist`. Não há workflow customizado de deploy nem secrets da Vercel necessários no GitHub Actions.
