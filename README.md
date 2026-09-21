@@ -52,7 +52,7 @@ O projeto combina navegação suave, tipografia animada, seções sticky, cards 
 
 ```text
 .github/
-├── workflows/                    # CI e deploy
+├── workflows/                    # CI
 └── ISSUE_TEMPLATE/               # templates de issue
 
 docs/
@@ -186,8 +186,8 @@ Na Vercel:
 
 - **Build command:** `npm run build`
 - **Output directory:** `dist`
-
-O workflow `.github/workflows/deploy.yml` usa `VERCEL_TOKEN`, `VERCEL_ORG_ID` e `VERCEL_PROJECT_ID` como secrets protegidos do CI. Nenhum desses valores deve ser salvo no repositório.
+- **Deploy:** use a integração nativa da Vercel conectada ao repositório e à branch de produção configurada no painel da Vercel.
+- Não é necessário manter um workflow customizado de deploy ou secrets da Vercel no GitHub Actions.
 
 ## Documentação adicional
 

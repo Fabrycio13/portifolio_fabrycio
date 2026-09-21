@@ -7,7 +7,7 @@
 - **Arquitetura:** aplicação React/Vite de página única. O repositório atual não declara backend, banco de dados ou autenticação.
 - **Stack:** JavaScript/JSX, React `19.2.0`, Vite `8.2.2`, GSAP `3.15.0`, `@gsap/react`, Lenis, Motion, OGL, React Icons e Oxlint `1.79.0`.
 - **Gerenciador de pacotes:** npm, com `package-lock.json` versionado.
-- **Deploy:** há workflow para Vercel em `.github/workflows/deploy.yml`; os secrets são externos e não devem aparecer no repositório.
+- **Deploy:** a publicação deve ser feita pela integração nativa da Vercel conectada ao repositório e à branch de produção configurada no painel da Vercel. Não há workflow customizado de deploy versionado.
 - **Documentação relevante:** `README.md`, `docs/architecture.md`, `docs/development.md`, `docs/decisions/` e `docs/performance-baseline.md`.
 
 ### Áreas principais
@@ -154,7 +154,7 @@ Use apenas comandos existentes em `package.json` e configurações verificadas. 
 - Não exponha secrets, credenciais, tokens, chaves de API ou dados pessoais em código, logs, testes, documentação, issues ou commits.
 - Se um valor sensível aparecer, substitua por `[REDACTED]` e não o replique.
 - `.env` e `.env.*` são ignorados pelo Git; somente `.env.example` pode ser versionado.
-- `VERCEL_TOKEN`, `VERCEL_ORG_ID` e `VERCEL_PROJECT_ID` pertencem exclusivamente à configuração protegida do CI.
+- Não adicione tokens da Vercel ou outras credenciais de deploy ao repositório; a integração nativa deve manter suas credenciais fora do código.
 - Não use dados reais de clientes ou projetos confidenciais em testes, screenshots ou documentação.
 - Este repositório é um frontend estático; não adicione banco, autenticação ou integração externa sem escopo explícito e documentação correspondente.
 - Não execute testes que alterem produção.
