@@ -20,8 +20,8 @@ O projeto combina navegação suave, tipografia animada, seções sticky, cards 
 - Navegação suave com Lenis.
 - Serviços e Projetos com animações sincronizadas ao scroll.
 - Cards sticky controlados por GSAP e ScrollTrigger.
-- Painéis de Sobre e Contato carregados apenas quando são abertos.
-- Detalhes dos projetos separados em chunk próprio.
+- Painéis pequenos de Sobre, Contato e detalhes dos projetos importados diretamente para evitar flash visual na primeira abertura.
+- Serviços, Projetos e Footer separados em chunks carregados por proximidade do viewport.
 - Footer com ondas animadas em canvas e imagem otimizada.
 - Tipografia interativa com `WarpText`, `DecryptedText` e `BlurText`.
 - Layout responsivo para desktop e dispositivos móveis.
@@ -92,26 +92,28 @@ node scripts/perf-audit.mjs http://127.0.0.1:4173/ --duration-ms=5000
 
 ```text
 src/
-├── App.jsx                    # Shell, navegação e carregamento sob demanda
-├── App.css                    # Layout global e fallbacks estruturais
+├── App.jsx                         # Shell, navegação e composição
+├── App.css                         # Layout global e fallbacks estruturais
 ├── components/
-│   ├── BlurText.jsx           # Entrada animada de textos
-│   ├── DecryptedText.jsx      # Efeito de texto descriptografado
-│   ├── InfoPanels.jsx         # Painéis Sobre e Contato
-│   ├── ProjectDetailsPanel.jsx# Detalhes dos projetos
-│   ├── StickyProjects.jsx     # Cards sticky com GSAP/ScrollTrigger
-│   ├── StickyServices.jsx     # Serviços animados pelo scroll
-│   ├── WarpText.jsx           # Tipografia WebGL com OGL
-│   └── WaveFooter.jsx         # Footer, ondas, canvas e redes sociais
-├── index.css                  # Estilos base e fontes
-└── main.jsx                   # Entrada do React
+│   ├── effects/                    # BlurText, DecryptedText e WarpText
+│   └── panels/                     # Sobre, Contato e detalhes de projetos
+├── sections/                       # Serviços, Projetos e Footer
+├── layouts/                        # Carregamento estrutural de seções
+├── data/                           # Cards de projetos e serviços
+├── utils/                          # Utilitários de acessibilidade
+├── index.css                       # Estilos base e fontes
+└── main.jsx                        # Entrada do React
 
 public/
-├── projects/                  # Imagens dos projetos
-├── footer.webp                # Imagem otimizada do footer
-├── footer.png                 # Fallback do footer
-├── novo portifolio.webp       # Imagem otimizada do hero
-└── novo portifolio.png        # Fallback do hero
+├── icons/                         # Favicons e marcas
+├── images/
+│   ├── hero/                      # Imagem otimizada e fallback do hero
+│   ├── footer/                    # Imagem otimizada e fallback do footer
+│   └── projects/                  # Imagens dos projetos
+└── readme-banner.webp             # Banner usado nesta documentação
+
+tests/
+└── unit/portfolio-contract.test.mjs
 
 scripts/
 └── perf-audit.mjs             # Auditoria automatizada no Chrome
@@ -121,9 +123,9 @@ scripts/
 
 O primeiro viewport não precisa carregar toda a experiência de uma vez:
 
-- Serviços, Projetos e Footer usam `React.lazy`.
-- Detalhes dos projetos são separados dos cards principais.
-- Sobre e Contato só são carregados quando solicitados.
+- Serviços, Projetos e Footer usam `React.lazy` dentro de `DeferredSection`.
+- Cards e detalhes dos projetos ficam separados entre `src/data/` e `src/components/panels/`.
+- Sobre, Contato e detalhes dos projetos são importados diretamente para evitar flash na primeira abertura.
 - Fallbacks preservam a altura das seções e evitam layout shift.
 - Imagens prioritárias usam WebP com fallback compatível.
 - Imagens fora do primeiro viewport usam carregamento lazy.

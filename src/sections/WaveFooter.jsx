@@ -273,10 +273,10 @@ export function WaveFooter() {
     <footer id="footer" className="wave-footer" ref={footer}>
       <div className="wave-footer__stage" ref={stage}>
         <picture>
-          <source type="image/webp" srcSet="/footer.webp" />
+          <source type="image/webp" srcSet="/images/footer/footer.webp" />
           <img
             className="wave-footer__image"
-            src="/footer.png"
+            src="/images/footer/footer.png"
             alt="Paisagem de montanhas ao entardecer"
             loading="lazy"
             decoding="async"

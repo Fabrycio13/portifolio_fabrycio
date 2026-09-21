@@ -1,19 +1,22 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
-import WarpText from './components/WarpText.jsx'
-import DecryptedText from './components/DecryptedText.jsx'
-import InfoPanels from './components/InfoPanels.jsx'
-import ProjectDetailsPanel from './components/ProjectDetailsPanel.jsx'
-import { cloneElement, lazy, Suspense, useEffect, useRef, useState } from 'react'
+import WarpText from '@/components/effects/WarpText.jsx'
+import DecryptedText from '@/components/effects/DecryptedText.jsx'
+import InfoPanels from '@/components/panels/InfoPanels.jsx'
+import ProjectDetailsPanel from '@/components/panels/ProjectDetailsPanel.jsx'
+import { projectCards } from '@/data/projects.js'
+import { DeferredSection } from '@/layouts/DeferredSection.jsx'
+import { getFocusableElements } from '@/utils/focus.js'
+import { lazy, useEffect, useRef, useState } from 'react'
 
-const StickyServices = lazy(() => import('./components/StickyServices.jsx').then(module => ({
+const StickyServices = lazy(() => import('@/sections/StickyServices.jsx').then(module => ({
   default: module.StickyServices,
 })))
-const StickyProjects = lazy(() => import('./components/StickyProjects.jsx').then(module => ({
+const StickyProjects = lazy(() => import('@/sections/StickyProjects.jsx').then(module => ({
   default: module.StickyProjects,
 })))
-const WaveFooter = lazy(() => import('./components/WaveFooter.jsx').then(module => ({
+const WaveFooter = lazy(() => import('@/sections/WaveFooter.jsx').then(module => ({
   default: module.WaveFooter,
 })))
 
@@ -22,71 +25,6 @@ const menuItems = [
   { label: 'Serviços', href: '#servicos' },
   { label: 'Projetos', href: '#projetos' },
   { label: 'Contato', panel: 'contato' },
-]
-
-function DeferredSection({ children, fallback, rootMargin = '800px 0px' }) {
-  const [anchorNode, setAnchorNode] = useState(null)
-  const [shouldRender, setShouldRender] = useState(() => (
-    typeof window === 'undefined' || !('IntersectionObserver' in window)
-  ))
-
-  useEffect(() => {
-    if (shouldRender || !anchorNode) return undefined
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return
-        setShouldRender(true)
-        observer.disconnect()
-      },
-      { rootMargin },
-    )
-
-    observer.observe(anchorNode)
-    return () => observer.disconnect()
-  }, [anchorNode, rootMargin, shouldRender])
-
-  if (shouldRender) {
-    return <Suspense fallback={fallback}>{children}</Suspense>
-  }
-  return cloneElement(fallback, { ref: setAnchorNode })
-}
-
-function getFocusableElements(container) {
-  return [...container.querySelectorAll(
-    'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-  )].filter(element => element.getClientRects().length > 0)
-}
-
-const projectCards = [
-  {
-    number: '01',
-    title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
-    detail: 'PEOPLE',
-    image: '/projects/project-01.webp',
-    alt: 'Screenshot da plataforma de recrutamento e seleção com IA da People',
-  },
-  {
-    number: '02',
-    title: 'GESTÃO CONDOMINIAL COM IA',
-    detail: 'PROJETO CONFIDENCIAL · PLATAFORMA WEB',
-    image: '/projects/project-02.webp',
-    alt: 'Screenshot da plataforma de gestão condominial com IA',
-  },
-  {
-    number: '03',
-    title: 'PHX / MDS CRÉDITO IMOBILIÁRIO',
-    detail: 'GERADOR DE LAUDOS · ANÁLISE DE CRÉDITO',
-    image: '/projects/project-03.webp',
-    alt: 'Screenshot do gerador de laudos de análise de crédito imobiliário PHX e MDS',
-  },
-  {
-    number: '04',
-    title: 'NEXUS AI - ORQUESTRAÇÃO DE IA',
-    detail: 'EMBEDDINGS · RAG · AGENTES DE IA',
-    image: '/projects/project-04.webp',
-    alt: 'Imagem conceitual do laboratório Nexus AI de embeddings e orquestração de agentes',
-  },
 ]
 
 function AnimatedMenuLink({ label, href = '#', onClick }) {
@@ -209,9 +147,9 @@ function PortfolioContent() {
     <main id="top" className="app">
       <div className="hero-media" aria-hidden="true">
         <picture>
-          <source type="image/webp" srcSet="/novo%20portifolio.webp" />
+          <source type="image/webp" srcSet="/images/hero/hero.webp" />
           <img
-            src="/novo portifolio.png"
+            src="/images/hero/hero.png"
             alt=""
             decoding="async"
             fetchPriority="high"
@@ -222,8 +160,8 @@ function PortfolioContent() {
       <header className={`site-header ${isHeaderScrolled ? 'is-scrolled' : ''}`}>
         <a className="site-header__brand" href="#top" aria-label="Voltar ao início">
           <picture>
-            <source media="(max-width: 900px)" srcSet="/logo-mark.png" />
-            <img src="/logo-header.png" alt="Fabrycio Bermudes" />
+            <source media="(max-width: 900px)" srcSet="/icons/logo-mark.png" />
+            <img src="/icons/logo-header.png" alt="Fabrycio Bermudes" />
           </picture>
         </a>
 

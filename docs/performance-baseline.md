@@ -4,8 +4,8 @@
 
 Esta baseline descreve a arquitetura atual do portfólio após a remoção do fluxo legado de vídeos e a adoção de carregamento por proximidade do viewport.
 
-- O Hero usa a imagem estática otimizada `public/novo portifolio.webp`.
-- O Footer usa `public/footer.webp` e o canvas visual do `WaveFooter`.
+- O Hero usa a imagem estática otimizada `public/images/hero/hero.webp`.
+- O Footer usa `public/images/footer/footer.webp` e o canvas visual do `WaveFooter`.
 - `WarpText` continua usando OGL para o efeito de texto; os canvases ativos não são vídeos.
 - Serviços, Projetos e Footer são carregados sob demanda com `IntersectionObserver` e mantêm placeholders estruturais para evitar layout shift.
 - Lenis, GSAP/ScrollTrigger, Motion, OGL e os canvases atuais permanecem preservados.
