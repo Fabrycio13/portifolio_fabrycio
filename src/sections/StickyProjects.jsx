@@ -20,15 +20,15 @@ export function StickyProjects({ projects, onOpenProject }) {
 
       if (!stage.current || !cards.length) return
 
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const isDesktop = window.matchMedia('(min-width: 901px)').matches
+
       gsap.set(cards, {
-        yPercent: index => (index === 0 ? 0 : 100),
+        yPercent: index => (isDesktop ? 0 : index === 0 ? 0 : 100),
         scale: 1,
         rotation: 0,
         autoAlpha: 1,
       })
-
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      const isDesktop = window.matchMedia('(min-width: 901px)').matches
 
       if (prefersReducedMotion) {
         gsap.set(cards, { yPercent: 0 })
@@ -54,7 +54,7 @@ export function StickyProjects({ projects, onOpenProject }) {
           currentCard,
           {
             scale: isDesktop ? 0.7 : 0.72,
-            rotation: isDesktop ? 5 : (index % 2 === 0 ? 5 : -5),
+            rotation: isDesktop ? 5 : (index % 2 === 0 ? 4 : -4),
             duration: 1,
             ease: 'none',
           },

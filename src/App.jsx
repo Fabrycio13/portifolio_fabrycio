@@ -1,6 +1,8 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
+import CindyDemoPanel from '@/components/panels/CindyDemoPanel.jsx'
+import CindyGalleryPanel from '@/components/panels/CindyGalleryPanel.jsx'
 import WarpText from '@/components/effects/WarpText.jsx'
 import DecryptedText from '@/components/effects/DecryptedText.jsx'
 import InfoPanels from '@/components/panels/InfoPanels.jsx'
@@ -318,9 +320,12 @@ function PortfolioContent() {
         <ProjectDetailsPanel
           projectNumber={activeProject.number}
           onClose={() => setActivePanel(null)}
-          onOpenDemo={projectNumber => openPanel(projectNumber === '03' ? 'phx-demo' : 'nexus-demo', { preserveTrigger: true })}
+          onOpenDemo={projectNumber => openPanel(
+            projectNumber === '02' ? 'cindy-demo' : projectNumber === '03' ? 'phx-demo' : 'nexus-demo',
+            { preserveTrigger: true },
+          )}
           onOpenGallery={gallery => openPanel(
-            gallery === 'phx' ? 'phx-gallery' : gallery === 'nexus' ? 'nexus-gallery' : 'people-gallery',
+            gallery === 'cindy' ? 'cindy-gallery' : gallery === 'phx' ? 'phx-gallery' : gallery === 'nexus' ? 'nexus-gallery' : 'people-gallery',
             { preserveTrigger: true },
           )}
         />
@@ -336,6 +341,13 @@ function PortfolioContent() {
       {activePanel === 'phx-gallery' && (
         <PhxGalleryPanel
           onBack={() => openPanel('03', { preserveTrigger: true })}
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
+      {activePanel === 'cindy-gallery' && (
+        <CindyGalleryPanel
+          onBack={() => openPanel('02', { preserveTrigger: true })}
           onClose={() => setActivePanel(null)}
         />
       )}
@@ -357,6 +369,13 @@ function PortfolioContent() {
       {activePanel === 'phx-demo' && (
         <PhxDemoPanel
           onBack={() => openPanel('03', { preserveTrigger: true })}
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
+      {activePanel === 'cindy-demo' && (
+        <CindyDemoPanel
+          onBack={() => openPanel('02', { preserveTrigger: true })}
           onClose={() => setActivePanel(null)}
         />
       )}
