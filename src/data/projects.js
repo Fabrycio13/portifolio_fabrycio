@@ -25,6 +25,6 @@ export const projectCards = [
     title: 'NEXUS AI - ORQUESTRAÇÃO DE IA',
     detail: 'EMBEDDINGS · RAG · AGENTES DE IA',
     image: '/images/projects/project-04.webp',
-    alt: 'Imagem conceitual do laboratório Nexus AI de embeddings e orquestração de agentes',
+    alt: 'Screenshot da plataforma Nexus AI com fluxo de embeddings, RAG e orquestração de agentes',
   },
 ]

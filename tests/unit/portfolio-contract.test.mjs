@@ -80,6 +80,95 @@ test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', asy
   assert.match(details, /IA & Integrações/)
 })
 
+test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const demo = await read('src/components/panels/NexusDemoPanel.jsx')
+
+  assert.match(details, /projectNumber === '04'/)
+  assert.match(details, /TESTAR DEMO INTERATIVA/)
+  assert.match(details, /onOpenDemo/)
+  assert.match(app, /import NexusDemoPanel from '@\/components\/panels\/NexusDemoPanel\.jsx'/)
+  assert.match(app, /activePanel === 'nexus-demo'/)
+  assert.match(demo, /DEMO LOCAL · DADOS FICTÍCIOS/)
+  assert.match(demo, /Análise documental inteligente/)
+  assert.match(demo, /Executar fluxo/)
+  assert.match(demo, /Eventos da execução/)
+  assert.match(demo, /Execução atual/)
+  assert.match(demo, /data-dialog-initial-focus/)
+})
+
+test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+
+  assert.match(details, /4 TELAS DO PRODUTO/)
+  assert.match(details, /onOpenGallery\('nexus'\)/)
+  assert.match(app, /import NexusGalleryPanel from '@\/components\/panels\/NexusGalleryPanel\.jsx'/)
+  assert.match(app, /activePanel === 'nexus-gallery'/)
+})
+
+test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const demo = await read('src/components/panels/PhxDemoPanel.jsx')
+  const projects = await read('src/data/projects.js')
+
+  assert.match(details, /projectNumber === '03'/)
+  assert.match(details, /ABRIR DEMO DO LAUDO/)
+  assert.match(app, /import PhxDemoPanel from '@\/components\/panels\/PhxDemoPanel\.jsx'/)
+  assert.match(app, /activePanel === 'phx-demo'/)
+  assert.match(demo, /src="\/phx-demo\.html"/)
+  assert.match(demo, /DEMO INTERATIVA/)
+  assert.match(projects, /project-03\.webp/)
+})
+
+test('Projeto PHX abre uma galeria com as telas do laudo', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+
+  assert.match(details, /3 TELAS DO PRODUTO/)
+  assert.match(details, /onOpenGallery\('phx'\)/)
+  assert.match(app, /import PhxGalleryPanel from '@\/components\/panels\/PhxGalleryPanel\.jsx'/)
+  assert.match(app, /activePanel === 'phx-gallery'/)
+})
+
+test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const gallery = await read('src/components/panels/PeopleGalleryPanel.jsx')
+
+  assert.match(details, /projectNumber === '01'/)
+  assert.match(details, /VER TELAS DO PROJETO/)
+  assert.match(details, /onOpenGallery/)
+  assert.match(app, /import PeopleGalleryPanel from '@\/components\/panels\/PeopleGalleryPanel\.jsx'/)
+  assert.match(app, /activePanel === 'people-gallery'/)
+  assert.match(app, /\.people-gallery\.is-open/)
+  assert.match(gallery, /people-dashboard\.webp/)
+  assert.match(gallery, /people-configuracoes\.webp/)
+  assert.match(gallery, /DADOS FICTÍCIOS/)
+  assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
+})
+
+test('navegação lateral da demo Nexus troca a seção ativa', async () => {
+  const demo = await read('src/components/panels/NexusDemoPanel.jsx')
+
+  assert.match(demo, /const navigationItems =/)
+  assert.match(demo, /setActiveSection\(item\.id\)/)
+  assert.match(demo, /activeSection === item\.id/)
+  assert.match(demo, /Base de conhecimento/)
+  assert.match(demo, /Documentação/)
+})
+
+test('demo Nexus mantém retorno ao projeto e identificação no topo', async () => {
+  const demo = await read('src/components/panels/NexusDemoPanel.jsx')
+
+  assert.match(demo, /nexus-demo-topbar__back/)
+  assert.match(demo, /nexus-demo-topbar__badge/)
+  assert.match(demo, /DEMO INTERATIVA/)
+  assert.match(demo, /onClick=\{onBack\}/)
+})
+
 test('CSS e sonda não reintroduzem o fluxo legado de vídeo', async () => {
   const css = await read('src/App.css')
   const auditScript = await read('scripts/perf-audit.mjs')

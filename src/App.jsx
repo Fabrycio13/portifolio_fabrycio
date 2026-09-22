@@ -4,6 +4,11 @@ import { ReactLenis } from 'lenis/react'
 import WarpText from '@/components/effects/WarpText.jsx'
 import DecryptedText from '@/components/effects/DecryptedText.jsx'
 import InfoPanels from '@/components/panels/InfoPanels.jsx'
+import NexusDemoPanel from '@/components/panels/NexusDemoPanel.jsx'
+import NexusGalleryPanel from '@/components/panels/NexusGalleryPanel.jsx'
+import PeopleGalleryPanel from '@/components/panels/PeopleGalleryPanel.jsx'
+import PhxDemoPanel from '@/components/panels/PhxDemoPanel.jsx'
+import PhxGalleryPanel from '@/components/panels/PhxGalleryPanel.jsx'
 import ProjectDetailsPanel from '@/components/panels/ProjectDetailsPanel.jsx'
 import { projectCards } from '@/data/projects.js'
 import { DeferredSection } from '@/layouts/DeferredSection.jsx'
@@ -95,13 +100,13 @@ function PortfolioContent() {
     }
 
     const focusInitialElement = () => {
-      const dialog = document.querySelector('.info-panel.is-open')
+      const dialog = document.querySelector('.info-panel.is-open, .people-gallery.is-open')
       const initialFocus = dialog?.querySelector('[data-dialog-initial-focus]')
       initialFocus?.focus()
     }
     const frameId = requestAnimationFrame(focusInitialElement)
     const handleDialogKeyDown = event => {
-      const dialog = document.querySelector('.info-panel.is-open')
+      const dialog = document.querySelector('.info-panel.is-open, .people-gallery.is-open')
       if (!dialog) return
 
       if (event.key === 'Escape') {
@@ -312,6 +317,46 @@ function PortfolioContent() {
       {activeProject && (
         <ProjectDetailsPanel
           projectNumber={activeProject.number}
+          onClose={() => setActivePanel(null)}
+          onOpenDemo={projectNumber => openPanel(projectNumber === '03' ? 'phx-demo' : 'nexus-demo', { preserveTrigger: true })}
+          onOpenGallery={gallery => openPanel(
+            gallery === 'phx' ? 'phx-gallery' : gallery === 'nexus' ? 'nexus-gallery' : 'people-gallery',
+            { preserveTrigger: true },
+          )}
+        />
+      )}
+
+      {activePanel === 'people-gallery' && (
+        <PeopleGalleryPanel
+          onBack={() => openPanel('01', { preserveTrigger: true })}
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
+      {activePanel === 'phx-gallery' && (
+        <PhxGalleryPanel
+          onBack={() => openPanel('03', { preserveTrigger: true })}
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
+      {activePanel === 'nexus-gallery' && (
+        <NexusGalleryPanel
+          onBack={() => openPanel('04', { preserveTrigger: true })}
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
+      {activePanel === 'nexus-demo' && (
+        <NexusDemoPanel
+          onBack={() => openPanel('04', { preserveTrigger: true })}
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
+      {activePanel === 'phx-demo' && (
+        <PhxDemoPanel
+          onBack={() => openPanel('03', { preserveTrigger: true })}
           onClose={() => setActivePanel(null)}
         />
       )}

@@ -27,7 +27,13 @@ export function StickyProjects({ projects, onOpenProject }) {
         autoAlpha: 1,
       })
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const isDesktop = window.matchMedia('(min-width: 901px)').matches
+
+      if (prefersReducedMotion) {
+        gsap.set(cards, { yPercent: 0 })
+        return
+      }
 
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -47,8 +53,8 @@ export function StickyProjects({ projects, onOpenProject }) {
         timeline.to(
           currentCard,
           {
-            scale: 0.72,
-            rotation: index % 2 === 0 ? 5 : -5,
+            scale: isDesktop ? 0.7 : 0.72,
+            rotation: isDesktop ? 5 : (index % 2 === 0 ? 5 : -5),
             duration: 1,
             ease: 'none',
           },
