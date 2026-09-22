@@ -89,7 +89,7 @@ button,
 }
 
 .site-header.is-scrolled {
-  border-bottom-color: rgba(243, 248, 248, 0.12);
+  border-bottom-color: transparent;
   background: rgba(43, 47, 49, 0.72);
   box-shadow: 0 0.5rem 1.5rem rgba(5, 7, 8, 0.14);
   backdrop-filter: blur(14px) saturate(120%);
@@ -389,6 +389,7 @@ button,
   position: relative;
   z-index: 2;
   margin-top: clamp(2rem, 4svh, 3rem);
+  background: #071f2a;
   color: #f3f8f8;
   scroll-margin-top: 0;
 }
@@ -552,7 +553,6 @@ button,
 @media (min-width: 901px) {
   .projects {
     margin-top: clamp(4rem, 8svh, 6rem);
-    background: #071f2a;
   }
 
   .sticky-projects__stage {
@@ -1204,16 +1204,82 @@ button,
   }
 
   .sticky-projects__stage {
-    padding-right: 1rem;
-    padding-left: 1rem;
+    height: 100svh;
+    padding: 8rem 1rem 2rem;
+    overflow: hidden;
+  }
+
+  .projects__header {
+    position: absolute;
+    top: 1.5rem;
+    left: 50%;
+    width: max-content;
+    transform: translateX(-50%);
   }
 
   .sticky-projects__deck {
+    position: relative;
+    display: block;
     width: 100%;
+    height: 100%;
+    max-height: none;
     margin-top: clamp(3rem, 8svh, 4rem);
+    overflow: hidden;
+    border-radius: 1.25rem;
+  }
+
+  .project-stack-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border: 0;
+    border-radius: inherit;
+  }
+
+  .project-stack-card img {
+    width: 100%;
+    height: auto;
+    flex: 0 0 auto;
+    object-fit: contain;
+    background: #071f2a;
+  }
+
+  .project-stack-card__veil {
+    display: none;
+  }
+
+  .project-stack-card__number {
+    z-index: 1;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(7, 31, 42, 0.8);
+  }
+
+  .project-stack-card__copy {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    display: flex;
+    min-height: 12rem;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.35rem;
+    background: #102e39;
+  }
+
+  .project-stack-card__copy p {
+    color: #8da2a5;
   }
 
   .project-stack-card__copy h3 {
+    color: #f3f8f8;
     font-size: clamp(1.65rem, 8vw, 2.5rem);
   }
 

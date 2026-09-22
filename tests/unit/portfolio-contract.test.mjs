@@ -15,6 +15,26 @@ test('cards de projetos mantêm contrato de teclado', async () => {
   assert.match(source, /event\.key !== 'Enter'/)
   assert.match(source, /event\.key !== ' '/)
   assert.match(source, /onOpenProject\(project\.number\)/)
+  assert.match(source, /scale: isDesktop \? 0\.7 : 0\.72/)
+  assert.match(source, /rotation: isDesktop \? 5 : \(index % 2 === 0 \? 4 : -4\)/)
+})
+
+test('Projetos no mobile preservam capturas inteiras com a pilha animada de Serviços', async () => {
+  const source = await read('src/sections/StickyProjects.jsx')
+  const css = await read('src/App.css')
+
+  assert.match(source, /yPercent: index => \(isDesktop \? 0 : index === 0 \? 0 : 100\)/)
+  assert.match(source, /nextCard,[\s\S]*yPercent: 0/)
+  assert.match(css, /\.sticky-projects__deck\s*\{[\s\S]*position: relative;[\s\S]*height: 100%;/)
+  assert.match(css, /\.project-stack-card\s*\{[\s\S]*position: absolute;[\s\S]*inset: 0;[\s\S]*border: 0;/)
+  assert.match(css, /\.project-stack-card img\s*\{[\s\S]*object-fit: contain;/)
+  assert.match(css, /\.project-stack-card__veil\s*\{[\s\S]*display: none;/)
+})
+
+test('cabeçalho rolado não desenha uma linha horizontal no mobile', async () => {
+  const css = await read('src/App.css')
+
+  assert.match(css, /\.site-header\.is-scrolled\s*\{[\s\S]*border-bottom-color:\s*transparent;/)
 })
 
 test('PortfolioContent mantém gerenciamento de foco e Escape nos dialogs', async () => {
@@ -78,6 +98,30 @@ test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', asy
   assert.match(details, /Gestão de moradores e unidades/)
   assert.match(details, /Gestão de espaços compartilhados/)
   assert.match(details, /IA & Integrações/)
+})
+
+test('Projeto Cindy oferece demo local e galeria com capturas da própria demo', async () => {
+  const app = await read('src/App.jsx')
+  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const demo = await read('src/components/panels/CindyDemoPanel.jsx')
+  const gallery = await read('src/components/panels/CindyGalleryPanel.jsx')
+  const demoHtml = await read('public/nova-cindy-mockup-v2.html')
+
+  assert.match(details, /projectNumber === '02'/)
+  assert.match(details, /6 TELAS DA DEMO/)
+  assert.match(details, /ABRIR DEMO DA CINDY/)
+  assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
+  assert.match(app, /import CindyGalleryPanel from '@\/components\/panels\/CindyGalleryPanel\.jsx'/)
+  assert.match(app, /activePanel === 'cindy-demo'/)
+  assert.match(app, /activePanel === 'cindy-gallery'/)
+  assert.match(demo, /src="\/nova-cindy-mockup-v2\.html"/)
+  assert.match(demo, /data-dialog-initial-focus/)
+  assert.match(gallery, /dashboard\.webp/)
+  assert.match(gallery, /residents\.webp/)
+  assert.match(gallery, /packages\.webp/)
+  assert.match(gallery, /occurrences\.webp/)
+  assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
+  assert.match(demoHtml, /<title>Nova Cindy · Protótipo visual<\/title>/)
 })
 
 test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes', async () => {

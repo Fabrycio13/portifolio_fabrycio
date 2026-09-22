@@ -165,6 +165,18 @@ export default function ProjectDetailsPanel({ projectNumber, onClose, onOpenDemo
             </span>
           </button>
         )}
+        {projectNumber === '02' && (
+          <button type="button" className="project-gallery-preview project-gallery-preview--cindy" onClick={() => onOpenGallery('cindy')}>
+            <img
+              src="/images/projects/cindy/dashboard.webp"
+              alt="Dashboard da plataforma Cindy com indicadores de gestão condominial"
+            />
+            <span className="project-gallery-preview__veil">
+              <span>6 TELAS DA DEMO</span>
+              <strong>VER TELAS DO PROJETO</strong>
+            </span>
+          </button>
+        )}
         {projectNumber === '04' && (
           <button type="button" className="project-gallery-preview project-gallery-preview--nexus" onClick={() => onOpenGallery('nexus')}>
             <img
@@ -204,6 +216,12 @@ export default function ProjectDetailsPanel({ projectNumber, onClose, onOpenDemo
           <button type="button" className="about-contact-cta project-demo-cta" onClick={() => onOpenDemo(projectNumber)}>
             <FaCog className="about-contact-cta__icon" aria-hidden="true" />
             <span>ABRIR DEMO DO LAUDO</span>
+          </button>
+        )}
+        {projectNumber === '02' && (
+          <button type="button" className="about-contact-cta project-demo-cta" onClick={() => onOpenDemo(projectNumber)}>
+            <FaCog className="about-contact-cta__icon" aria-hidden="true" />
+            <span>ABRIR DEMO DA CINDY</span>
           </button>
         )}
         {projectNumber === '04' && (

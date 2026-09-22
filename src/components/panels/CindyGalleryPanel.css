@@ -1,0 +1,35 @@
+.cindy-gallery .people-gallery__content {
+  border-color: rgba(84, 215, 162, 0.34);
+}
+
+.cindy-gallery .people-gallery__eyebrow,
+.cindy-gallery .people-gallery__figure figcaption span {
+  color: #70e0af;
+}
+
+.cindy-gallery .people-gallery__badge {
+  border-color: rgba(84, 215, 162, 0.42);
+  background: rgba(20, 121, 81, 0.24);
+  color: #8cf0bf;
+}
+
+.cindy-gallery .people-gallery__back,
+.cindy-gallery .people-gallery__arrow {
+  border-color: rgba(84, 215, 162, 0.42);
+  background: rgba(21, 92, 64, 0.34);
+  color: #dcffed;
+}
+
+.cindy-gallery .people-gallery__arrow:hover,
+.cindy-gallery .people-gallery__arrow:focus-visible,
+.cindy-gallery .people-gallery__back:hover,
+.cindy-gallery .people-gallery__back:focus-visible,
+.cindy-gallery .people-gallery__close:hover,
+.cindy-gallery .people-gallery__close:focus-visible {
+  background: rgba(24, 145, 96, 0.62);
+}
+
+.cindy-gallery .people-gallery__thumbnail.is-active {
+  border-color: #54d7a2;
+  background: rgba(23, 125, 84, 0.25);
+}
