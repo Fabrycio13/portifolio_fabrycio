@@ -1,6 +1,7 @@
 import {
   FaBrain,
   FaColumns,
+  FaCog,
   FaGlobe,
   FaDatabase,
   FaChartBar,
@@ -101,7 +102,7 @@ const projectDetails = {
   },
 }
 
-export default function ProjectDetailsPanel({ projectNumber, onClose }) {
+export default function ProjectDetailsPanel({ projectNumber, onClose, onOpenDemo, onOpenGallery }) {
   const project = projectDetails[projectNumber]
 
   if (!project) return null
@@ -140,6 +141,42 @@ export default function ProjectDetailsPanel({ projectNumber, onClose }) {
             </p>
           ))
           : <p className="project-description">{project.description}</p>}
+        {projectNumber === '01' && (
+          <button type="button" className="project-gallery-preview" onClick={onOpenGallery}>
+            <img
+              src="/images/projects/people/people-dashboard.webp"
+              alt="Dashboard da plataforma People com indicadores de recrutamento"
+            />
+            <span className="project-gallery-preview__veil">
+              <span>7 TELAS DO PRODUTO</span>
+              <strong>VER TELAS DO PROJETO</strong>
+            </span>
+          </button>
+        )}
+        {projectNumber === '03' && (
+          <button type="button" className="project-gallery-preview project-gallery-preview--phx" onClick={() => onOpenGallery('phx')}>
+            <img
+              src="/images/projects/phx/phx-form-preview.webp"
+              alt="Tela de preenchimento e preview do laudo PHX e MDS Crédito Imobiliário"
+            />
+            <span className="project-gallery-preview__veil">
+              <span>3 TELAS DO PRODUTO</span>
+              <strong>VER TELAS DO PROJETO</strong>
+            </span>
+          </button>
+        )}
+        {projectNumber === '04' && (
+          <button type="button" className="project-gallery-preview project-gallery-preview--nexus" onClick={() => onOpenGallery('nexus')}>
+            <img
+              src="/images/projects/project-04.webp"
+              alt="Fluxo de orquestração da plataforma Nexus AI"
+            />
+            <span className="project-gallery-preview__veil">
+              <span>4 TELAS DO PRODUTO</span>
+              <strong>VER TELAS DO PROJETO</strong>
+            </span>
+          </button>
+        )}
         <ul className="project-features">
           {project.features.map((feature, index) => {
             const Icon = feature.icon
@@ -163,6 +200,18 @@ export default function ProjectDetailsPanel({ projectNumber, onClose }) {
             </div>
           ))}
         </div>
+        {projectNumber === '03' && (
+          <button type="button" className="about-contact-cta project-demo-cta" onClick={() => onOpenDemo(projectNumber)}>
+            <FaCog className="about-contact-cta__icon" aria-hidden="true" />
+            <span>ABRIR DEMO DO LAUDO</span>
+          </button>
+        )}
+        {projectNumber === '04' && (
+          <button type="button" className="about-contact-cta project-demo-cta" onClick={() => onOpenDemo(projectNumber)}>
+            <FaCog className="about-contact-cta__icon" aria-hidden="true" />
+            <span>TESTAR DEMO INTERATIVA</span>
+          </button>
+        )}
       </div>
     </aside>
   )
