@@ -131,6 +131,15 @@ export function StickyServices() {
           ))}
         </div>
       </div>
+
+      <div className="services-transition" aria-hidden="true">
+        <img
+          src="/images/services-transition.png"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </section>
   )
 }

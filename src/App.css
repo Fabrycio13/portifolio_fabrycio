@@ -28,7 +28,7 @@ button,
   position: relative;
   z-index: 2;
   height: 120svh;
-  background: #071f2a;
+  background: #18343f;
   color: #f3f8f8;
 }
 
@@ -40,6 +40,12 @@ button,
       clamp(6rem, 10svh, 7.5rem) +
       3rem
     );
+  }
+}
+
+@media (max-width: 640px) {
+  .wave-footer--loading {
+    height: 100svh;
   }
 }
 
@@ -388,8 +394,9 @@ button,
 .projects {
   position: relative;
   z-index: 2;
-  margin-top: clamp(2rem, 4svh, 3rem);
-  background: #071f2a;
+  margin-top: 0;
+  padding-top: clamp(2rem, 4svh, 3rem);
+  background: #18343f;
   color: #f3f8f8;
   scroll-margin-top: 0;
 }
@@ -404,7 +411,7 @@ button,
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #071f2a;
+  background: #18343f;
 }
 
 .projects__header {
@@ -552,7 +559,7 @@ button,
 
 @media (min-width: 901px) {
   .projects {
-    margin-top: clamp(4rem, 8svh, 6rem);
+    padding-top: clamp(4rem, 8svh, 6rem);
   }
 
   .sticky-projects__stage {
@@ -561,7 +568,7 @@ button,
     padding: clamp(11rem, 22svh, 13rem) clamp(1.5rem, 5vw, 5rem)
       clamp(1.5rem, 4svh, 3rem);
     align-items: flex-start;
-    background: #071f2a;
+    background: #18343f;
   }
 
   .projects__header {
@@ -585,7 +592,7 @@ button,
     overflow: hidden;
     border: 0;
     border-radius: clamp(1.25rem, 3vw, 2.5rem);
-    background: #071f2a;
+    background: #18343f;
   }
 
   .project-stack-card {
@@ -1328,6 +1335,28 @@ button,
   .section-header__ornament,
   .about-contact-cta__icon {
     animation: none;
+  }
+
+  .projects .sticky-projects__stage {
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+  }
+
+  .projects .sticky-projects__deck {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .projects .project-stack-card {
+    position: relative;
+    inset: auto;
+    min-height: min(68svh, 680px);
+    visibility: visible !important;
+    transform: none !important;
   }
 
   .site-header,

@@ -141,16 +141,16 @@ export function WaveFooter() {
 
         drawTopWave(context, width, height, {
           base: topBase,
-          amplitude: height * 0.095,
+          amplitude: height * 0.075,
           frequency: 0.009,
           phase: -movingPhase * 0.8 - scrollPhase,
-          fill: '#071f2a',
+          fill: '#18343f',
           stroke: 'rgba(52, 112, 126, 0.9)',
         })
 
         drawWaveLine(context, width, height, {
           base: middleBase,
-          amplitude: height * 0.075,
+          amplitude: height * 0.06,
           frequency: 0.011,
           phase: movingPhase + scrollPhase + 1.1,
           stroke: 'rgba(82, 155, 172, 0.78)',
@@ -158,7 +158,7 @@ export function WaveFooter() {
 
         drawWaveLine(context, width, height, {
           base: lowerBase,
-          amplitude: height * 0.085,
+          amplitude: height * 0.068,
           frequency: 0.009,
           phase: -movingPhase * 1.15 + scrollPhase + 2.2,
           stroke: 'rgba(52, 112, 126, 0.9)',

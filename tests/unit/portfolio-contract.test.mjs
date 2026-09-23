@@ -7,6 +7,12 @@ const root = resolve(import.meta.dirname, '../..')
 
 const read = relativePath => readFile(resolve(root, relativePath), 'utf8')
 
+test('fallback do footer mantém a altura mobile quando a seção é carregada', async () => {
+  const css = await read('src/App.css')
+
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.wave-footer--loading\s*\{\s*height: 100svh;/)
+})
+
 test('cards de projetos mantêm contrato de teclado', async () => {
   const source = await read('src/sections/StickyProjects.jsx')
 
@@ -23,12 +29,14 @@ test('Projetos no mobile preservam capturas inteiras com a pilha animada de Serv
   const source = await read('src/sections/StickyProjects.jsx')
   const css = await read('src/App.css')
 
-  assert.match(source, /yPercent: index => \(isDesktop \? 0 : index === 0 \? 0 : 100\)/)
+  assert.match(source, /yPercent: index => \(index === 0 \? 0 : 100\)/)
   assert.match(source, /nextCard,[\s\S]*yPercent: 0/)
   assert.match(css, /\.sticky-projects__deck\s*\{[\s\S]*position: relative;[\s\S]*height: 100%;/)
   assert.match(css, /\.project-stack-card\s*\{[\s\S]*position: absolute;[\s\S]*inset: 0;[\s\S]*border: 0;/)
   assert.match(css, /\.project-stack-card img\s*\{[\s\S]*object-fit: contain;/)
   assert.match(css, /\.project-stack-card__veil\s*\{[\s\S]*display: none;/)
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.projects \.sticky-projects__deck[\s\S]*display: grid;/)
+  assert.match(css, /\.projects \.project-stack-card[\s\S]*visibility: visible !important;[\s\S]*transform: none !important;/)
 })
 
 test('cabeçalho rolado não desenha uma linha horizontal no mobile', async () => {
@@ -51,6 +59,16 @@ test('PortfolioContent mantém gerenciamento de foco e Escape nos dialogs', asyn
   assert.match(source, /className="hero__cta" href="#servicos"/)
   assert.match(source, /className="hero__cta hero__cta--contact"/)
   assert.match(source, /onClick=\{\(\) => openPanel\('contato'\)\}/)
+})
+
+test('Serviços têm uma faixa visual de transição abaixo dos cards', async () => {
+  const source = await read('src/sections/StickyServices.jsx')
+  const css = await read('src/sections/StickyServices.css')
+
+  assert.match(source, /className="services-transition"/)
+  assert.match(source, /src="\/images\/services-transition\.png"/)
+  assert.match(css, /\.services-transition\s*\{[\s\S]*height: clamp\(9rem, 20svh, 18rem\)/)
+  assert.match(css, /\.services-transition img\s*\{[\s\S]*object-fit: cover;/)
 })
 
 test('dialogs definem um foco inicial nativo', async () => {

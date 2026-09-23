@@ -24,7 +24,7 @@ export function StickyProjects({ projects, onOpenProject }) {
       const isDesktop = window.matchMedia('(min-width: 901px)').matches
 
       gsap.set(cards, {
-        yPercent: index => (isDesktop ? 0 : index === 0 ? 0 : 100),
+        yPercent: index => (index === 0 ? 0 : 100),
         scale: 1,
         rotation: 0,
         autoAlpha: 1,
@@ -93,7 +93,6 @@ export function StickyProjects({ projects, onOpenProject }) {
     >
       <div className="sticky-projects__stage" ref={stage}>
         <header className="projects__header">
-          <p>Seleção inicial</p>
           <h2 id="projects-title">PROJETOS</h2>
           <span className="section-header__divider" aria-hidden="true">
             <span className="section-header__ornament">
