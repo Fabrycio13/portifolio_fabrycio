@@ -30,8 +30,9 @@ src/
 - Navegação e CTA principal usam âncoras reais para `#servicos` e `#projetos`.
 - Contato, Sobre e detalhes de projetos são dialogs que preservam a cena.
 - Cards de projetos mantêm operação por mouse, toque, `Enter` e `Space`.
+- A entrada dos cards usa `IntersectionObserver`: deslocamento lateral conforme o lado do card e fade-in de 650 ms, somente na primeira entrada no viewport. O observer deixa de observar cada card revelado; foco por teclado também revela o card. Movimento reduzido mostra os cards sem essa animação.
 - O gerenciamento de foco implementa foco inicial, contenção de `Tab`, `Escape` e retorno ao gatilho.
-- GSAP/ScrollTrigger controla as sequências sticky; Lenis mantém a navegação suave; OGL renderiza a tipografia deformável.
+- GSAP/ScrollTrigger controla a sequência sticky de Serviços e mede o avanço local de Projetos. Um único `motion.path` desenha a serpentina de Projetos; a geometria é recalculada com `ResizeObserver` a partir das etapas em fluxo normal. Cards e percurso alternam os lados tanto no desktop quanto no celular; no celular, as curvas atravessam somente os espaços entre os cards para preservar a leitura. A ponta acompanha a altura da rolagem, inclusive no retorno; os cards ganham destaque quando ela se aproxima. Com movimento reduzido, o percurso fica completo. Lenis mantém a navegação suave; OGL renderiza a tipografia deformável.
 
 ## Limites de responsabilidade
 

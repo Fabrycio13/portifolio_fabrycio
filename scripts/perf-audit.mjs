@@ -106,7 +106,7 @@ const evaluateExpression = String.raw`(async () => {
     },
     images: [...document.querySelectorAll('img')].map(readImage),
     canvases: [...document.querySelectorAll('canvas')].map(readCanvas),
-    projectCards: [...document.querySelectorAll('.project-stack-card')].map(card => ({
+    projectCards: [...document.querySelectorAll('.project-journey__card')].map(card => ({
       role: card.getAttribute('role'),
       tabIndex: card.tabIndex,
       ariaLabel: card.getAttribute('aria-label'),

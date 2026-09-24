@@ -42,7 +42,7 @@ A execução local mais recente, em build de produção, usou viewport de `1280�
 | Projetos | 59,99 FPS | 0 | 0 | 4974 px | 3 | montado |
 | Footer | 60,46 FPS | 0 | 0 | 4974 px | 3 | montado |
 
-No cenário de Projetos, a sonda também encontrou quatro cards com `role="button"` e `tabIndex=0`, confirmando o contrato de teclado no DOM produzido.
+No cenário de Projetos da execução registrada, a sonda encontrou quatro cards com `role="button"` e `tabIndex=0`, confirmando o contrato de teclado no DOM produzido. O seletor da sonda foi atualizado para os cards do percurso; os números acima são anteriores à refatoração visual.
 
 Esses números são uma amostra local de regressão, não uma garantia para todos os dispositivos. O resultado deve ser repetido em hardware de menor capacidade antes de tomar decisões de design ou trocar efeitos visuais.
 
