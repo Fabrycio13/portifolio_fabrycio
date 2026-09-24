@@ -19,7 +19,7 @@ import {
 const projectDetails = {
   '01': {
     title: 'RH COM INTELIGÊNCIA ARTIFICIAL',
-    detail: 'PEOPLE',
+    detail: 'GERENCIADOR DE RECURSOS HUMANOS',
     description: 'O People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
     features: [
       { icon: FaBrain, text: 'Análise de currículos com IA' },
@@ -38,7 +38,7 @@ const projectDetails = {
   },
   '02': {
     title: 'GESTÃO CONDOMINIAL COM IA',
-    detail: 'PROJETO CONFIDENCIAL · PLATAFORMA WEB',
+    detail: 'ADMINISTRAÇÃO DE CONDOMÍNIOS',
     description: [
       'Uma plataforma web criada para centralizar a administração de condomínios em um único ambiente, reunindo moradores, unidades, veículos, vagas, encomendas, ocorrências e espaços compartilhados.',
       'A solução também utiliza IA e integrações automatizadas para agilizar o cadastro de veículos e o registro de encomendas.',
@@ -60,7 +60,7 @@ const projectDetails = {
     ],
   },
   '03': {
-    title: 'PHX / MDS CRÉDITO IMOBILIÁRIO',
+    title: 'LAUDO DE CRÉDITO IMOBILIÁRIO',
     detail: 'GERADOR DE LAUDOS · ANÁLISE DE CRÉDITO',
     description: 'O Projeto PHX / MDS Crédito Imobiliário é uma aplicação frontend para gerar laudos de análise de crédito imobiliário. Enquanto os dados são preenchidos, o sistema atualiza um preview visual do documento, permitindo gerar e baixar o laudo em PDF.',
     features: [
