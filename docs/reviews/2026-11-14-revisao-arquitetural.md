@@ -1,6 +1,7 @@
 # Revisão arquitetural — 14/11/2026
 
 > **Relatório histórico.** Este documento é a transcrição legível do relatório original [`2026-11-14-revisao-arquitetural.html`](2026-11-14-revisao-arquitetural.html), que foi gerado pela skill `improve-codebase-architecture` e está preservado sem alterações. O HTML depende de Tailwind e Mermaid via CDN; esta versão reproduz o conteúdo e os diagramas em Markdown/Mermaid.
+> **Nota sobre os diagramas:** dois diagramas Mermaid do HTML original (candidato 3 "Antes" e candidato 5 "Antes") não renderizam, por erro de sintaxe nos rótulos. O HTML foi preservado sem alterações. Nesta transcrição, só esses dois rótulos foram colocados entre aspas, sem mudar o conteúdo, e os diagramas foram validados com o Mermaid 11.4.1.
 > Os caminhos e números abaixo representam o snapshot `feat/adaptive-video-performance` @ `7f53175`. As decisões tomadas a partir deste relatório estão em [`2026-11-14-decisoes-arquiteturais.md`](2026-11-14-decisoes-arquiteturais.md) e nas [specs](../specs/README.md).
 
 ## Vocabulário
@@ -106,9 +107,9 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-  A[App effect] -.querySelector<br/>.info-panel.is-open,<br/>.people-gallery.is-open.-> P1[InfoPanels]
+  A[App effect] -. "querySelector .info-panel.is-open, .people-gallery.is-open" .-> P1[InfoPanels]
   A -.-> P2[Galerias]
-  A -.-> P3[Demos reusam<br/>classe info-panel]
+  A -.-> P3["Demos reusam<br/>classe info-panel"]
   P1 -->|preserveTrigger| A
   P2 -->|preserveTrigger| A
   linkStyle 0,1,2 stroke:#dc2626,stroke-width:2px;
@@ -156,7 +157,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-  T[teste] -->|readFile + regex| S[App.jsx / App.css<br/>'lastTriggerRef'<br/>'firstElement.focus()'<br/>index % 2 ? 0.25 : 0.75]
+  T[teste] -->|readFile + regex| S["App.jsx / App.css<br/>'lastTriggerRef'<br/>'firstElement.focus()'<br/>index % 2 ? 0.25 : 0.75"]
   linkStyle 0 stroke:#dc2626,stroke-width:2px;
 ```
 

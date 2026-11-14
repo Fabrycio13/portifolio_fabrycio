@@ -46,7 +46,7 @@ Unificar os dados de cada projeto num registro único, tornar a navegação entr
 - **D1.12 Removidos:**
   - campos `image`/`alt` de `projects.js`;
   - `src/assets/hero.png`, `react.svg` e `vite.svg`;
-  - `.hermes/plans/2026-09-10_145643-otimizacao-video-e-fluidez.md`. Foi inspecionado: é um plano obsoleto do fluxo de vídeo removido.
+  - `.hermes/plans/2026-09-10_145643-otimizacao-video-e-fluidez.md`. Foi inspecionado: é um plano obsoleto do fluxo de vídeo removido. **Já removido** no commit `661ac525a195dbd73b26f9b743cc4a8a706d430b`, com aceite do mantenedor como antecipação deste item; na etapa 7 resta só confirmar, por grep, que não sobrou referência.
 - **D1.13 Referências a `project-01..03.webp` removidas, arquivos mantidos** até a pendência P1. `project-04.webp` fica.
 - **D1.14 Renomeação** de `components/panels/` para `components/dialogs/` e `*Panel` para `*Dialog`:
   - `ProjectDetailsDialog`, `ProjectGalleryDialog`, `CindyDemoDialog`, `PhxDemoDialog`, `NexusDemoDialog`, `InfoDialogs`;

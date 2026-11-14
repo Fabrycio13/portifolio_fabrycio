@@ -39,7 +39,7 @@ Os protocolos de validação compartilhados (validação visual, performance, go
 | Branch local | `feat/adaptive-video-performance` @ `7f53175`, sem alterações, sincronizada com a origin |
 | Produção | `main` @ `814cb2a` (merge do PR 20). A Vercel publica em produção a partir da `main`; as outras branches geram Preview |
 | Divergência | `7f53175` está todo contido na `main`; a única diferença de conteúdo é o `LICENSE` |
-| Clone local | O refspec busca só `feat/adaptive-video-performance`. `origin/main` não existe localmente |
+| Clone local | O refspec busca só `feat/adaptive-video-performance`. `origin/main` não existe localmente. **Atualização (14/11/2026, depois da aprovação das specs):** o refspec `+refs/heads/main:refs/remotes/origin/main` foi adicionado ao `.git/config` local e `origin/main` passou a existir, apontando para `814cb2a` (conferido com `git ls-remote`). A documentação foi commitada na branch `docs/materializacao-arquitetural`, criada a partir dele |
 | Node | Local: v26.13.0 (única instalação encontrada). CI: Node 22 (`.github/workflows/ci.yml`) |
 | Testes | 24/24 ✔ (todos por regex sobre o código-fonte) · lint 0 avisos · build ✔ · `git diff --check` ✔ |
 | Performance (Chrome 157, 1280×801 e 390×844 @3x, execução única por cenário) | FCP/LCP de cerca de 0,5 s · CLS 0,003 · cerca de 60 FPS · long task de 218–270 ms na inicialização (três execuções), atribuída ao WebGL do `WarpText` · 736 kB no load inicial do desktop. **Números exploratórios, que não servem de baseline:** poucas execuções e nenhum registro de dispersão |
