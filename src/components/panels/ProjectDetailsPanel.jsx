@@ -142,7 +142,7 @@ export default function ProjectDetailsPanel({ projectNumber, onClose, onOpenDemo
           ))
           : <p className="project-description">{project.description}</p>}
         {projectNumber === '01' && (
-          <button type="button" className="project-gallery-preview" onClick={onOpenGallery}>
+          <button type="button" className="project-gallery-preview" onClick={() => onOpenGallery('people')}>
             <img
               src="/images/projects/people/people-dashboard.webp"
               alt="Dashboard da plataforma People com indicadores de recrutamento"

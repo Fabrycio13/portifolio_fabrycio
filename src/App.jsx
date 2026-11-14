@@ -325,7 +325,7 @@ function PortfolioContent() {
             { preserveTrigger: true },
           )}
           onOpenGallery={gallery => openPanel(
-            gallery === 'cindy' ? 'cindy-gallery' : gallery === 'phx' ? 'phx-gallery' : gallery === 'nexus' ? 'nexus-gallery' : 'people-gallery',
+            gallery === 'people' ? 'people-gallery' : gallery === 'cindy' ? 'cindy-gallery' : gallery === 'phx' ? 'phx-gallery' : gallery === 'nexus' ? 'nexus-gallery' : 'people-gallery',
             { preserveTrigger: true },
           )}
         />
