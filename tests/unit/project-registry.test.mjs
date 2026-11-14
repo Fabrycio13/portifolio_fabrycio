@@ -1,0 +1,95 @@
+// Invariants of the project registry (Spec 0001, D1.5, D1.6, D1.8, D1.9).
+// The registry is imported directly by Node, without Vite or React: it must stay plain data.
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { createRequire } from 'node:module'
+import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import { projectCards, projects } from '../../src/data/projects.js'
+
+const root = resolve(import.meta.dirname, '../..')
+const publicAsset = path => existsSync(resolve(root, 'public', path.replace(/^\//, '')))
+const nonEmpty = value => typeof value === 'string' && value.trim().length > 0
+
+test('registro é dado puro: sem imports, React ou DOM', async () => {
+  // Line comments are stripped so the rule applies to code, not to the documentation of the rule.
+  const source = (await readFile(resolve(root, 'src/data/projects.js'), 'utf8')).replace(/^\s*\/\/.*$/gm, '')
+  assert.doesNotMatch(source, /^\s*import\s|\bimport\(|\brequire\(/m, 'o registro não importa módulos')
+  assert.doesNotMatch(source, /<[A-Z][A-Za-z]*[\s/>]/, 'o registro não contém JSX')
+  assert.doesNotMatch(source, /\bdocument\.|\bwindow\./, 'o registro não acessa o DOM')
+  // structuredClone throws on functions, so React components (e.g. icon components) cannot hide here.
+  assert.doesNotThrow(() => structuredClone(projects), 'o registro deve conter só dados serializáveis')
+})
+
+test('slugs são únicos, estáveis e válidos', () => {
+  const slugs = projects.map(project => project.slug)
+  assert.deepEqual(slugs, ['people', 'cindy', 'phx', 'nexus'])
+  assert.equal(new Set(slugs).size, slugs.length)
+  for (const slug of slugs) assert.match(slug, /^[a-z][a-z0-9-]*$/)
+})
+
+test('número é só posição de exibição: único, em sequência e diferente da identidade', () => {
+  projects.forEach((project, index) => {
+    assert.equal(project.numero, String(index + 1).padStart(2, '0'))
+    assert.notEqual(project.numero, project.slug)
+  })
+})
+
+test('cada projeto tem card e detalhes completos', () => {
+  for (const { slug, card, detalhes } of projects) {
+    for (const field of ['title', 'detail', 'summary', 'logo', 'logoAlt']) assert.ok(nonEmpty(card[field]), `${slug}: card.${field}`)
+    assert.ok(publicAsset(card.logo), `${slug}: logo inexistente ${card.logo}`)
+    const description = Array.isArray(detalhes.description) ? detalhes.description : [detalhes.description]
+    assert.ok(description.length > 0 && description.every(nonEmpty), `${slug}: descrição`)
+    assert.ok(detalhes.features.length > 0, `${slug}: recursos`)
+    assert.ok(detalhes.technologies.length > 0 && detalhes.technologies.every(t => nonEmpty(t.label) && nonEmpty(t.stack)), `${slug}: tecnologias`)
+  }
+})
+
+test('chaves de ícone são texto e existem na biblioteca de ícones', () => {
+  // The component map that renders these keys lives in the details dialog (D1.6); its coverage
+  // test is added when that consumer is migrated. Here every key must name a real Font Awesome icon.
+  const icons = createRequire(import.meta.url)('react-icons/fa')
+  const componentName = key => `Fa${key.split('-').map(part => part[0].toUpperCase() + part.slice(1)).join('')}`
+  for (const { slug, detalhes } of projects) {
+    for (const feature of detalhes.features) {
+      assert.match(feature.icon, /^[a-z][a-z-]*$/, `${slug}: chave de ícone inválida`)
+      assert.equal(typeof icons[componentName(feature.icon)], 'function', `${slug}: ícone inexistente ${feature.icon}`)
+      assert.ok(nonEmpty(feature.text), `${slug}: texto do recurso`)
+    }
+  }
+})
+
+test('galerias têm tema explícito, rótulos e telas válidas e não vazias', () => {
+  const themes = new Set([null, 'cindy', 'phx', 'nexus'])
+  for (const { slug, galeria } of projects) {
+    if (galeria === null) continue
+    assert.ok(themes.has(galeria.tema), `${slug}: tema ${galeria.tema}`)
+    for (const field of ['eyebrow', 'badge', 'closeLabel', 'navigationLabel', 'previousLabel', 'nextLabel']) {
+      assert.ok(nonEmpty(galeria[field]), `${slug}: galeria.${field}`)
+    }
+    assert.ok(nonEmpty(galeria.preview.alt) && nonEmpty(galeria.preview.countLabel), `${slug}: prévia`)
+    assert.ok(publicAsset(galeria.preview.image), `${slug}: imagem da prévia inexistente`)
+    assert.ok(galeria.screens.length > 0, `${slug}: galeria sem telas`)
+    assert.equal(new Set(galeria.screens.map(screen => screen.image)).size, galeria.screens.length, `${slug}: telas repetidas`)
+    for (const screen of galeria.screens) {
+      for (const field of ['title', 'description', 'alt']) assert.ok(nonEmpty(screen[field]), `${slug}: tela.${field}`)
+      assert.ok(publicAsset(screen.image), `${slug}: tela inexistente ${screen.image}`)
+    }
+  }
+})
+
+test('demo é ausente ou tem rótulo do botão', () => {
+  for (const { slug, demo } of projects) {
+    if (demo !== null) assert.ok(nonEmpty(demo.buttonLabel), `${slug}: demo.buttonLabel`)
+  }
+  assert.deepEqual(projects.filter(project => project.demo).map(project => project.slug), ['cindy', 'phx', 'nexus'])
+})
+
+test('projectCards é derivado do registro, sem cópia própria dos dados', () => {
+  assert.equal(projectCards.length, projects.length)
+  projects.forEach((project, index) => {
+    assert.deepEqual(projectCards[index], { number: project.numero, ...project.card })
+  })
+})
