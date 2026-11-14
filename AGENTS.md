@@ -8,7 +8,7 @@
 - **Stack:** JavaScript/JSX, React `19.2.0`, Vite `8.2.2`, GSAP `3.15.0`, `@gsap/react`, Lenis, Motion, OGL, React Icons e Oxlint `1.79.0`.
 - **Gerenciador de pacotes:** npm, com `package-lock.json` versionado.
 - **Deploy:** a publicação deve ser feita pela integração nativa da Vercel conectada ao repositório e à branch de produção configurada no painel da Vercel. Não há workflow customizado de deploy versionado.
-- **Documentação relevante:** `README.md`, `docs/architecture.md`, `docs/development.md`, `docs/decisions/` e `docs/performance-baseline.md`.
+- **Documentação relevante:** `README.md`, `docs/architecture.md`, `docs/development.md`, `docs/decisions/`, `docs/specs/`, `docs/reviews/`, `docs/performance-baseline.md` e `GLOSSARY.md`. O índice geral fica em `docs/README.md`. Antes de implementar uma mudança especificada, leia a spec correspondente em `docs/specs/` e o índice `docs/specs/README.md`. Use os termos do `GLOSSARY.md`.
 
 ### Áreas principais
 
