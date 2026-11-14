@@ -10,6 +10,23 @@ Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.m
 |---|---|---|---|
 | — | — | A prévia da People abre a galeria pelo identificador | **Nova cobertura:** `project-gallery-preview.test.mjs` (falhava antes da correção) |
 
+## Etapa 4 / C — App com `EstadoDialog` e módulo de navegação
+
+| Teste antigo (contrato) | Asserção antiga | Regra protegida | Situação / novo local |
+|---|---|---|---|
+| cards de projetos mantêm contrato de teclado | `onOpenProject(numero)` | O card abre o projeto ao ser acionado | **Alterada** para `onOpenProject(slug)`: o slug passa a ser a identidade (D1.5); runtime coberto pelo smoke (§7.4 B) |
+| PortfolioContent mantém gerenciamento de foco e Escape | `onClick={() => openPanel('contato')}` | O CTA do hero abre o Contato | **Alterada** para `onClick={() => openDialog({ tipo: 'contato' })}`; runtime coberto pelo smoke (`B-hero-contato-…`) |
+| Projeto Cindy oferece demo local e galeria… | `activePanel === 'cindy-demo'`, `activePanel === 'cindy-gallery'` | O App renderiza a demo e a galeria da Cindy | **Alteradas** para as entradas `cindy: CindyDemoPanel` e `cindy: CindyGalleryPanel` dos mapas por slug (D1.7); cobertura dos mapas em `app-dialog-state.test.mjs` |
+| Projeto Nexus AI oferece uma demo interativa… | `activePanel === 'nexus-demo'` | O App renderiza a demo Nexus | **Alterada** para `nexus: NexusDemoPanel` |
+| Projeto Nexus AI abre uma galeria coerente… | `activePanel === 'nexus-gallery'` | O App renderiza a galeria Nexus | **Alterada** para `nexus: NexusGalleryPanel` |
+| Projeto PHX oferece a demo local… | `activePanel === 'phx-demo'` | O App renderiza a demo PHX | **Alterada** para `phx: PhxDemoPanel` |
+| Projeto PHX abre uma galeria com as telas do laudo | `activePanel === 'phx-gallery'` | O App renderiza a galeria PHX | **Alterada** para `phx: PhxGalleryPanel` |
+| Projeto People abre uma galeria de telas sanitizadas… | `activePanel === 'people-gallery'` | O App renderiza a galeria People | **Alterada** para `people: PeopleGalleryPanel` |
+
+**Cobertura nova no C:**
+- `app-dialog-state.test.mjs`: os mapas de galeria e de demo cobrem exatamente os projetos do registro; transições só pelo módulo, sem `preserveTrigger` nem estado misto; gatilho capturado só quando o módulo indica abertura a partir de `null`; rejeição mantém o estado e só avisa em desenvolvimento; `Escape` fecha pelo módulo.
+- As regras de navegação em si (combinações, motivos, voltar, fechar) seguem cobertas por `dialog-navigation.test.mjs` (ticket B).
+
 ## Etapa 3 / A2 — consumidores migrados para o registro
 
 | Teste antigo (contrato) | Asserção antiga | Regra protegida | Situação / novo local |

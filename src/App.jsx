@@ -14,6 +14,7 @@ import PhxGalleryPanel from '@/components/panels/PhxGalleryPanel.jsx'
 import ProjectDetailsPanel from '@/components/panels/ProjectDetailsPanel.jsx'
 import { projects } from '@/data/projects.js'
 import { DeferredSection } from '@/layouts/DeferredSection.jsx'
+import { fechar, navegar, voltar } from '@/utils/dialogNavigation.js'
 import { getFocusableElements } from '@/utils/focus.js'
 import { lazy, useEffect, useRef, useState } from 'react'
 
@@ -28,11 +29,26 @@ const WaveFooter = lazy(() => import('@/sections/WaveFooter.jsx').then(module =>
 })))
 
 const menuItems = [
-  { label: 'Sobre', panel: 'sobre' },
+  { label: 'Sobre', dialog: 'sobre' },
   { label: 'Serviços', href: '#servicos' },
   { label: 'Projetos', href: '#projetos' },
-  { label: 'Contato', panel: 'contato' },
+  { label: 'Contato', dialog: 'contato' },
 ]
+
+// Which dialog renders each project's gallery and demo (Spec 0001, D1.7). The navigation module
+// decides whether a gallery or demo exists; these maps only choose the component to render.
+const galleryDialogs = {
+  people: PeopleGalleryPanel,
+  cindy: CindyGalleryPanel,
+  phx: PhxGalleryPanel,
+  nexus: NexusGalleryPanel,
+}
+
+const demoDialogs = {
+  cindy: CindyDemoPanel,
+  phx: PhxDemoPanel,
+  nexus: NexusDemoPanel,
+}
 
 function AnimatedMenuLink({ label, href = '#', onClick }) {
   const letters = [...label]
@@ -66,21 +82,33 @@ function AnimatedMenuLink({ label, href = '#', onClick }) {
 }
 
 function PortfolioContent() {
-  const [activePanel, setActivePanel] = useState(null)
+  // EstadoDialog = null | { tipo, slug? } (Spec 0001, D1.1); null means no dialog is open.
+  const [dialog, setDialog] = useState(null)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
   const lastTriggerRef = useRef(null)
-  // The dialog state still stores the display number until the navigation module (ticket C).
-  const activeProject = projects.find(project => project.numero === activePanel)
 
-  const openPanel = (panel, { preserveTrigger = false } = {}) => {
-    if (!preserveTrigger) {
+  // Every transition is decided by the pure navigation module (D1.2). A rejected transition keeps
+  // the current state and is reported only in development (D1.3); there is no fallback dialog.
+  const applyTransition = (result, attempted) => {
+    if (!result.ok) {
+      if (import.meta.env.DEV) console.error(`Transição de dialog rejeitada (${result.motivo}):`, attempted)
+      return
+    }
+    // The trigger is captured only when a chain of dialogs starts from no dialog (D1.4).
+    if (result.capturarGatilho) {
       lastTriggerRef.current = document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null
     }
-
-    setActivePanel(panel)
+    setDialog(result.estado)
   }
+
+  const openDialog = destination => applyTransition(navegar(dialog, destination, projects), destination)
+  const goBack = () => applyTransition(voltar(dialog, projects), { voltar: dialog })
+  const closeDialog = () => applyTransition(fechar(), null)
+
+  const GalleryDialog = dialog?.tipo === 'galeria' ? galleryDialogs[dialog.slug] : null
+  const DemoDialog = dialog?.tipo === 'demo' ? demoDialogs[dialog.slug] : null
 
   useEffect(() => {
     const updateHeader = () => setIsHeaderScrolled(window.scrollY > 24)
@@ -92,7 +120,7 @@ function PortfolioContent() {
   }, [])
 
   useEffect(() => {
-    const isModalOpen = activePanel !== null
+    const isModalOpen = dialog !== null
     document.documentElement.classList.toggle('modal-open', isModalOpen)
     document.body.classList.toggle('modal-open', isModalOpen)
 
@@ -114,7 +142,7 @@ function PortfolioContent() {
 
       if (event.key === 'Escape') {
         event.preventDefault()
-        setActivePanel(null)
+        closeDialog()
         return
       }
 
@@ -149,7 +177,7 @@ function PortfolioContent() {
       document.documentElement.classList.remove('modal-open')
       document.body.classList.remove('modal-open')
     }
-  }, [activePanel])
+  }, [dialog])
 
   return (
     <main id="top" className="app">
@@ -178,7 +206,7 @@ function PortfolioContent() {
             <AnimatedMenuLink
               key={item.label}
               {...item}
-              onClick={item.panel ? () => openPanel(item.panel) : undefined}
+              onClick={item.dialog ? () => openDialog({ tipo: item.dialog }) : undefined}
             />
           ))}
         </nav>
@@ -191,7 +219,7 @@ function PortfolioContent() {
             href="#sobre"
             onClick={event => {
               event.preventDefault()
-              openPanel('sobre')
+              openDialog({ tipo: 'sobre' })
             }}
             aria-label="Fabrycio Bermudes - Software Engineer"
           >
@@ -270,7 +298,7 @@ function PortfolioContent() {
           <button
             className="hero__cta hero__cta--contact"
             type="button"
-            onClick={() => openPanel('contato')}
+            onClick={() => openDialog({ tipo: 'contato' })}
           >
             <span className="hero__cta-key hero__cta-key--top" />
             <span className="hero__cta-line" />
@@ -302,7 +330,7 @@ function PortfolioContent() {
           />
         )}
       >
-        <StickyProjects projects={projects} onOpenProject={openPanel} />
+        <StickyProjects projects={projects} onOpenProject={slug => openDialog({ tipo: 'projeto', slug })} />
       </DeferredSection>
 
       <DeferredSection
@@ -317,75 +345,25 @@ function PortfolioContent() {
         <WaveFooter />
       </DeferredSection>
 
-      {activeProject && (
+      {/* Exactly one dialog renders at a time: the state names a single dialog or none. */}
+      {dialog?.tipo === 'projeto' && (
         <ProjectDetailsPanel
-          slug={activeProject.slug}
-          onClose={() => setActivePanel(null)}
-          onOpenDemo={projectNumber => openPanel(
-            projectNumber === '02' ? 'cindy-demo' : projectNumber === '03' ? 'phx-demo' : 'nexus-demo',
-            { preserveTrigger: true },
-          )}
-          onOpenGallery={gallery => openPanel(
-            gallery === 'people' ? 'people-gallery' : gallery === 'cindy' ? 'cindy-gallery' : gallery === 'phx' ? 'phx-gallery' : gallery === 'nexus' ? 'nexus-gallery' : 'people-gallery',
-            { preserveTrigger: true },
-          )}
+          slug={dialog.slug}
+          onClose={closeDialog}
+          onOpenDemo={slug => openDialog({ tipo: 'demo', slug })}
+          onOpenGallery={slug => openDialog({ tipo: 'galeria', slug })}
         />
       )}
 
-      {activePanel === 'people-gallery' && (
-        <PeopleGalleryPanel
-          onBack={() => openPanel('01', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
+      {GalleryDialog && <GalleryDialog onBack={goBack} onClose={closeDialog} />}
 
-      {activePanel === 'phx-gallery' && (
-        <PhxGalleryPanel
-          onBack={() => openPanel('03', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
+      {DemoDialog && <DemoDialog onBack={goBack} onClose={closeDialog} />}
 
-      {activePanel === 'cindy-gallery' && (
-        <CindyGalleryPanel
-          onBack={() => openPanel('02', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
-
-      {activePanel === 'nexus-gallery' && (
-        <NexusGalleryPanel
-          onBack={() => openPanel('04', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
-
-      {activePanel === 'nexus-demo' && (
-        <NexusDemoPanel
-          onBack={() => openPanel('04', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
-
-      {activePanel === 'phx-demo' && (
-        <PhxDemoPanel
-          onBack={() => openPanel('03', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
-
-      {activePanel === 'cindy-demo' && (
-        <CindyDemoPanel
-          onBack={() => openPanel('02', { preserveTrigger: true })}
-          onClose={() => setActivePanel(null)}
-        />
-      )}
-
-      {(activePanel === 'sobre' || activePanel === 'contato') && (
+      {(dialog?.tipo === 'sobre' || dialog?.tipo === 'contato') && (
         <InfoPanels
-          activePanel={activePanel}
-          onClose={() => setActivePanel(null)}
-          onOpenContact={() => openPanel('contato', { preserveTrigger: true })}
+          activePanel={dialog.tipo}
+          onClose={closeDialog}
+          onOpenContact={() => openDialog({ tipo: 'contato' })}
         />
       )}
 

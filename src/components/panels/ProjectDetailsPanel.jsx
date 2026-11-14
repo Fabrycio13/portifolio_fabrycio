@@ -114,7 +114,7 @@ export default function ProjectDetailsPanel({ slug, onClose, onOpenDemo, onOpenG
           ))}
         </div>
         {demo && (
-          <button type="button" className="about-contact-cta project-demo-cta" onClick={() => onOpenDemo(numero)}>
+          <button type="button" className="about-contact-cta project-demo-cta" onClick={() => onOpenDemo(slug)}>
             <FaCog className="about-contact-cta__icon" aria-hidden="true" />
             <span>{demo.buttonLabel}</span>
           </button>

@@ -174,11 +174,11 @@ export function StickyProjects({ projects, onOpenProject }) {
               role="button"
               tabIndex={0}
               aria-label={`Abrir detalhes do projeto ${card.title}`}
-              onClick={() => onOpenProject(numero)}
+              onClick={() => onOpenProject(slug)}
               onKeyDown={event => {
                 if (event.key !== 'Enter' && event.key !== ' ') return
                 event.preventDefault()
-                onOpenProject(numero)
+                onOpenProject(slug)
               }}
             >
               <div className="project-journey__art">

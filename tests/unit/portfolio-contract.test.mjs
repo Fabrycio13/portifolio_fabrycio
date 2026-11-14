@@ -20,7 +20,7 @@ test('cards de projetos mantêm contrato de teclado', async () => {
   assert.match(source, /tabIndex=\{0\}/)
   assert.match(source, /event\.key !== 'Enter'/)
   assert.match(source, /event\.key !== ' '/)
-  assert.match(source, /onOpenProject\(numero\)/)
+  assert.match(source, /onOpenProject\(slug\)/)
   assert.match(source, /role="button"[\s\S]*tabIndex=\{0\}/)
 })
 
@@ -108,7 +108,7 @@ test('PortfolioContent mantém gerenciamento de foco e Escape nos dialogs', asyn
   assert.match(source, /import ProjectDetailsPanel from '@\/components\/panels\/ProjectDetailsPanel\.jsx'/)
   assert.match(source, /className="hero__cta" href="#servicos"/)
   assert.match(source, /className="hero__cta hero__cta--contact"/)
-  assert.match(source, /onClick=\{\(\) => openPanel\('contato'\)\}/)
+  assert.match(source, /onClick=\{\(\) => openDialog\(\{ tipo: 'contato' \}\)\}/)
 })
 
 test('Serviços têm uma faixa visual de transição abaixo dos cards', async () => {
@@ -176,8 +176,8 @@ test('Projeto Cindy oferece demo local e galeria com capturas da própria demo',
 
   assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
   assert.match(app, /import CindyGalleryPanel from '@\/components\/panels\/CindyGalleryPanel\.jsx'/)
-  assert.match(app, /activePanel === 'cindy-demo'/)
-  assert.match(app, /activePanel === 'cindy-gallery'/)
+  assert.match(app, /cindy: CindyDemoPanel/)
+  assert.match(app, /cindy: CindyGalleryPanel/)
   assert.match(demo, /src="\/nova-cindy-mockup-v2\.html"/)
   assert.match(demo, /data-dialog-initial-focus/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
@@ -191,7 +191,7 @@ test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhe
 
   assert.match(details, /onOpenDemo/)
   assert.match(app, /import NexusDemoPanel from '@\/components\/panels\/NexusDemoPanel\.jsx'/)
-  assert.match(app, /activePanel === 'nexus-demo'/)
+  assert.match(app, /nexus: NexusDemoPanel/)
   assert.match(demo, /DEMO LOCAL · DADOS FICTÍCIOS/)
   assert.match(demo, /Análise documental inteligente/)
   assert.match(demo, /Executar fluxo/)
@@ -206,7 +206,7 @@ test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async (
 
   assert.match(details, /onOpenGallery\(slug\)/)
   assert.match(app, /import NexusGalleryPanel from '@\/components\/panels\/NexusGalleryPanel\.jsx'/)
-  assert.match(app, /activePanel === 'nexus-gallery'/)
+  assert.match(app, /nexus: NexusGalleryPanel/)
 })
 
 test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
@@ -215,7 +215,7 @@ test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
   const projects = await read('src/data/projects.js')
 
   assert.match(app, /import PhxDemoPanel from '@\/components\/panels\/PhxDemoPanel\.jsx'/)
-  assert.match(app, /activePanel === 'phx-demo'/)
+  assert.match(app, /phx: PhxDemoPanel/)
   assert.match(demo, /src="\/phx-demo\.html"/)
   assert.match(demo, /DEMO INTERATIVA/)
   assert.match(projects, /project-03\.webp/)
@@ -228,7 +228,7 @@ test('Projeto PHX abre uma galeria com as telas do laudo', async () => {
 
   assert.match(details, /onOpenGallery\(slug\)/)
   assert.match(app, /import PhxGalleryPanel from '@\/components\/panels\/PhxGalleryPanel\.jsx'/)
-  assert.match(app, /activePanel === 'phx-gallery'/)
+  assert.match(app, /phx: PhxGalleryPanel/)
 })
 
 test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes', async () => {
@@ -239,7 +239,7 @@ test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes
   assert.match(details, /VER TELAS DO PROJETO/)
   assert.match(details, /onOpenGallery/)
   assert.match(app, /import PeopleGalleryPanel from '@\/components\/panels\/PeopleGalleryPanel\.jsx'/)
-  assert.match(app, /activePanel === 'people-gallery'/)
+  assert.match(app, /people: PeopleGalleryPanel/)
   assert.match(app, /\.people-gallery\.is-open/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
 })
