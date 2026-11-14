@@ -17,7 +17,8 @@ if (!dirA || !dirB || !outDir) {
   process.exit(1)
 }
 
-const manifestA = JSON.parse(readFileSync(join(dirA, 'manifest.json'), 'utf8'))
+// The second run may be a targeted re-capture (--scenes/--viewports): compare only what it contains.
+const manifestB = JSON.parse(readFileSync(join(dirB, 'manifest.json'), 'utf8'))
 const toleranceFile = option('tolerance')
 const tolerance = toleranceFile ? JSON.parse(readFileSync(toleranceFile, 'utf8')).captures : null
 
@@ -77,7 +78,7 @@ try {
   const loaded = page.waitForEvent('Page.loadEventFired')
   await page.send('Page.navigate', { url: `${origin}/` })
   await loaded
-  for (const capture of manifestA.captures) {
+  for (const capture of manifestB.captures) {
     const file = capture.file.replaceAll('\\', '/')
     const { diffPng, ...stats } = await page.evaluate(compareExpression(file))
     if (diffPng) {

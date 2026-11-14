@@ -12,7 +12,7 @@ import PeopleGalleryPanel from '@/components/panels/PeopleGalleryPanel.jsx'
 import PhxDemoPanel from '@/components/panels/PhxDemoPanel.jsx'
 import PhxGalleryPanel from '@/components/panels/PhxGalleryPanel.jsx'
 import ProjectDetailsPanel from '@/components/panels/ProjectDetailsPanel.jsx'
-import { projectCards } from '@/data/projects.js'
+import { projects } from '@/data/projects.js'
 import { DeferredSection } from '@/layouts/DeferredSection.jsx'
 import { getFocusableElements } from '@/utils/focus.js'
 import { lazy, useEffect, useRef, useState } from 'react'
@@ -69,7 +69,8 @@ function PortfolioContent() {
   const [activePanel, setActivePanel] = useState(null)
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false)
   const lastTriggerRef = useRef(null)
-  const activeProject = projectCards.find(project => project.number === activePanel)
+  // The dialog state still stores the display number until the navigation module (ticket C).
+  const activeProject = projects.find(project => project.numero === activePanel)
 
   const openPanel = (panel, { preserveTrigger = false } = {}) => {
     if (!preserveTrigger) {
@@ -301,7 +302,7 @@ function PortfolioContent() {
           />
         )}
       >
-        <StickyProjects projects={projectCards} onOpenProject={openPanel} />
+        <StickyProjects projects={projects} onOpenProject={openPanel} />
       </DeferredSection>
 
       <DeferredSection
@@ -318,7 +319,7 @@ function PortfolioContent() {
 
       {activeProject && (
         <ProjectDetailsPanel
-          projectNumber={activeProject.number}
+          slug={activeProject.slug}
           onClose={() => setActivePanel(null)}
           onOpenDemo={projectNumber => openPanel(
             projectNumber === '02' ? 'cindy-demo' : projectNumber === '03' ? 'phx-demo' : 'nexus-demo',

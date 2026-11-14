@@ -320,6 +320,3 @@ export const projects = [
     demo: { buttonLabel: 'TESTAR DEMO INTERATIVA' },
   },
 ]
-
-// Formato antigo dos cards, derivado do registro, enquanto os consumidores não migram (ticket A2).
-export const projectCards = projects.map(({ numero, card }) => ({ number: numero, ...card }))

@@ -1,21 +1,25 @@
 // Regression: the gallery preview in the project details must open its gallery by identifier.
 // The People preview used to pass the click event itself (`onClick={onOpenGallery}`) and only
 // reached its gallery through the App's fallback branch.
-import { after, test } from 'node:test'
+import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { createServer } from 'vite'
+import { loadModule, render } from './vite-ssr.mjs'
 
-// Vite transpiles the JSX module for Node; React stays external to Vite, as in the static-render tooling.
-const server = await createServer({
-  root: process.cwd(),
-  logLevel: 'error',
-  appType: 'custom',
-  server: { middlewareMode: true, hmr: false, ws: false },
-  optimizeDeps: { noDiscovery: true, include: [] },
+const { default: ProjectDetailsPanel } = await loadModule('/src/components/panels/ProjectDetailsPanel.jsx')
+const { projects } = await loadModule('/src/data/projects.js')
+
+// The icon map is private to the details dialog (D1.6). A key missing from it makes React fail to
+// render, and a rendered feature without its icon would drop the SVG, so both cases fail here.
+test('mapa de ícones cobre todas as chaves usadas no registro', () => {
+  for (const { slug, detalhes } of projects) {
+    const html = render(ProjectDetailsPanel, { slug, onClose() {}, onOpenDemo() {}, onOpenGallery() {} })
+    const items = html.match(/<li class="project-features__item">[\s\S]*?<\/li>/g) ?? []
+    assert.equal(items.length, detalhes.features.length, `${slug}: recursos renderizados`)
+    items.forEach((item, index) => {
+      assert.match(item, /<svg[^>]*class="project-features__icon"/, `${slug}: recurso ${index + 1} sem ícone`)
+    })
+  }
 })
-after(() => server.close())
-
-const { default: ProjectDetailsPanel } = await server.ssrLoadModule('/src/components/panels/ProjectDetailsPanel.jsx')
 
 const findElements = (node, predicate, found = []) => {
   if (Array.isArray(node)) node.forEach(child => findElements(child, predicate, found))
@@ -26,18 +30,11 @@ const findElements = (node, predicate, found = []) => {
   return found
 }
 
-const galleryPreviews = [
-  { projectNumber: '01', gallery: 'people' },
-  { projectNumber: '02', gallery: 'cindy' },
-  { projectNumber: '03', gallery: 'phx' },
-  { projectNumber: '04', gallery: 'nexus' },
-]
-
-for (const { projectNumber, gallery } of galleryPreviews) {
-  test(`prévia da galeria do projeto ${projectNumber} abre a galeria "${gallery}" pelo identificador`, () => {
+for (const gallery of ['people', 'cindy', 'phx', 'nexus']) {
+  test(`prévia da galeria do projeto ${gallery} abre a galeria "${gallery}" pelo identificador`, () => {
     const calls = []
     const tree = ProjectDetailsPanel({
-      projectNumber,
+      slug: gallery,
       onClose: () => {},
       onOpenDemo: () => {},
       onOpenGallery: (...args) => calls.push(args),

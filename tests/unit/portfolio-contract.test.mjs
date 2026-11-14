@@ -20,7 +20,7 @@ test('cards de projetos mantêm contrato de teclado', async () => {
   assert.match(source, /tabIndex=\{0\}/)
   assert.match(source, /event\.key !== 'Enter'/)
   assert.match(source, /event\.key !== ' '/)
-  assert.match(source, /onOpenProject\(project\.number\)/)
+  assert.match(source, /onOpenProject\(numero\)/)
   assert.match(source, /role="button"[\s\S]*tabIndex=\{0\}/)
 })
 
@@ -30,7 +30,7 @@ test('Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mob
 
   assert.match(source, /className="project-journey__intro"[\s\S]*<h2 id="projects-title">PROJETOS<\/h2>/)
   assert.match(source, /<h2 id="projects-title">PROJETOS<\/h2>[\s\S]*className="section-header__divider"[\s\S]*<FaCog \/>/)
-  assert.match(source, /projects\.map\(\(project, index\) =>/)
+  assert.match(source, /projects\.map\(\(\{ slug, numero, card \}, index\) =>/)
   assert.equal((source.match(/<svg /g) ?? []).length, 1)
   assert.equal((source.match(/<motion\.path /g) ?? []).length, 1)
   assert.match(source, /useMotionValue\(0\)/)
@@ -157,46 +157,29 @@ test('Sobre mantém a copy aprovada e CTA para Contato', async () => {
 
 test('Projeto People usa GERENCIADOR DE RECURSOS HUMANOS como subtítulo', async () => {
   const projects = await read('src/data/projects.js')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
 
   assert.match(projects, /detail: 'GERENCIADOR DE RECURSOS HUMANOS'/)
-  assert.match(details, /detail: 'GERENCIADOR DE RECURSOS HUMANOS'/)
 })
 
 test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', async () => {
   const projects = await read('src/data/projects.js')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
 
   assert.match(projects, /GESTÃO CONDOMINIAL COM IA/)
   assert.match(projects, /detail: 'ADMINISTRAÇÃO DE CONDOMÍNIOS'/)
-  assert.match(details, /detail: 'ADMINISTRAÇÃO DE CONDOMÍNIOS'/)
-  assert.match(details, /Uma plataforma web criada para centralizar a administração de condomínios/)
-  assert.match(details, /A solução também utiliza IA e integrações automatizadas/)
-  assert.match(details, /Gestão de moradores e unidades/)
-  assert.match(details, /Gestão de espaços compartilhados/)
-  assert.match(details, /IA & Integrações/)
 })
 
 test('Projeto Cindy oferece demo local e galeria com capturas da própria demo', async () => {
   const app = await read('src/App.jsx')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
   const demo = await read('src/components/panels/CindyDemoPanel.jsx')
   const gallery = await read('src/components/panels/CindyGalleryPanel.jsx')
   const demoHtml = await read('public/nova-cindy-mockup-v2.html')
 
-  assert.match(details, /projectNumber === '02'/)
-  assert.match(details, /6 TELAS DA DEMO/)
-  assert.match(details, /ABRIR DEMO DA CINDY/)
   assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
   assert.match(app, /import CindyGalleryPanel from '@\/components\/panels\/CindyGalleryPanel\.jsx'/)
   assert.match(app, /activePanel === 'cindy-demo'/)
   assert.match(app, /activePanel === 'cindy-gallery'/)
   assert.match(demo, /src="\/nova-cindy-mockup-v2\.html"/)
   assert.match(demo, /data-dialog-initial-focus/)
-  assert.match(gallery, /dashboard\.webp/)
-  assert.match(gallery, /residents\.webp/)
-  assert.match(gallery, /packages\.webp/)
-  assert.match(gallery, /occurrences\.webp/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
   assert.match(demoHtml, /<title>Nova Cindy · Protótipo visual<\/title>/)
 })
@@ -206,8 +189,6 @@ test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhe
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
   const demo = await read('src/components/panels/NexusDemoPanel.jsx')
 
-  assert.match(details, /projectNumber === '04'/)
-  assert.match(details, /TESTAR DEMO INTERATIVA/)
   assert.match(details, /onOpenDemo/)
   assert.match(app, /import NexusDemoPanel from '@\/components\/panels\/NexusDemoPanel\.jsx'/)
   assert.match(app, /activePanel === 'nexus-demo'/)
@@ -223,36 +204,29 @@ test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async (
   const app = await read('src/App.jsx')
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
 
-  assert.match(details, /4 TELAS DO PRODUTO/)
-  assert.match(details, /onOpenGallery\('nexus'\)/)
+  assert.match(details, /onOpenGallery\(slug\)/)
   assert.match(app, /import NexusGalleryPanel from '@\/components\/panels\/NexusGalleryPanel\.jsx'/)
   assert.match(app, /activePanel === 'nexus-gallery'/)
 })
 
 test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
   const app = await read('src/App.jsx')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
   const demo = await read('src/components/panels/PhxDemoPanel.jsx')
   const projects = await read('src/data/projects.js')
 
-  assert.match(details, /projectNumber === '03'/)
-  assert.match(details, /title: 'LAUDO DE CRÉDITO IMOBILIÁRIO'/)
-  assert.match(details, /ABRIR DEMO DO LAUDO/)
   assert.match(app, /import PhxDemoPanel from '@\/components\/panels\/PhxDemoPanel\.jsx'/)
   assert.match(app, /activePanel === 'phx-demo'/)
   assert.match(demo, /src="\/phx-demo\.html"/)
   assert.match(demo, /DEMO INTERATIVA/)
   assert.match(projects, /project-03\.webp/)
   assert.match(projects, /title: 'LAUDO DE CRÉDITO IMOBILIÁRIO'/)
-  assert.match(details, /title: 'LAUDO DE CRÉDITO IMOBILIÁRIO'/)
 })
 
 test('Projeto PHX abre uma galeria com as telas do laudo', async () => {
   const app = await read('src/App.jsx')
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
 
-  assert.match(details, /3 TELAS DO PRODUTO/)
-  assert.match(details, /onOpenGallery\('phx'\)/)
+  assert.match(details, /onOpenGallery\(slug\)/)
   assert.match(app, /import PhxGalleryPanel from '@\/components\/panels\/PhxGalleryPanel\.jsx'/)
   assert.match(app, /activePanel === 'phx-gallery'/)
 })
@@ -262,15 +236,11 @@ test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
   const gallery = await read('src/components/panels/PeopleGalleryPanel.jsx')
 
-  assert.match(details, /projectNumber === '01'/)
   assert.match(details, /VER TELAS DO PROJETO/)
   assert.match(details, /onOpenGallery/)
   assert.match(app, /import PeopleGalleryPanel from '@\/components\/panels\/PeopleGalleryPanel\.jsx'/)
   assert.match(app, /activePanel === 'people-gallery'/)
   assert.match(app, /\.people-gallery\.is-open/)
-  assert.match(gallery, /people-dashboard\.webp/)
-  assert.match(gallery, /people-configuracoes\.webp/)
-  assert.match(gallery, /DADOS FICTÍCIOS/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
 })
 
@@ -296,20 +266,17 @@ test('quatro logos ocupam as etapas, sem substituir as telas dos painéis', asyn
   const css = await read('src/sections/StickyProjects.css')
   const projectsComponent = await read('src/sections/StickyProjects.jsx')
   const projectsData = await read('src/data/projects.js')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
 
   assert.match(css, /\.project-journey__card\s*\{[^}]*width: 43%;/)
-  assert.match(projectsComponent, /src=\{project\.logo\}/)
-  assert.match(projectsComponent, /alt=\{project\.logoAlt\}/)
+  assert.match(projectsComponent, /src=\{card\.logo\}/)
+  assert.match(projectsComponent, /alt=\{card\.logoAlt\}/)
   for (const logo of ['people', 'condominio', 'credito-imobiliario', 'nexus-ai']) {
     assert.match(projectsData, new RegExp(`logo: '/images/projects/logos/${logo}\\.webp'`))
     assert.equal((await readFile(resolve(root, `public/images/projects/logos/${logo}.webp`))).toString('ascii', 0, 4), 'RIFF')
   }
   assert.match(projectsData, /image: '\/images\/projects\/project-01\.webp'/)
   assert.match(projectsData, /image: '\/images\/projects\/project-02\.webp'/)
-  assert.match(projectsComponent, /project\.summary/)
-  assert.match(details, /src="\/images\/projects\/people\/people-dashboard\.webp"/)
-  assert.match(details, /src="\/images\/projects\/cindy\/dashboard\.webp"/)
+  assert.match(projectsComponent, /card\.summary/)
 })
 
 test('navegação lateral da demo Nexus troca a seção ativa', async () => {

@@ -17,10 +17,10 @@ const noop = () => {}
 // Dialog cases keyed by a stable id. When the implementation changes (registry, rename), only
 // `module` and `props` change here; the ids and therefore the golden file names stay the same.
 const cases = [
-  ...['people', 'cindy', 'phx', 'nexus'].map((slug, index) => ({
+  ...['people', 'cindy', 'phx', 'nexus'].map(slug => ({
     id: `detalhes-${slug}`,
     module: '/src/components/panels/ProjectDetailsPanel.jsx',
-    props: { projectNumber: `0${index + 1}`, onClose: noop, onOpenDemo: noop, onOpenGallery: noop },
+    props: { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop },
   })),
   { id: 'galeria-people', module: '/src/components/panels/PeopleGalleryPanel.jsx', props: { onBack: noop, onClose: noop } },
   { id: 'galeria-cindy', module: '/src/components/panels/CindyGalleryPanel.jsx', props: { onBack: noop, onClose: noop } },

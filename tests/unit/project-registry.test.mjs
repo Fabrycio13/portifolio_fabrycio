@@ -6,7 +6,9 @@ import { createRequire } from 'node:module'
 import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { projectCards, projects } from '../../src/data/projects.js'
+import * as registry from '../../src/data/projects.js'
+
+const { projects } = registry
 
 const root = resolve(import.meta.dirname, '../..')
 const publicAsset = path => existsSync(resolve(root, 'public', path.replace(/^\//, '')))
@@ -48,8 +50,8 @@ test('cada projeto tem card e detalhes completos', () => {
 })
 
 test('chaves de ícone são texto e existem na biblioteca de ícones', () => {
-  // The component map that renders these keys lives in the details dialog (D1.6); its coverage
-  // test is added when that consumer is migrated. Here every key must name a real Font Awesome icon.
+  // The component map lives in the details dialog (D1.6) and has its own coverage test in
+  // project-gallery-preview.test.mjs. Here, independently of React, every key must name a real icon.
   const icons = createRequire(import.meta.url)('react-icons/fa')
   const componentName = key => `Fa${key.split('-').map(part => part[0].toUpperCase() + part.slice(1)).join('')}`
   for (const { slug, detalhes } of projects) {
@@ -87,9 +89,7 @@ test('demo é ausente ou tem rótulo do botão', () => {
   assert.deepEqual(projects.filter(project => project.demo).map(project => project.slug), ['cindy', 'phx', 'nexus'])
 })
 
-test('projectCards é derivado do registro, sem cópia própria dos dados', () => {
-  assert.equal(projectCards.length, projects.length)
-  projects.forEach((project, index) => {
-    assert.deepEqual(projectCards[index], { number: project.numero, ...project.card })
-  })
+test('o registro é a única fonte: não exporta formatos paralelos dos dados', () => {
+  // projectCards existed only while consumers migrated (A1 → A2); it must not come back.
+  assert.deepEqual(Object.keys(registry), ['projects'])
 })

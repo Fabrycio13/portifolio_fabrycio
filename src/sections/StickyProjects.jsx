@@ -167,35 +167,35 @@ export function StickyProjects({ projects, onOpenProject }) {
       </header>
 
       <div className="project-journey__route">
-        {projects.map((project, index) => (
-          <div className="project-journey__step" key={project.number}>
+        {projects.map(({ slug, numero, card }, index) => (
+          <div className="project-journey__step" key={slug}>
             <article
               className="project-journey__card"
               role="button"
               tabIndex={0}
-              aria-label={`Abrir detalhes do projeto ${project.title}`}
-              onClick={() => onOpenProject(project.number)}
+              aria-label={`Abrir detalhes do projeto ${card.title}`}
+              onClick={() => onOpenProject(numero)}
               onKeyDown={event => {
                 if (event.key !== 'Enter' && event.key !== ' ') return
                 event.preventDefault()
-                onOpenProject(project.number)
+                onOpenProject(numero)
               }}
             >
               <div className="project-journey__art">
                 <img
-                  src={project.logo}
-                  alt={project.logoAlt}
+                  src={card.logo}
+                  alt={card.logoAlt}
                   loading={index === 0 ? 'eager' : 'lazy'}
                   draggable="false"
                 />
               </div>
               <div className="project-journey__copy">
                 <div className="project-journey__meta">
-                  <span>{project.detail}</span>
-                  <span>{project.number}</span>
+                  <span>{card.detail}</span>
+                  <span>{numero}</span>
                 </div>
-                <h3>{project.title}</h3>
-                <p className="project-journey__summary">{project.summary}</p>
+                <h3>{card.title}</h3>
+                <p className="project-journey__summary">{card.summary}</p>
                 <span className="hero__cta project-journey__action" aria-hidden="true">
                   <span className="hero__cta-key hero__cta-key--top" />
                   <span className="hero__cta-line" />
