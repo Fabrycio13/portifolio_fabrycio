@@ -56,9 +56,12 @@ O projeto combina navegação suave, tipografia animada, seções sticky, cards 
 └── ISSUE_TEMPLATE/               # templates de issue
 
 docs/
+├── README.md                     # índice da documentação
 ├── architecture.md               # limites e responsabilidades
 ├── development.md                # comandos e processo local
 ├── decisions/                    # decisões arquiteturais
+├── specs/                        # especificações de evolução aprovadas
+├── reviews/                      # análises datadas que originaram decisões
 ├── performance-baseline.md       # baseline de performance
 └── security/audits/              # auditorias históricas
 
@@ -192,10 +195,14 @@ Na Vercel:
 ## Documentação adicional
 
 - `AGENTS.md`: regras de trabalho para agentes e colaboradores automatizados.
+- `docs/README.md`: índice de toda a documentação.
+- `GLOSSARY.md`: linguagem do domínio do portfólio.
 - `CONTRIBUTING.md`: fluxo local e convenções de contribuição.
 - `docs/architecture.md`: responsabilidades e limites da arquitetura.
 - `docs/development.md`: comandos e processo de desenvolvimento.
 - `docs/decisions/`: decisões arquiteturais versionadas.
+- `docs/specs/`: especificações de evolução aprovadas, com índice e dependências em `docs/specs/README.md`.
+- `docs/reviews/`: análises datadas (revisão arquitetural, investigações e registro de decisões).
 - `docs/performance-baseline.md`: método e critérios da auditoria de performance.
 
 ## Autor

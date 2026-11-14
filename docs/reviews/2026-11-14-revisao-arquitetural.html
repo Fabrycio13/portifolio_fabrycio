@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Revisão de arquitetura — Portfólio Fabrycio</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
+</script>
+<style>
+  .seam { border-style: dashed !important; }
+  .deep { background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; }
+  .lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
+</style>
+</head>
+<body class="bg-stone-50 text-slate-900 font-sans">
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-12">
+
+<header class="space-y-4">
+  <h1 class="font-serif text-4xl">Revisão de arquitetura — Portfólio Fabrycio</h1>
+  <p class="text-sm text-slate-500">14/11/2026 · branch <span class="font-mono">feat/adaptive-video-performance</span> · hot spots: <span class="font-mono">App.jsx</span>, <span class="font-mono">App.css</span>, <span class="font-mono">components/panels/</span></p>
+  <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm">
+    <strong>Validação executada:</strong> <span class="font-mono">npm test</span> 24/24 ✔ · <span class="font-mono">npm run lint</span> 0 avisos ✔ · <span class="font-mono">npm run build</span> ✔ (836 ms, JS principal 473 kB / 147 kB gzip) · <span class="font-mono">git diff --check</span> ✔. Smoke em navegador e <span class="font-mono">perf:audit</span> não executados.
+  </div>
+  <div class="flex flex-wrap gap-4 text-xs text-slate-600">
+    <span class="flex items-center gap-2"><span class="inline-block w-5 h-4 border-2 border-slate-500"></span> módulo</span>
+    <span class="flex items-center gap-2"><span class="inline-block w-5 h-4 border-2 border-slate-500 seam"></span> seam</span>
+    <span class="flex items-center gap-2"><span class="inline-block w-5 h-0.5 bg-red-600"></span> vazamento</span>
+    <span class="flex items-center gap-2"><span class="inline-block w-5 h-4 deep"></span> módulo deep</span>
+  </div>
+</header>
+
+<section id="candidates" class="space-y-10">
+
+<!-- 1 -->
+<article id="c1" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <h2 class="font-serif text-2xl mr-2">1. Um registro de projeto e um resolver de dialog</h2>
+    <span class="rounded-full bg-emerald-100 text-emerald-800 px-3 py-0.5 text-xs font-semibold">Strong</span>
+    <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-0.5 text-xs">in-process</span>
+  </div>
+  <ul class="font-mono text-sm text-slate-600">
+    <li>src/App.jsx:319-389</li><li>src/components/panels/ProjectDetailsPanel.jsx:21-232</li><li>src/data/projects.js</li>
+  </ul>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="rounded-lg border border-slate-200 p-3"><p class="lbl text-slate-500 mb-2">Antes</p>
+<pre class="mermaid">
+flowchart TD
+  D[projects.js<br/>título, detalhe, image não usado] --> SP[StickyProjects]
+  PD[ProjectDetailsPanel<br/>projectDetails duplicado<br/>if projectNumber === NN x7] -->|onOpenGallery evento| A
+  PD -->|onOpenDemo NN| A
+  A[App.jsx<br/>ternários por id<br/>openPanel 01..04 fixo] --> G1[People/Cindy/Phx/Nexus Gallery]
+  A --> D1[Cindy/Phx/Nexus Demo]
+  classDef leak stroke:#dc2626,stroke-width:2px;
+  class PD,A leak
+</pre></div>
+    <div class="rounded-lg border border-slate-200 p-3"><p class="lbl text-slate-500 mb-2">Depois</p>
+<pre class="mermaid">
+flowchart TD
+  R[src/data/projects.js<br/>um registro por projeto:<br/>card, detalhes, galeria, demo, tema]:::deep
+  R --> SP[StickyProjects]
+  R --> PD[ProjectDetailsPanel<br/>renderiza o registro]
+  PD -->|kind, projectId| A[App: estado único<br/>kind + projectId]
+  A --> X[resolver kind → dialog]:::deep
+  classDef deep fill:#0f172a,color:#f8fafc,stroke:#0f172a;
+</pre></div>
+  </div>
+  <p><strong>Problema:</strong> adicionar um projeto exige editar App (imports, ternários, bloco <span class="font-mono">activePanel ===</span>), ProjectDetailsPanel (blocos <span class="font-mono">projectNumber === 'NN'</span>) e projects.js, e título/detalhe existem em duas cópias.</p>
+  <p><strong>Solução:</strong> mover <span class="font-mono">projectDetails</span> para <span class="font-mono">src/data/</span> (alinhado ao ADR 0001), fundi-lo com <span class="font-mono">projects.js</span> e trocar os ternários por um resolver indexado por <span class="font-mono">{kind, projectId}</span>.</p>
+  <div class="rounded-md border border-red-200 bg-red-50 p-3 text-sm"><strong>Defeito latente confirmado:</strong> <span class="font-mono">ProjectDetailsPanel.jsx:145</span> passa <span class="font-mono">onClick={onOpenGallery}</span>, então o argumento <span class="font-mono">gallery</span> vira o evento de clique. A galeria People só abre porque é o fallback do ternário em <span class="font-mono">App.jsx:328</span>. O demo cai em <span class="font-mono">'nexus-demo'</span> para qualquer id desconhecido.</div>
+  <ul class="list-disc pl-5 text-sm space-y-1">
+    <li>locality: novo projeto toca um arquivo de dados</li>
+    <li>interface do App encolhe para <span class="font-mono">{kind, projectId}</span></li>
+    <li>fallbacks silenciosos viram erro explícito</li>
+    <li>dados de cópia param de duplicar</li>
+    <li>resolver testável como função pura</li>
+  </ul>
+</article>
+
+<!-- 2 -->
+<article id="c2" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <h2 class="font-serif text-2xl mr-2">2. Colapsar as quatro galerias em um módulo de galeria</h2>
+    <span class="rounded-full bg-emerald-100 text-emerald-800 px-3 py-0.5 text-xs font-semibold">Strong</span>
+    <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-0.5 text-xs">in-process</span>
+  </div>
+  <ul class="font-mono text-sm text-slate-600">
+    <li>src/components/panels/{People,Cindy,Phx,Nexus}GalleryPanel.jsx (105–130 linhas cada)</li>
+    <li>src/components/panels/{Cindy,Phx,Nexus}GalleryPanel.css (7 regras, só cores mudam)</li>
+  </ul>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="rounded-lg border border-slate-200 p-4"><p class="lbl text-slate-500 mb-3">Antes — massa: interface ≈ implementação</p>
+      <div class="grid grid-cols-4 gap-2 items-end h-56">
+        <div class="flex flex-col gap-1"><div class="border-2 border-slate-500 h-16 grid place-items-center lbl">interface</div><div class="border-2 border-slate-300 h-20 grid place-items-center lbl">People</div></div>
+        <div class="flex flex-col gap-1"><div class="border-2 border-slate-500 h-16 grid place-items-center lbl">interface</div><div class="border-2 border-slate-300 h-20 grid place-items-center lbl">Cindy</div></div>
+        <div class="flex flex-col gap-1"><div class="border-2 border-slate-500 h-16 grid place-items-center lbl">interface</div><div class="border-2 border-slate-300 h-20 grid place-items-center lbl">Phx</div></div>
+        <div class="flex flex-col gap-1"><div class="border-2 border-slate-500 h-16 grid place-items-center lbl">interface</div><div class="border-2 border-slate-300 h-20 grid place-items-center lbl">Nexus</div></div>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">Mesmo estado, índice circular, topbar, setas, contador e thumbnails copiados 4×.</p>
+    </div>
+    <div class="rounded-lg border border-slate-200 p-4"><p class="lbl text-slate-500 mb-3">Depois</p>
+      <div class="flex flex-col items-center gap-1 h-56 justify-end">
+        <div class="border-2 border-slate-700 seam w-48 h-10 grid place-items-center lbl">{ screens, labels, theme }</div>
+        <div class="deep rounded w-48 h-40 grid place-items-center lbl text-center p-3">ProjectGallery<br/><span class="opacity-60 normal-case tracking-normal">navegação · wrap-around · thumbnails · contador</span></div>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">Variação vira dados + modificador de tema CSS.</p>
+    </div>
+  </div>
+  <p><strong>Problema:</strong> pelo teste de deleção, apagar qualquer galeria perde apenas dados; cada uma é shallow e um bug de navegação teria que ser corrigido quatro vezes.</p>
+  <p><strong>Solução:</strong> um módulo de galeria recebendo telas, rótulos e tema; as telas vão para o registro do candidato 1.</p>
+  <ul class="list-disc pl-5 text-sm space-y-1">
+    <li>leverage: uma implementação, quatro projetos</li>
+    <li>locality: bug de navegação corrigido uma vez</li>
+    <li>apaga ~350 linhas JSX duplicadas</li>
+    <li>três CSS viram variáveis de tema</li>
+  </ul>
+</article>
+
+<!-- 3 -->
+<article id="c3" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <h2 class="font-serif text-2xl mr-2">3. Explicitar o seam de dialog</h2>
+    <span class="rounded-full bg-amber-100 text-amber-800 px-3 py-0.5 text-xs font-semibold">Worth exploring</span>
+    <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-0.5 text-xs">in-process</span>
+  </div>
+  <ul class="font-mono text-sm text-slate-600">
+    <li>src/App.jsx:69-151 (focus trap, Escape, scroll lock, retorno de foco)</li>
+    <li>src/utils/focus.js (5 linhas, um chamador)</li><li>~10 painéis em src/components/panels/</li>
+  </ul>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="rounded-lg border border-slate-200 p-3"><p class="lbl text-slate-500 mb-2">Antes</p>
+<pre class="mermaid">
+flowchart LR
+  A[App effect] -.querySelector<br/>.info-panel.is-open,<br/>.people-gallery.is-open.-> P1[InfoPanels]
+  A -.-> P2[Galerias]
+  A -.-> P3[Demos reusam<br/>classe info-panel]
+  P1 -->|preserveTrigger| A
+  P2 -->|preserveTrigger| A
+  linkStyle 0,1,2 stroke:#dc2626,stroke-width:2px;
+</pre></div>
+    <div class="rounded-lg border border-slate-200 p-3"><p class="lbl text-slate-500 mb-2">Depois</p>
+<pre class="mermaid">
+flowchart LR
+  A[App] --> S[Dialog shell<br/>foco inicial · trap · Escape<br/>backdrop · retorno de foco]:::deep
+  S --> C1[conteúdo Sobre]
+  S --> C2[conteúdo Galeria]
+  S --> C3[conteúdo Demo]
+  classDef deep fill:#0f172a,color:#f8fafc,stroke:#0f172a;
+</pre></div>
+  </div>
+  <p><strong>Problema:</strong> o comportamento está centralizado (bom), mas o contrato que cada painel precisa cumprir — classe raiz, <span class="font-mono">is-open</span>, <span class="font-mono">role</span>, <span class="font-mono">aria-modal</span>, <span class="font-mono">data-dialog-initial-focus</span> — é implícito e repetido.</p>
+  <p><strong>Solução:</strong> um dialog shell dono do contrato; painéis fornecem só conteúdo. Respeitar a regra de imports diretos dos dialogs pequenos (sem lazy).</p>
+  <ul class="list-disc pl-5 text-sm space-y-1">
+    <li>contrato de acessibilidade em um lugar</li>
+    <li>painéis não carregam classes-sinal</li>
+    <li>focus.js absorvido pelo shell</li>
+  </ul>
+</article>
+
+<!-- 4 -->
+<article id="c4" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <h2 class="font-serif text-2xl mr-2">4. Um módulo de demo em iframe (Nexus fica à parte)</h2>
+    <span class="rounded-full bg-amber-100 text-amber-800 px-3 py-0.5 text-xs font-semibold">Worth exploring</span>
+    <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-0.5 text-xs">in-process</span>
+  </div>
+  <ul class="font-mono text-sm text-slate-600"><li>CindyDemoPanel.jsx/.css · PhxDemoPanel.jsx/.css (103 linhas CSS cada, ~8 cores diferem)</li><li>NexusDemoPanel.jsx (474) — já é deep, manter</li></ul>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="rounded-lg border border-slate-200 p-4"><p class="lbl text-slate-500 mb-3">Antes — cross-section</p>
+      <div class="space-y-1">
+        <div class="h-10 border-l-4 border-slate-400 bg-slate-50 pl-3 flex items-center lbl">Cindy: aside · topbar · voltar · nova aba · iframe</div>
+        <div class="h-10 border-l-4 border-slate-400 bg-slate-50 pl-3 flex items-center lbl">Phx: aside · topbar · voltar · nova aba · iframe</div>
+        <div class="h-10 border-l-4 border-slate-400 bg-slate-50 pl-3 flex items-center lbl">Cindy.css ≈ Phx.css</div>
+        <div class="h-24 deep rounded pl-3 flex items-center lbl">Nexus: execução temporizada, abas, seções</div>
+      </div>
+    </div>
+    <div class="rounded-lg border border-slate-200 p-4"><p class="lbl text-slate-500 mb-3">Depois</p>
+      <div class="space-y-1">
+        <div class="h-[5.25rem] deep rounded pl-3 flex flex-col justify-center lbl">IframeDemo<span class="opacity-60 normal-case tracking-normal">{ src, title, label, theme }</span></div>
+        <div class="h-24 deep rounded pl-3 flex items-center lbl">Nexus (inalterado)</div>
+      </div>
+    </div>
+  </div>
+  <p><strong>Problema:</strong> dois painéis de demo são cópias; só <span class="font-mono">src</span>, título, rótulo e cores variam.</p>
+  <p><strong>Solução:</strong> um módulo de demo em iframe configurado pelo registro do projeto.</p>
+  <ul class="list-disc pl-5 text-sm space-y-1"><li>apaga um par JSX/CSS inteiro</li><li>terceira demo iframe custa só dados</li></ul>
+</article>
+
+<!-- 5 -->
+<article id="c5" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <h2 class="font-serif text-2xl mr-2">5. Testar pela interface, não pelo texto-fonte</h2>
+    <span class="rounded-full bg-amber-100 text-amber-800 px-3 py-0.5 text-xs font-semibold">Worth exploring</span>
+    <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-0.5 text-xs">local-substitutable</span>
+  </div>
+  <ul class="font-mono text-sm text-slate-600"><li>tests/unit/portfolio-contract.test.mjs (344 linhas, 24 testes)</li></ul>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="rounded-lg border border-slate-200 p-3"><p class="lbl text-slate-500 mb-2">Antes</p>
+<pre class="mermaid">
+flowchart LR
+  T[teste] -->|readFile + regex| S[App.jsx / App.css<br/>'lastTriggerRef'<br/>'firstElement.focus()'<br/>index % 2 ? 0.25 : 0.75]
+  linkStyle 0 stroke:#dc2626,stroke-width:2px;
+</pre></div>
+    <div class="rounded-lg border border-slate-200 p-3"><p class="lbl text-slate-500 mb-2">Depois</p>
+<pre class="mermaid">
+flowchart LR
+  T[teste] --> R[resolver kind → dialog<br/>função pura]:::deep
+  T --> G[ProjectGallery<br/>navegação/wrap-around]:::deep
+  T -.copy pública.-> D[src/data]
+  classDef deep fill:#0f172a,color:#f8fafc,stroke:#0f172a;
+</pre></div>
+  </div>
+  <p><strong>Problema:</strong> os 24 testes passam, mas são <span class="font-mono">assert.match</span> sobre código-fonte: quebram em refactor e não pegaram o defeito do candidato 1. Foco/Tab/Escape não são exercitados em runtime, apesar do AGENTS.md descrever essa cobertura.</p>
+  <p><strong>Solução:</strong> após 1 e 2, testar o resolver e a navegação da galeria como lógica pura (sem dependência nova); avaliar depois se vale um DOM em teste para o focus trap.</p>
+  <ul class="list-disc pl-5 text-sm space-y-1"><li>a interface é a superfície de teste</li><li>refactors deixam de quebrar testes</li><li>regressões reais passam a falhar</li></ul>
+</article>
+
+<!-- 6 -->
+<article id="c6" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <h2 class="font-serif text-2xl mr-2">6. Devolver estilos aos seus módulos e apagar o morto</h2>
+    <span class="rounded-full bg-slate-200 text-slate-700 px-3 py-0.5 text-xs font-semibold">Speculative</span>
+    <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-0.5 text-xs">in-process</span>
+  </div>
+  <ul class="font-mono text-sm text-slate-600"><li>src/App.css (1498 linhas)</li><li>src/assets/hero.png, react.svg, vite.svg (sem importador)</li></ul>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="rounded-lg border border-slate-200 p-4"><p class="lbl text-slate-500 mb-3">Antes — App.css por área (seletores)</p>
+      <div class="space-y-1 text-xs">
+        <div class="flex items-center gap-2"><span class="w-32">hero</span><div class="h-3 bg-slate-400" style="width:44%"></div></div>
+        <div class="flex items-center gap-2"><span class="w-32 text-red-600">project-stack-card ✝</span><div class="h-3 bg-red-400" style="width:35%"></div></div>
+        <div class="flex items-center gap-2"><span class="w-32">info-panel</span><div class="h-3 bg-amber-400" style="width:23%"></div></div>
+        <div class="flex items-center gap-2"><span class="w-32">contact-link</span><div class="h-3 bg-amber-400" style="width:19%"></div></div>
+        <div class="flex items-center gap-2"><span class="w-32">menu-link</span><div class="h-3 bg-slate-400" style="width:14%"></div></div>
+        <div class="flex items-center gap-2"><span class="w-32">project-gallery-preview</span><div class="h-3 bg-amber-400" style="width:11%"></div></div>
+        <div class="flex items-center gap-2"><span class="w-32 text-red-600">sticky-projects ✝</span><div class="h-3 bg-red-400" style="width:6%"></div></div>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">✝ sem consumidor JSX · âmbar = estilo de painel fora do painel</p>
+    </div>
+    <div class="rounded-lg border border-slate-200 p-4"><p class="lbl text-slate-500 mb-3">Depois</p>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="border-2 border-slate-500 p-2">App.css<br/><span class="text-slate-500">shell, hero, header</span></div>
+        <div class="border-2 border-slate-500 p-2">InfoPanels.css</div>
+        <div class="border-2 border-slate-500 p-2">ProjectDetailsPanel.css</div>
+        <div class="border-2 border-red-300 border-dashed p-2 text-red-600 line-through">deck legado</div>
+      </div>
+    </div>
+  </div>
+  <p><strong>Problema:</strong> ~74 seletores de painéis vivem em App.css e o deck <span class="font-mono">.project-stack-card</span>/<span class="font-mono">.sticky-projects__*</span> (36 ocorrências) não tem consumidor; um teste ainda faz regex de regras de painel em App.css.</p>
+  <p><strong>Solução:</strong> mover estilos de painel para CSS do próprio painel e remover CSS/assets mortos — requer smoke visual, pois o risco é de cascata.</p>
+  <ul class="list-disc pl-5 text-sm space-y-1"><li>locality: estilo junto do módulo</li><li>bundle CSS principal encolhe</li></ul>
+</article>
+
+</section>
+
+<section id="top-recommendation" class="rounded-2xl deep p-8 space-y-3">
+  <p class="lbl opacity-70">Recomendação principal</p>
+  <h2 class="font-serif text-3xl"><a href="#c1" class="underline decoration-emerald-400">1. Um registro de projeto e um resolver de dialog</a></h2>
+  <p class="opacity-90">É o hot spot do histórico, já esconde um defeito latente (evento passado como id de galeria) e é a fundação que torna 2, 4 e 5 baratos: galerias e demos passam a ser dados do registro, e o resolver vira a primeira interface testável de verdade.</p>
+</section>
+
+</main>
+</body>
+</html>
