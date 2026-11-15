@@ -18,7 +18,7 @@ As três specs nasceram da [revisão arquitetural de 14/11/2026](../reviews/2026
 
 | Spec | Título | Status | Depende de | Branch |
 |---|---|---|---|---|
-| [0001](0001-registro-projetos-dialogs-galeria.md) | Registro de projetos, navegação de dialogs e galeria única | Em andamento | — | `refactor/registro-projetos-dialogs` |
+| [0001](0001-registro-projetos-dialogs-galeria.md) | Registro de projetos, navegação de dialogs e galeria única | Concluída | — | `refactor/registro-projetos-dialogs` |
 | [0002](0002-dados-estaticos.md) | Centralização e organização dos dados estáticos | Aprovada — não iniciada | 0001 (merge na `main`) | `refactor/dados-estaticos` |
 | [0003](0003-performance-baseada-em-evidencias.md) | Performance baseada em evidências | Aprovada — não iniciada | 0001 (merge na `main`) | `perf/evidencias` |
 
