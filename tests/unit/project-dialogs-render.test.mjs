@@ -48,6 +48,21 @@ test('galeria do People mostra as telas sanitizadas e o selo de dados fictícios
   includesAll(gallery('people'), ['people-dashboard.webp', 'people-configuracoes.webp', 'DADOS FICTÍCIOS'])
 })
 
+test('projeto inexistente não renderiza e é diagnosticado em desenvolvimento (D1.3)', () => {
+  // The Vite dev server used here sets import.meta.env.DEV; production keeps only the null guard.
+  const original = console.error
+  const calls = []
+  console.error = (...args) => calls.push(args)
+  try {
+    assert.equal(render(ProjectDetailsPanel, { slug: 'inexistente', onClose: noop, onOpenDemo: noop, onOpenGallery: noop }), '')
+  } finally {
+    console.error = original
+  }
+  assert.equal(calls.length, 1)
+  assert.match(String(calls[0][0]), /projeto inexistente/i)
+  assert.ok(calls[0].includes('inexistente'))
+})
+
 test('galeria da Cindy mostra as capturas da própria demo', () => {
   includesAll(gallery('cindy'), ['dashboard.webp', 'residents.webp', 'packages.webp', 'occurrences.webp'])
 })

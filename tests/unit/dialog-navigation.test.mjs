@@ -46,7 +46,14 @@ test('transições entre dialogs são aceitas sem capturar o gatilho', () => {
 test('fechar leva sempre a null, inclusive pela navegação para null', () => {
   aceito(fechar(), null)
   for (const atual of [null, { tipo: 'sobre' }, { tipo: 'contato' }, { tipo: 'projeto', slug: 'com-tudo' }, { tipo: 'galeria', slug: 'com-tudo' }, { tipo: 'demo', slug: 'com-tudo' }]) {
-    aceito(navegar(atual, null, fixture), null, false)
+    assert.deepEqual(navegar(atual, null, fixture), { ok: true, estado: null })
+  }
+})
+
+test('destino null fecha mesmo quando o estado atual é malformado ou inválido (D1.2)', () => {
+  // "O destino null (fechar) é sempre válido": closing must never be blocked by a corrupted state.
+  for (const atual of [undefined, {}, { tipo: null }, [], 'sobre', { tipo: 'modal' }, { tipo: 'galeria', slug: 'sem-galeria' }, { tipo: 'demo', slug: 'inexistente' }]) {
+    assert.deepEqual(navegar(atual, null, fixture), { ok: true, estado: null })
   }
 })
 

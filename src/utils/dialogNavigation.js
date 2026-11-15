@@ -23,6 +23,8 @@ export const MOTIVOS = Object.freeze({
 
 const TIPOS_DO_SITE = new Set(['sobre', 'contato'])
 const TIPOS_DE_PROJETO = new Set(['projeto', 'galeria', 'demo'])
+// Só galeria e demo têm "voltar": são os tipos de projeto que não são os próprios detalhes.
+const TIPOS_COM_VOLTAR = new Set([...TIPOS_DE_PROJETO].filter(tipo => tipo !== 'projeto'))
 const CHAVES_PERMITIDAS = new Set(['tipo', 'slug'])
 
 const rejeitar = motivo => ({ ok: false, motivo })
@@ -59,9 +61,11 @@ const validarAtual = (atual, projetos) => {
 
 // Transição do estado atual para o destino. O gatilho só é capturado ao abrir a partir de null.
 export const navegar = (atual, destino, projetos) => {
+  // O destino null (fechar) é sempre válido, mesmo com um estado atual corrompido (D1.2).
+  if (destino === null) return fechar()
+
   const anterior = validarAtual(atual, projetos)
   if (!anterior.ok) return anterior
-  if (destino === null) return { ok: true, estado: null, capturarGatilho: false }
 
   const resultado = validar(destino, projetos)
   if (!resultado.ok) return resultado
@@ -72,7 +76,7 @@ export const navegar = (atual, destino, projetos) => {
 export const voltar = (atual, projetos) => {
   const anterior = validarAtual(atual, projetos)
   if (!anterior.ok) return anterior
-  if (anterior.estado === null || !['galeria', 'demo'].includes(anterior.estado.tipo)) return rejeitar(MOTIVOS.SEM_VOLTAR)
+  if (anterior.estado === null || !TIPOS_COM_VOLTAR.has(anterior.estado.tipo)) return rejeitar(MOTIVOS.SEM_VOLTAR)
   return { ok: true, estado: { tipo: 'projeto', slug: anterior.estado.slug } }
 }
 
