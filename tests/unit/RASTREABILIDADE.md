@@ -4,6 +4,19 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
+## Correção da Spec 0001 — foco inicial das demos (§7.3 e §7.4 C1)
+
+**Decisão do mantenedor:** manter o foco inicial no botão Fechar nas três demos (Cindy, PHX e Nexus). Só o texto descritivo da Spec foi corrigido; código, comportamento, testes e baseline não mudaram.
+
+| Trecho | Texto anterior | Texto corrigido |
+|---|---|---|
+| §7.3, exceção de `data-dialog-initial-focus` | "o botão 'Voltar' nas galerias e demos, e o equivalente nos demais" | "o botão 'Voltar ao projeto' nas galerias e o botão de fechar nos demais dialogs: Sobre, Contato, detalhes e as três demos, conforme medido na baseline" |
+| §7.4 C, linha C1 | "o botão 'Voltar', foco inicial, ou o botão de fechar" | "o botão de fechar, que é o foco inicial, ou o botão 'Voltar ao projeto'" |
+
+**A regra normativa não mudou:** o atributo continua no mesmo elemento da baseline, e o foco inicial precisa ter a mesma identidade registrada no `7f53175` (§7.3 e §7.4 A).
+
+**Origem do erro:** os dois trechos foram escritos na versão 4 da Spec (antes de ela entrar no repositório, no `661ac52`). A verificação feita naquela etapa só contou a presença do atributo em cada arquivo, sem conferir em qual elemento ele estava, e o parêntese descreveu o estado atual de forma errada. O código nunca mudou: as demos focam Fechar desde a criação (`652a7a4` para PHX e Nexus, `fb86aa9` para Cindy), e as galerias focam "Voltar ao projeto" desde o `652a7a4`. O smoke da baseline mediu o mesmo: `cindy-demo-panel__close` e `phx-demo-panel__close` (3/3) e "Fechar demo" na Nexus (desktop 8/17, mobile 2/10).
+
 ## Etapa 6 / T6.1 — correções pontuais
 
 **IDs do inventário T6.0 afetados: nenhum.** As 176 regras CT/AS continuam no lugar e inalteradas. O T6.1 corrige um auxiliar da camada 2 e acrescenta cobertura.

@@ -214,7 +214,7 @@ Definidos aqui porque esta spec cria os scripts. As Specs 0002 e 0003 os reutili
 - O **resumo** dos resultados (pass/fail, tolerância calibrada, medianas) vai na descrição da PR e na entrega. Os artefatos não vão.
 - O golden prova equivalência de conteúdo e markup. Foco, teclado, `Escape`, animações e interações têm validações próprias.
 - **Exceção técnica aprovada: `data-dialog-initial-focus`.**
-  - **Fato verificado:** o atributo já existe nos 13 dialogs no `7f53175`, portanto já faz parte do golden. A expectativa é que a exceção **não precise ser usada**: a galeria única e os dialogs renomeados mantêm o atributo no mesmo elemento de hoje (o botão "Voltar" nas galerias e demos, e o equivalente nos demais).
+  - **Fato verificado:** o atributo já existe nos 13 dialogs no `7f53175`, portanto já faz parte do golden. A expectativa é que a exceção **não precise ser usada**: a galeria única e os dialogs renomeados mantêm o atributo no mesmo elemento de hoje (o botão "Voltar ao projeto" nas galerias e o botão de fechar nos demais dialogs: Sobre, Contato, detalhes e as três demos, conforme medido na baseline).
   - **Identidade do elemento focado, registrada na baseline:** para cada um dos 13 dialogs, o smoke grava no manifesto a identidade do elemento que recebe o foco inicial no `7f53175`:
     - tag;
     - papel e nome acessível computados (CDP `Accessibility`);
@@ -270,7 +270,7 @@ Premissa técnica, que não é presumida e é verificada na baseline: eventos de
 
 | # | Teste | Critério |
 |---|---|---|
-| C1 | Foco no "chrome" do dialog (o botão "Voltar", foco inicial, ou o botão de fechar) → `Escape` | **Obrigatório:** fecha, o estado vai a `null` e o foco volta ao gatilho original |
+| C1 | Foco no "chrome" do dialog (o botão de fechar, que é o foco inicial, ou o botão "Voltar ao projeto") → `Escape` | **Obrigatório:** fecha, o estado vai a `null` e o foco volta ao gatilho original |
 | C2 | Foco colocado **dentro** do iframe: clique num elemento focável do conteúdo e, como alternativa, `Tab` a partir do último elemento do chrome → `Escape` | **Registrar** na baseline se fecha ou não. Depois da mudança, o comportamento tem que ser **igual ao da baseline** |
 | C3 | Com o foco dentro do iframe, `Tab` e `Shift+Tab` até sair do conteúdo do iframe | **Registrar** para onde o foco vai, se volta ao chrome do dialog ou se escapa para fora do dialog. Depois da mudança, igual à baseline |
 | C4 | Depois de C2/C3, voltar o foco ao chrome e pressionar `Escape` | **Obrigatório:** fecha e devolve o foco ao gatilho original |
