@@ -4,6 +4,250 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
+## Etapa 6 / T6.0 — inventário de regras (antes da reorganização)
+
+Situação registrada no commit `1c5aec3` (fim da Etapa 5), antes de qualquer mudança da Etapa 6. Cada asserção de `portfolio-contract.test.mjs` (**CT**) e de `app-dialog-state.test.mjs` (**AS**) recebe um ID estável no formato `<arquivo>-<teste>-<asserção>`, numerado pela ordem no arquivo nesse commit. Os IDs não mudam quando as asserções forem movidas ou removidas nos tickets T6.1–T6.5: o destino de cada uma será registrado contra estes IDs.
+
+### Linha de base da suíte
+
+Contagem de testes pelo runner (`node --test`) e de chamadas de asserção no fonte (ocorrências de `assert(` ou `assert.<método>(`; cada chamada conta uma vez, mesmo dentro de laço ou de função auxiliar).
+
+| Arquivo | Testes | Chamadas de asserção |
+|---|---|---|
+| `portfolio-contract.test.mjs` | 24 | 161 |
+| `dialog-navigation.test.mjs` | 18 | 13 |
+| `project-registry.test.mjs` | 8 | 28 |
+| `project-dialogs-render.test.mjs` | 7 | 6 |
+| `app-dialog-state.test.mjs` | 6 | 15 |
+| `project-gallery.test.mjs` | 6 | 15 |
+| `project-gallery-preview.test.mjs` | 5 | 4 |
+| **Total** | **74** | **242** |
+
+Regras inventariadas aqui: **176** (161 CT + 15 AS). Os outros 66 pontos de asserção ficam nos arquivos de camada 1 e 2, que a Etapa 6 não reorganiza.
+
+Notas sobre a contagem:
+- `AS-01-00` é a asserção do auxiliar `mapKeys` (fora de um `test`), executada a cada uso.
+- `CT-06-01`, `CT-06-02`, `CT-21-04` e `CT-21-05` estão dentro de laços: uma chamada no fonte, várias execuções.
+- `CT-17-05`, `CT-21-06` e `CT-21-07` dependem da Etapa 7 (D1.12/D1.13) e não podem ser alteradas na Etapa 6.
+
+### Testes de origem
+
+| Teste | Arquivo:linha | Nome do teste | Regras |
+|---|---|---|---|
+| CT-01 | `portfolio-contract.test.mjs:10` | fallback do footer mantém a altura mobile quando a seção é carregada | 1 |
+| CT-02 | `portfolio-contract.test.mjs:16` | cards de projetos mantêm contrato de teclado | 6 |
+| CT-03 | `portfolio-contract.test.mjs:27` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | 36 |
+| CT-04 | `portfolio-contract.test.mjs:69` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | 9 |
+| CT-05 | `portfolio-contract.test.mjs:83` | cabeçalho rolado não desenha uma linha horizontal no mobile | 1 |
+| CT-06 | `portfolio-contract.test.mjs:89` | fallback de Projetos reserva as mesmas etapas em telas baixas | 2 |
+| CT-07 | `portfolio-contract.test.mjs:98` | PortfolioContent mantém gerenciamento de foco e Escape nos dialogs | 11 |
+| CT-08 | `portfolio-contract.test.mjs:114` | Serviços têm uma faixa visual de transição abaixo dos cards | 4 |
+| CT-09 | `portfolio-contract.test.mjs:124` | dialogs definem um foco inicial nativo | 4 |
+| CT-10 | `portfolio-contract.test.mjs:134` | Contato mantém a copy aprovada e os cinco canais | 6 |
+| CT-11 | `portfolio-contract.test.mjs:146` | Sobre mantém a copy aprovada e CTA para Contato | 7 |
+| CT-12 | `portfolio-contract.test.mjs:158` | Projeto People usa GERENCIADOR DE RECURSOS HUMANOS como subtítulo | 1 |
+| CT-13 | `portfolio-contract.test.mjs:164` | Projeto 02 mantém a copy confidencial de Gestão Condominial com IA | 2 |
+| CT-14 | `portfolio-contract.test.mjs:171` | Projeto Cindy oferece demo local e galeria com capturas da própria demo | 9 |
+| CT-15 | `portfolio-contract.test.mjs:189` | Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes | 9 |
+| CT-16 | `portfolio-contract.test.mjs:205` | Projeto Nexus AI abre uma galeria coerente com a demo interativa | 4 |
+| CT-17 | `portfolio-contract.test.mjs:216` | Projeto PHX oferece a demo local do gerador de laudo | 6 |
+| CT-18 | `portfolio-contract.test.mjs:229` | Projeto PHX abre uma galeria com as telas do laudo | 4 |
+| CT-19 | `portfolio-contract.test.mjs:240` | Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes | 7 |
+| CT-20 | `portfolio-contract.test.mjs:255` | previews de projetos destacam a galeria e preservam o corte das capturas | 9 |
+| CT-21 | `portfolio-contract.test.mjs:273` | quatro logos ocupam as etapas, sem substituir as telas dos painéis | 8 |
+| CT-22 | `portfolio-contract.test.mjs:290` | navegação lateral da demo Nexus troca a seção ativa | 5 |
+| CT-23 | `portfolio-contract.test.mjs:300` | demo Nexus mantém retorno ao projeto e identificação no topo | 4 |
+| CT-24 | `portfolio-contract.test.mjs:309` | CSS e sonda não reintroduzem o fluxo legado de vídeo | 6 |
+| AS-01 | `app-dialog-state.test.mjs:19` | mapa de demos cobre exatamente os projetos com demo no registro | 1 |
+| AS-02 | `app-dialog-state.test.mjs:26` | App renderiza a galeria única para o slug do estado, sem mapa nem galerias por projeto | 3 |
+| AS-03 | `app-dialog-state.test.mjs:32` | transições passam pelo módulo de navegação, sem preserveTrigger nem estado misto | 5 |
+| AS-04 | `app-dialog-state.test.mjs:40` | gatilho só é capturado quando o módulo indica abertura a partir de null | 2 |
+| AS-05 | `app-dialog-state.test.mjs:45` | transição rejeitada mantém o estado e só avisa em desenvolvimento | 2 |
+| AS-06 | `app-dialog-state.test.mjs:50` | Escape fecha pelo módulo de navegação | 1 |
+
+### Regras
+
+Evidência = arquivo e linha da asserção no commit `1c5aec3`, com o tipo de asserção.
+
+| ID | Evidência | Regra protegida | Observação |
+|---|---|---|---|
+| CT-01-01 | `portfolio-contract.test.mjs:13` (match) | Fallback do footer mantém 100svh no mobile (≤640px) enquanto carrega |  |
+| CT-02-01 | `portfolio-contract.test.mjs:19` (match) | Card de projeto tem `role="button"` |  |
+| CT-02-02 | `portfolio-contract.test.mjs:20` (match) | Card de projeto é focável (`tabIndex={0}`) |  |
+| CT-02-03 | `portfolio-contract.test.mjs:21` (match) | Card trata a tecla `Enter` |  |
+| CT-02-04 | `portfolio-contract.test.mjs:22` (match) | Card trata a tecla `Space` |  |
+| CT-02-05 | `portfolio-contract.test.mjs:23` (match) | Card abre o projeto pelo slug |  |
+| CT-02-06 | `portfolio-contract.test.mjs:24` (match) | `role="button"` precede `tabIndex={0}` no fonte (mesmo elemento, por ordem) | Ambígua: regex pela ordem no arquivo inteiro, não prova o mesmo elemento |
+| CT-03-01 | `portfolio-contract.test.mjs:31` (match) | Introdução de Projetos contém o título `PROJETOS` (`#projects-title`) |  |
+| CT-03-02 | `portfolio-contract.test.mjs:32` (match) | Divisor com ícone de engrenagem após o título de Projetos |  |
+| CT-03-03 | `portfolio-contract.test.mjs:33` (match) | Cards vêm do registro, com índice para alternar os lados |  |
+| CT-03-04 | `portfolio-contract.test.mjs:34` (equal) | Percurso tem um único `<svg>` | Contagem literal no fonte |
+| CT-03-05 | `portfolio-contract.test.mjs:35` (equal) | Percurso tem um único `motion.path` | Contagem literal no fonte |
+| CT-03-06 | `portfolio-contract.test.mjs:36` (match) | Progresso do traço começa em 0 (`useMotionValue(0)`) |  |
+| CT-03-07 | `portfolio-contract.test.mjs:37` (match) | Traço usa `pathLength` como estilo |  |
+| CT-03-08 | `portfolio-contract.test.mjs:38` (match) | Posição dos cards calculada sobre o traço (`getPointAtLength`) |  |
+| CT-03-09 | `portfolio-contract.test.mjs:39` (match) | Com movimento reduzido, o traço aparece completo |  |
+| CT-03-10 | `portfolio-contract.test.mjs:40` (match) | Card marcado como alcançado (`dataset.reached`) |  |
+| CT-03-11 | `portfolio-contract.test.mjs:41` (match) | Pontos do traço alternam entre 25% e 75% da largura |  |
+| CT-03-12 | `portfolio-contract.test.mjs:42` (match) | Início do traço medido a partir do divisor da introdução |  |
+| CT-03-13 | `portfolio-contract.test.mjs:43` (match) | Traço começa 52px abaixo do divisor |  |
+| CT-03-14 | `portfolio-contract.test.mjs:44` (match) | `viewBox` do SVG ajustado em runtime |  |
+| CT-03-15 | `portfolio-contract.test.mjs:45` (doesNotMatch) | CSS não usa `vector-effect: non-scaling-stroke` |  |
+| CT-03-16 | `portfolio-contract.test.mjs:46` (match) | Progresso ligado a um `ScrollTrigger` |  |
+| CT-03-17 | `portfolio-contract.test.mjs:47` (match) | Progresso lido de `self.progress` |  |
+| CT-03-18 | `portfolio-contract.test.mjs:48` (doesNotMatch) | Sem `invalidateOnRefresh` |  |
+| CT-03-19 | `portfolio-contract.test.mjs:49` (match) | Recalcula com `ResizeObserver` |  |
+| CT-03-20 | `portfolio-contract.test.mjs:50` (match) | Consulta `prefers-reduced-motion: reduce` |  |
+| CT-03-21 | `portfolio-contract.test.mjs:51` (doesNotMatch) | Percurso não usa `clipPath` |  |
+| CT-03-22 | `portfolio-contract.test.mjs:52` (match) | Introdução com `min-height: 90svh` e alinhada ao topo |  |
+| CT-03-23 | `portfolio-contract.test.mjs:53` (match) | Título da introdução com `font-size: clamp(2.8rem, 7vw, 6rem)` |  |
+| CT-03-24 | `portfolio-contract.test.mjs:54` (match) | Cópia do card com fundo `#efe5d6` e texto `#071f2a` |  |
+| CT-03-25 | `portfolio-contract.test.mjs:55` (match) | Resumo do card em negrito (700) |  |
+| CT-03-26 | `portfolio-contract.test.mjs:56` (match) | Onda primária do card (`::before`, 8s) |  |
+| CT-03-27 | `portfolio-contract.test.mjs:57` (match) | Onda secundária do card (`::after`, 11s) |  |
+| CT-03-28 | `portfolio-contract.test.mjs:58` (match) | Movimento reduzido desliga as ondas |  |
+| CT-03-29 | `portfolio-contract.test.mjs:59` (match) | Traço de progresso `#c2f84f`, espessura 18 |  |
+| CT-03-30 | `portfolio-contract.test.mjs:60` (match) | Etapas pares alinhadas à direita |  |
+| CT-03-31 | `portfolio-contract.test.mjs:61` (match) | Breakpoint mobile do percurso em 900px |  |
+| CT-03-32 | `portfolio-contract.test.mjs:62` (match) | No mobile, cards alternam entre trilho esquerdo e direito |  |
+| CT-03-33 | `portfolio-contract.test.mjs:63` (match) | No mobile, o traço usa paradas próprias |  |
+| CT-03-34 | `portfolio-contract.test.mjs:64` (doesNotMatch) | CSS não unifica etapas pares e ímpares |  |
+| CT-03-35 | `portfolio-contract.test.mjs:65` (match) | No mobile (≤900px), card com `width: calc(100% - 4.5rem)` |  |
+| CT-03-36 | `portfolio-contract.test.mjs:66` (match) | Arte do card com `object-fit: contain` |  |
+| CT-04-01 | `portfolio-contract.test.mjs:72` (match) | Entrada lateral observada por `IntersectionObserver` |  |
+| CT-04-02 | `portfolio-contract.test.mjs:73` (match) | Card revelado ao entrar na viewport |  |
+| CT-04-03 | `portfolio-contract.test.mjs:74` (match) | Entrada acontece uma vez (`unobserve`) |  |
+| CT-04-04 | `portfolio-contract.test.mjs:75` (match) | Card revelado também ao receber foco |  |
+| CT-04-05 | `portfolio-contract.test.mjs:76` (match) | Observador desconectado na limpeza |  |
+| CT-04-06 | `portfolio-contract.test.mjs:77` (match) | Deslocamento de entrada −40px |  |
+| CT-04-07 | `portfolio-contract.test.mjs:78` (match) | Etapas pares entram de +40px |  |
+| CT-04-08 | `portfolio-contract.test.mjs:79` (match) | Animação de entrada de 650ms |  |
+| CT-04-09 | `portfolio-contract.test.mjs:80` (match) | Movimento reduzido: sem animação, card visível e sem deslocamento |  |
+| CT-05-01 | `portfolio-contract.test.mjs:86` (match) | Cabeçalho rolado sem linha inferior (borda transparente) |  |
+| CT-06-01 | `portfolio-contract.test.mjs:93` (ok) | Fallback de Projetos reserva `90svh + 4 × max(Nsvh, Mrem)` (laço: 80/46 e 82/42) | Laço: 1 chamada, 2 execuções |
+| CT-06-02 | `portfolio-contract.test.mjs:94` (ok) | Etapa do percurso com `min-height: max(Nsvh, Mrem)` (laço: 80/46 e 82/42) | Laço: 1 chamada, 2 execuções |
+| CT-07-01 | `portfolio-contract.test.mjs:101` (match) | App guarda o gatilho (`lastTriggerRef`) |  |
+| CT-07-02 | `portfolio-contract.test.mjs:102` (match) | App trata `Escape` | Sobreposta por AS-06-01 (mais forte) |
+| CT-07-03 | `portfolio-contract.test.mjs:103` (match) | App trata `Tab` (trap) |  |
+| CT-07-04 | `portfolio-contract.test.mjs:104` (match) | Trap identifica o primeiro elemento focável |  |
+| CT-07-05 | `portfolio-contract.test.mjs:105` (match) | Trap foca o primeiro elemento |  |
+| CT-07-06 | `portfolio-contract.test.mjs:106` (match) | Ao fechar, o foco volta ao gatilho |  |
+| CT-07-07 | `portfolio-contract.test.mjs:107` (match) | `InfoPanels` importado diretamente (sem lazy) |  |
+| CT-07-08 | `portfolio-contract.test.mjs:108` (match) | `ProjectDetailsPanel` importado diretamente (sem lazy) |  |
+| CT-07-09 | `portfolio-contract.test.mjs:109` (match) | `EXPLORAR MEU TRABALHO` aponta para `#servicos` |  |
+| CT-07-10 | `portfolio-contract.test.mjs:110` (match) | CTA de contato do hero existe |  |
+| CT-07-11 | `portfolio-contract.test.mjs:111` (match) | CTA de contato do hero abre o dialog Contato |  |
+| CT-08-01 | `portfolio-contract.test.mjs:118` (match) | Serviços têm a faixa de transição |  |
+| CT-08-02 | `portfolio-contract.test.mjs:119` (match) | Faixa usa `/images/services-transition.png` |  |
+| CT-08-03 | `portfolio-contract.test.mjs:120` (match) | Faixa com altura `clamp(9rem, 20svh, 18rem)` |  |
+| CT-08-04 | `portfolio-contract.test.mjs:121` (match) | Imagem da faixa com `object-fit: cover` |  |
+| CT-09-01 | `portfolio-contract.test.mjs:128` (equal) | Sobre e Contato têm, cada um, um foco inicial (2 marcadores em `InfoPanels`) |  |
+| CT-09-02 | `portfolio-contract.test.mjs:129` (match) | Detalhes do projeto têm foco inicial |  |
+| CT-09-03 | `portfolio-contract.test.mjs:130` (match) | `InfoPanels` usa `autoFocus` |  |
+| CT-09-04 | `portfolio-contract.test.mjs:131` (match) | Detalhes do projeto usam `autoFocus` |  |
+| CT-10-01 | `portfolio-contract.test.mjs:138` (match) | Contato: título aprovado |  |
+| CT-10-02 | `portfolio-contract.test.mjs:139` (match) | Contato: introdução aprovada |  |
+| CT-10-03 | `portfolio-contract.test.mjs:140` (match) | Contato: convite aprovado |  |
+| CT-10-04 | `portfolio-contract.test.mjs:141` (equal) | Contato tem exatamente cinco canais (5 `label:` em `InfoPanels`) | Ambígua: conta `label: '` no fonte, não canais renderizados |
+| CT-10-05 | `portfolio-contract.test.mjs:142` (match) | Contato mantém o link público do LinkedIn |  |
+| CT-10-06 | `portfolio-contract.test.mjs:143` (match) | Footer mantém o link público do LinkedIn |  |
+| CT-11-01 | `portfolio-contract.test.mjs:149` (match) | Sobre: saudação aprovada |  |
+| CT-11-02 | `portfolio-contract.test.mjs:150` (match) | Sobre: apresentação aprovada |  |
+| CT-11-03 | `portfolio-contract.test.mjs:151` (match) | Sobre: frase sobre engenharia |  |
+| CT-11-04 | `portfolio-contract.test.mjs:152` (match) | Sobre: seção "Minha stack" |  |
+| CT-11-05 | `portfolio-contract.test.mjs:153` (match) | Sobre: trecho sobre prompts e fluxos inteligentes |  |
+| CT-11-06 | `portfolio-contract.test.mjs:154` (match) | Sobre: CTA `CONVERSAR SOBRE UM PROJETO` |  |
+| CT-11-07 | `portfolio-contract.test.mjs:155` (match) | CTA do Sobre abre o Contato (`onOpenContact`) |  |
+| CT-12-01 | `portfolio-contract.test.mjs:161` (match) | Subtítulo do People no registro: `GERENCIADOR DE RECURSOS HUMANOS` | Sobreposta pelo render dos detalhes (`project-dialogs-render`) |
+| CT-13-01 | `portfolio-contract.test.mjs:167` (match) | Título `GESTÃO CONDOMINIAL COM IA` no registro | Sobreposta pelo render dos detalhes |
+| CT-13-02 | `portfolio-contract.test.mjs:168` (match) | Subtítulo `ADMINISTRAÇÃO DE CONDOMÍNIOS` no registro | Sobreposta pelo render dos detalhes |
+| CT-14-01 | `portfolio-contract.test.mjs:178` (match) | App importa a demo Cindy |  |
+| CT-14-02 | `portfolio-contract.test.mjs:179` (match) | Mapa de demos: `cindy → CindyDemoPanel` |  |
+| CT-14-03 | `portfolio-contract.test.mjs:180` (match) | App importa a galeria única | Duplicada: = CT-16-02 = CT-18-02 = CT-19-03 = AS-02-01 |
+| CT-14-04 | `portfolio-contract.test.mjs:181` (match) | App renderiza a galeria única pelo slug, com `key` | Duplicada: = CT-16-03 = CT-18-03 = CT-19-04; contida em AS-02-02 |
+| CT-14-05 | `portfolio-contract.test.mjs:182` (match) | Galeria da Cindy tem `tema: 'cindy'` no registro | Sobreposta por `project-registry` e camada 2 de `project-gallery` |
+| CT-14-06 | `portfolio-contract.test.mjs:183` (match) | Demo Cindy carrega `/nova-cindy-mockup-v2.html` |  |
+| CT-14-07 | `portfolio-contract.test.mjs:184` (match) | Demo Cindy tem foco inicial |  |
+| CT-14-08 | `portfolio-contract.test.mjs:185` (match) | Miniaturas da galeria indicam a tela ativa (`aria-pressed`) | Duplicada: = CT-19-07; sobreposta pela camada 2 |
+| CT-14-09 | `portfolio-contract.test.mjs:186` (match) | Mockup da Cindy mantém o título da página |  |
+| CT-15-01 | `portfolio-contract.test.mjs:194` (match) | Detalhes oferecem a ação de demo (`onOpenDemo`) |  |
+| CT-15-02 | `portfolio-contract.test.mjs:195` (match) | App importa a demo Nexus |  |
+| CT-15-03 | `portfolio-contract.test.mjs:196` (match) | Mapa de demos: `nexus → NexusDemoPanel` |  |
+| CT-15-04 | `portfolio-contract.test.mjs:197` (match) | Demo Nexus: selo `DEMO LOCAL · DADOS FICTÍCIOS` |  |
+| CT-15-05 | `portfolio-contract.test.mjs:198` (match) | Demo Nexus: "Análise documental inteligente" |  |
+| CT-15-06 | `portfolio-contract.test.mjs:199` (match) | Demo Nexus: "Executar fluxo" |  |
+| CT-15-07 | `portfolio-contract.test.mjs:200` (match) | Demo Nexus: "Eventos da execução" |  |
+| CT-15-08 | `portfolio-contract.test.mjs:201` (match) | Demo Nexus: "Execução atual" |  |
+| CT-15-09 | `portfolio-contract.test.mjs:202` (match) | Demo Nexus tem foco inicial |  |
+| CT-16-01 | `portfolio-contract.test.mjs:210` (match) | Prévia abre a galeria pelo slug (`onOpenGallery(slug)`) | Duplicada: = CT-18-01; comportamento em `project-gallery-preview` |
+| CT-16-02 | `portfolio-contract.test.mjs:211` (match) | App importa a galeria única | Duplicada (ver CT-14-03) |
+| CT-16-03 | `portfolio-contract.test.mjs:212` (match) | App renderiza a galeria única pelo slug, com `key` | Duplicada (ver CT-14-04) |
+| CT-16-04 | `portfolio-contract.test.mjs:213` (match) | Galeria Nexus tem `tema: 'nexus'` no registro | Sobreposta (ver CT-14-05) |
+| CT-17-01 | `portfolio-contract.test.mjs:221` (match) | App importa a demo PHX |  |
+| CT-17-02 | `portfolio-contract.test.mjs:222` (match) | Mapa de demos: `phx → PhxDemoPanel` |  |
+| CT-17-03 | `portfolio-contract.test.mjs:223` (match) | Demo PHX carrega `/phx-demo.html` |  |
+| CT-17-04 | `portfolio-contract.test.mjs:224` (match) | Demo PHX: selo `DEMO INTERATIVA` |  |
+| CT-17-05 | `portfolio-contract.test.mjs:225` (match) | Registro referencia `project-03.webp` | **Etapa 7** (D1.13): não mexer na Etapa 6 |
+| CT-17-06 | `portfolio-contract.test.mjs:226` (match) | Título `LAUDO DE CRÉDITO IMOBILIÁRIO` no registro |  |
+| CT-18-01 | `portfolio-contract.test.mjs:234` (match) | Prévia abre a galeria pelo slug (`onOpenGallery(slug)`) | Duplicada (ver CT-16-01) |
+| CT-18-02 | `portfolio-contract.test.mjs:235` (match) | App importa a galeria única | Duplicada (ver CT-14-03) |
+| CT-18-03 | `portfolio-contract.test.mjs:236` (match) | App renderiza a galeria única pelo slug, com `key` | Duplicada (ver CT-14-04) |
+| CT-18-04 | `portfolio-contract.test.mjs:237` (match) | Galeria PHX tem `tema: 'phx'` no registro | Sobreposta (ver CT-14-05) |
+| CT-19-01 | `portfolio-contract.test.mjs:246` (match) | Prévia mostra `VER TELAS DO PROJETO` |  |
+| CT-19-02 | `portfolio-contract.test.mjs:247` (match) | Detalhes oferecem a ação de galeria (`onOpenGallery`) | Mais fraca que CT-16-01 |
+| CT-19-03 | `portfolio-contract.test.mjs:248` (match) | App importa a galeria única | Duplicada (ver CT-14-03) |
+| CT-19-04 | `portfolio-contract.test.mjs:249` (match) | App renderiza a galeria única pelo slug, com `key` | Duplicada (ver CT-14-04) |
+| CT-19-05 | `portfolio-contract.test.mjs:250` (match) | Galeria People tem `tema: null` no registro | Sobreposta (ver CT-14-05) |
+| CT-19-06 | `portfolio-contract.test.mjs:251` (match) | Trap de foco localiza o dialog aberto por `.people-gallery.is-open` | Ambígua: nome do teste fala do People, mas protege o seletor do trap de todas as galerias |
+| CT-19-07 | `portfolio-contract.test.mjs:252` (match) | Miniaturas da galeria indicam a tela ativa (`aria-pressed`) | Duplicada (ver CT-14-08) |
+| CT-20-01 | `portfolio-contract.test.mjs:262` (match) | Imagem da prévia 4/3 com `object-fit: contain` |  |
+| CT-20-02 | `portfolio-contract.test.mjs:263` (match) | Selo da prévia arredondado, fundo `#78aebc` |  |
+| CT-20-03 | `portfolio-contract.test.mjs:264` (match) | Ação do card com borda `#071f2a` |  |
+| CT-20-04 | `portfolio-contract.test.mjs:265` (match) | Ação do card com largura do conteúdo, alinhada ao início |  |
+| CT-20-05 | `portfolio-contract.test.mjs:266` (match) | Ação do card esconde a tecla decorativa |  |
+| CT-20-06 | `portfolio-contract.test.mjs:267` (match) | No desktop com hover fino, card sobe 0,65rem com sombra |  |
+| CT-20-07 | `portfolio-contract.test.mjs:268` (match) | Card tem o CTA `VER PROJETO` com a estrutura de linha, texto e tecla |  |
+| CT-20-08 | `portfolio-contract.test.mjs:269` (match) | Resumo do People no registro: "Plataforma de recrutamento…" |  |
+| CT-20-09 | `portfolio-contract.test.mjs:270` (match) | Miniaturas da galeria com `object-fit: contain` |  |
+| CT-21-01 | `portfolio-contract.test.mjs:278` (match) | Card com `width: 43%` |  |
+| CT-21-02 | `portfolio-contract.test.mjs:279` (match) | Card mostra o logo do registro |  |
+| CT-21-03 | `portfolio-contract.test.mjs:280` (match) | Logo com alt do registro |  |
+| CT-21-04 | `portfolio-contract.test.mjs:282` (match) | Registro aponta os quatro logos em `/images/projects/logos/` (laço ×4) | Laço: 1 chamada, 4 execuções |
+| CT-21-05 | `portfolio-contract.test.mjs:283` (equal) | Cada logo é um WebP válido (cabeçalho `RIFF`, laço ×4) | Laço: 1 chamada, 4 execuções |
+| CT-21-06 | `portfolio-contract.test.mjs:285` (match) | Registro referencia `project-01.webp` | **Etapa 7** (D1.12/D1.13): não mexer na Etapa 6 |
+| CT-21-07 | `portfolio-contract.test.mjs:286` (match) | Registro referencia `project-02.webp` | **Etapa 7** (D1.12/D1.13): não mexer na Etapa 6 |
+| CT-21-08 | `portfolio-contract.test.mjs:287` (match) | Card mostra o resumo do registro |  |
+| CT-22-01 | `portfolio-contract.test.mjs:293` (match) | Demo Nexus define os itens de navegação |  |
+| CT-22-02 | `portfolio-contract.test.mjs:294` (match) | Item de navegação troca a seção ativa |  |
+| CT-22-03 | `portfolio-contract.test.mjs:295` (match) | Item ativo é indicado pela seção atual |  |
+| CT-22-04 | `portfolio-contract.test.mjs:296` (match) | Demo Nexus: item "Base de conhecimento" |  |
+| CT-22-05 | `portfolio-contract.test.mjs:297` (match) | Demo Nexus: item "Documentação" |  |
+| CT-23-01 | `portfolio-contract.test.mjs:303` (match) | Demo Nexus tem botão de voltar no topo |  |
+| CT-23-02 | `portfolio-contract.test.mjs:304` (match) | Demo Nexus tem selo no topo |  |
+| CT-23-03 | `portfolio-contract.test.mjs:305` (match) | Demo Nexus: selo `DEMO INTERATIVA` |  |
+| CT-23-04 | `portfolio-contract.test.mjs:306` (match) | Voltar da demo Nexus chama `onBack` |  |
+| CT-24-01 | `portfolio-contract.test.mjs:313` (doesNotMatch) | CSS sem `shader-video` (fluxo legado de vídeo) |  |
+| CT-24-02 | `portfolio-contract.test.mjs:314` (match) | Elementos interativos sem tap highlight nativo |  |
+| CT-24-03 | `portfolio-contract.test.mjs:315` (doesNotMatch) | `perf-audit` sem resquícios do vídeo legado |  |
+| CT-24-04 | `portfolio-contract.test.mjs:316` (match) | `perf-audit` usa mouse real via CDP |  |
+| CT-24-05 | `portfolio-contract.test.mjs:317` (match) | `perf-audit` oferece `--footer` |  |
+| CT-24-06 | `portfolio-contract.test.mjs:318` (match) | `perf-audit` oferece `--projects` |  |
+| AS-01-00 | `app-dialog-state.test.mjs:15` (ok) | Auxiliar `mapKeys`: o mapa procurado existe no `App.jsx` (executa no teste AS-01) | Chamada no auxiliar, não num teste; executa uma vez por uso de `mapKeys` |
+| AS-01-01 | `app-dialog-state.test.mjs:20` (deepEqual) | Mapa de demos cobre exatamente os projetos com demo no registro (D1.7) |  |
+| AS-02-01 | `app-dialog-state.test.mjs:27` (match) | App importa a galeria única | Duplicada (ver CT-14-03) |
+| AS-02-02 | `app-dialog-state.test.mjs:28` (match) | App renderiza a galeria única para `galeria`, pelo slug, com `key`, `goBack` e `closeDialog` |  |
+| AS-02-03 | `app-dialog-state.test.mjs:29` (doesNotMatch) | Sem mapa de galerias nem galerias por projeto |  |
+| AS-03-01 | `app-dialog-state.test.mjs:33` (match) | App importa `fechar`, `navegar` e `voltar` do módulo de navegação |  |
+| AS-03-02 | `app-dialog-state.test.mjs:34` (match) | Abrir passa por `navegar(dialog, destination, projects)` |  |
+| AS-03-03 | `app-dialog-state.test.mjs:35` (match) | Voltar passa por `voltar(dialog, projects)` |  |
+| AS-03-04 | `app-dialog-state.test.mjs:36` (match) | Fechar passa por `fechar()` |  |
+| AS-03-05 | `app-dialog-state.test.mjs:37` (doesNotMatch) | Sem `preserveTrigger` nem estado legado (`activePanel`, `openPanel`) |  |
+| AS-04-01 | `app-dialog-state.test.mjs:41` (match) | Gatilho capturado só quando o módulo indica `capturarGatilho` |  |
+| AS-04-02 | `app-dialog-state.test.mjs:42` (equal) | Um único ponto de captura do gatilho |  |
+| AS-05-01 | `app-dialog-state.test.mjs:46` (match) | Transição rejeitada mantém o estado e só faz `console.error` em DEV |  |
+| AS-05-02 | `app-dialog-state.test.mjs:47` (equal) | Um único `console.error` no App |  |
+| AS-06-01 | `app-dialog-state.test.mjs:51` (match) | `Escape` fecha pelo `closeDialog` do módulo |  |
+
 ## Etapa 2 — correção da galeria People (`c30a130`)
 
 | Teste antigo | Asserção | Regra protegida | Situação |
