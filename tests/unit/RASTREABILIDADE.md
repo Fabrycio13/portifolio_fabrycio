@@ -4,6 +4,141 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
+## Etapa 6 / T6.5 — divisão do contrato por responsabilidade
+
+As 109 asserções CT que restavam em `portfolio-contract.test.mjs` foram distribuídas, **com o texto inalterado**, em arquivos de contrato estático por responsabilidade. Nenhuma asserção foi criada, removida ou alterada. As 15 regras AS continuam em `app-dialog-state.test.mjs`, que não mudou (byte a byte igual ao de `7041351`). Pela Opção A, `portfolio-contract.test.mjs` fica só com as referências legadas, que saem na Etapa 7.
+
+**Conferência mecânica, antes e depois:** para cada asserção foram registrados o texto exato, o arquivo efetivamente lido (resolvendo a variável até o `read(...)`), os laços que a envolvem, as condições e se o teste é `async`. Os dois conjuntos são iguais: 109 entradas, nenhuma faltando, nenhuma a mais, nenhuma repetida. Os laços do CT-06 e do CT-21-04/05 continuam com os mesmos cabeçalhos; não há asserção sob condição; todos os testes continuam `async`.
+
+| Arquivo | Responsabilidade | Testes | Asserções |
+|---|---|---|---|
+| `project-journey-contract.test.mjs` | Seção Projetos: teclado, percurso, entrada lateral, fallback, ação do card, logos | 6 | 65 |
+| `scene-contract.test.mjs` | Cena fora dos dialogs: footer, cabeçalho, faixa de Serviços, link do Footer, ausência do vídeo legado | 5 | 13 |
+| `app-shell-contract.test.mjs` | Fiação estática do App não coberta pelo AS: trap e retorno de foco, imports diretos, CTAs do hero, seletor do trap, componente de cada demo | 3 | 16 |
+| `project-dialogs-contract.test.mjs` | Guardas estáticas dos dialogs de projeto que a camada 2 não observa (CSS, estado, arquivo público) | 8 | 12 |
+| `portfolio-contract.test.mjs` | Só as referências legadas que saem na Etapa 7 | 2 | 3 |
+| **Total** | | **24** | **109** |
+
+**Mutação por arquivo** (aplicada no código da aplicação e revertida): `project-journey-contract` (`role="button"` trocado), `scene-contract` (classe da faixa de Serviços), `app-shell-contract` (tecla do trap de foco), `project-dialogs-contract` (troca de seção da Nexus nas duas ocorrências, e `aria-pressed={index === 0}`) e `portfolio-contract` (referência a `project-03.webp`): todas detectadas pelo arquivo e pela suíte.
+
+Os testes de origem CT-14, CT-15, CT-17, CT-20 e CT-21 misturavam responsabilidades e foram divididos entre arquivos; por isso o nome do teste novo pode diferir do de origem. Os demais foram movidos inteiros, com o mesmo nome.
+
+| ID | Teste de origem (contrato em `7041351`) | Arquivo novo | Teste novo |
+|---|---|---|---|
+| CT-01-01 | fallback do footer mantém a altura mobile quando a seção é carregada | `scene-contract.test.mjs` | fallback do footer mantém a altura mobile quando a seção é carregada |
+| CT-02-01 | cards de projetos mantêm contrato de teclado | `project-journey-contract.test.mjs` | cards de projetos mantêm contrato de teclado |
+| CT-02-02 | cards de projetos mantêm contrato de teclado | `project-journey-contract.test.mjs` | cards de projetos mantêm contrato de teclado |
+| CT-02-03 | cards de projetos mantêm contrato de teclado | `project-journey-contract.test.mjs` | cards de projetos mantêm contrato de teclado |
+| CT-02-04 | cards de projetos mantêm contrato de teclado | `project-journey-contract.test.mjs` | cards de projetos mantêm contrato de teclado |
+| CT-02-05 | cards de projetos mantêm contrato de teclado | `project-journey-contract.test.mjs` | cards de projetos mantêm contrato de teclado |
+| CT-02-06 | cards de projetos mantêm contrato de teclado | `project-journey-contract.test.mjs` | cards de projetos mantêm contrato de teclado |
+| CT-03-01 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-02 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-03 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-04 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-05 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-06 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-07 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-08 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-09 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-10 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-11 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-12 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-13 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-14 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-15 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-16 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-17 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-18 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-19 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-20 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-21 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-22 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-23 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-24 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-25 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-26 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-27 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-28 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-29 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-30 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-31 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-32 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-33 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-34 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-35 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-03-36 | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile | `project-journey-contract.test.mjs` | Projetos seguem um percurso contínuo, em fluxo normal e adaptado para mobile |
+| CT-04-01 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-02 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-03 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-04 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-05 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-06 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-07 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-08 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-04-09 | entrada lateral dos cards acontece uma vez e respeita movimento reduzido | `project-journey-contract.test.mjs` | entrada lateral dos cards acontece uma vez e respeita movimento reduzido |
+| CT-05-01 | cabeçalho rolado não desenha uma linha horizontal no mobile | `scene-contract.test.mjs` | cabeçalho rolado não desenha uma linha horizontal no mobile |
+| CT-06-01 | fallback de Projetos reserva as mesmas etapas em telas baixas | `project-journey-contract.test.mjs` | fallback de Projetos reserva as mesmas etapas em telas baixas |
+| CT-06-02 | fallback de Projetos reserva as mesmas etapas em telas baixas | `project-journey-contract.test.mjs` | fallback de Projetos reserva as mesmas etapas em telas baixas |
+| CT-07-03 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-04 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-05 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-06 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-07 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-08 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-09 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-10 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-07-11 | PortfolioContent mantém gerenciamento de foco nos dialogs | `app-shell-contract.test.mjs` | PortfolioContent mantém gerenciamento de foco nos dialogs |
+| CT-08-01 | Serviços têm uma faixa visual de transição abaixo dos cards | `scene-contract.test.mjs` | Serviços têm uma faixa visual de transição abaixo dos cards |
+| CT-08-02 | Serviços têm uma faixa visual de transição abaixo dos cards | `scene-contract.test.mjs` | Serviços têm uma faixa visual de transição abaixo dos cards |
+| CT-08-03 | Serviços têm uma faixa visual de transição abaixo dos cards | `scene-contract.test.mjs` | Serviços têm uma faixa visual de transição abaixo dos cards |
+| CT-08-04 | Serviços têm uma faixa visual de transição abaixo dos cards | `scene-contract.test.mjs` | Serviços têm uma faixa visual de transição abaixo dos cards |
+| CT-09-02 | detalhes do projeto definem um foco inicial nativo | `project-dialogs-contract.test.mjs` | detalhes do projeto definem um foco inicial nativo |
+| CT-09-04 | detalhes do projeto definem um foco inicial nativo | `project-dialogs-contract.test.mjs` | detalhes do projeto definem um foco inicial nativo |
+| CT-10-06 | Footer mantém o link público do LinkedIn | `scene-contract.test.mjs` | Footer mantém o link público do LinkedIn |
+| CT-14-01 | Projeto Cindy oferece demo local e galeria que marca a tela ativa | `app-shell-contract.test.mjs` | mapa de demos aponta cada projeto para o seu componente |
+| CT-14-02 | Projeto Cindy oferece demo local e galeria que marca a tela ativa | `app-shell-contract.test.mjs` | mapa de demos aponta cada projeto para o seu componente |
+| CT-14-08 | Projeto Cindy oferece demo local e galeria que marca a tela ativa | `project-dialogs-contract.test.mjs` | galeria marca a miniatura da tela ativa |
+| CT-14-09 | Projeto Cindy oferece demo local e galeria que marca a tela ativa | `project-dialogs-contract.test.mjs` | mockup da demo Cindy mantém o título da página |
+| CT-15-01 | Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes | `project-dialogs-contract.test.mjs` | detalhes do projeto oferecem a ação de demo |
+| CT-15-02 | Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes | `app-shell-contract.test.mjs` | mapa de demos aponta cada projeto para o seu componente |
+| CT-15-03 | Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes | `app-shell-contract.test.mjs` | mapa de demos aponta cada projeto para o seu componente |
+| CT-17-01 | Projeto PHX oferece a demo local do gerador de laudo | `app-shell-contract.test.mjs` | mapa de demos aponta cada projeto para o seu componente |
+| CT-17-02 | Projeto PHX oferece a demo local do gerador de laudo | `app-shell-contract.test.mjs` | mapa de demos aponta cada projeto para o seu componente |
+| CT-17-05 | Projeto PHX oferece a demo local do gerador de laudo | `portfolio-contract.test.mjs` | registro ainda referencia project-03.webp (Etapa 7) |
+| CT-17-06 | Projeto PHX oferece a demo local do gerador de laudo | `project-dialogs-contract.test.mjs` | título do laudo PHX está no registro |
+| CT-19-06 | trap de foco localiza a galeria aberta pela classe people-gallery | `app-shell-contract.test.mjs` | trap de foco localiza a galeria aberta pela classe people-gallery |
+| CT-20-01 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-dialogs-contract.test.mjs` | prévia da galeria e miniaturas preservam o corte das capturas |
+| CT-20-02 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-dialogs-contract.test.mjs` | prévia da galeria e miniaturas preservam o corte das capturas |
+| CT-20-03 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-journey-contract.test.mjs` | card de projeto mantém a ação VER PROJETO, o destaque no hover e o resumo do People no registro |
+| CT-20-04 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-journey-contract.test.mjs` | card de projeto mantém a ação VER PROJETO, o destaque no hover e o resumo do People no registro |
+| CT-20-05 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-journey-contract.test.mjs` | card de projeto mantém a ação VER PROJETO, o destaque no hover e o resumo do People no registro |
+| CT-20-06 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-journey-contract.test.mjs` | card de projeto mantém a ação VER PROJETO, o destaque no hover e o resumo do People no registro |
+| CT-20-07 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-journey-contract.test.mjs` | card de projeto mantém a ação VER PROJETO, o destaque no hover e o resumo do People no registro |
+| CT-20-08 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-journey-contract.test.mjs` | card de projeto mantém a ação VER PROJETO, o destaque no hover e o resumo do People no registro |
+| CT-20-09 | previews de projetos destacam a galeria e preservam o corte das capturas | `project-dialogs-contract.test.mjs` | prévia da galeria e miniaturas preservam o corte das capturas |
+| CT-21-01 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `project-journey-contract.test.mjs` | quatro logos ocupam as etapas e o card usa logo, alt e resumo do registro |
+| CT-21-02 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `project-journey-contract.test.mjs` | quatro logos ocupam as etapas e o card usa logo, alt e resumo do registro |
+| CT-21-03 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `project-journey-contract.test.mjs` | quatro logos ocupam as etapas e o card usa logo, alt e resumo do registro |
+| CT-21-04 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `project-journey-contract.test.mjs` | quatro logos ocupam as etapas e o card usa logo, alt e resumo do registro |
+| CT-21-05 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `project-journey-contract.test.mjs` | quatro logos ocupam as etapas e o card usa logo, alt e resumo do registro |
+| CT-21-06 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `portfolio-contract.test.mjs` | registro ainda referencia project-01.webp e project-02.webp (Etapa 7) |
+| CT-21-07 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `portfolio-contract.test.mjs` | registro ainda referencia project-01.webp e project-02.webp (Etapa 7) |
+| CT-21-08 | quatro logos ocupam as etapas, sem substituir as telas dos painéis | `project-journey-contract.test.mjs` | quatro logos ocupam as etapas e o card usa logo, alt e resumo do registro |
+| CT-22-02 | navegação lateral da demo Nexus troca a seção ativa | `project-dialogs-contract.test.mjs` | navegação lateral da demo Nexus troca a seção ativa |
+| CT-22-03 | navegação lateral da demo Nexus troca a seção ativa | `project-dialogs-contract.test.mjs` | navegação lateral da demo Nexus troca a seção ativa |
+| CT-23-04 | demo Nexus mantém retorno ao projeto | `project-dialogs-contract.test.mjs` | demo Nexus mantém retorno ao projeto |
+| CT-24-01 | CSS e sonda não reintroduzem o fluxo legado de vídeo | `scene-contract.test.mjs` | CSS e sonda não reintroduzem o fluxo legado de vídeo |
+| CT-24-02 | CSS e sonda não reintroduzem o fluxo legado de vídeo | `scene-contract.test.mjs` | CSS e sonda não reintroduzem o fluxo legado de vídeo |
+| CT-24-03 | CSS e sonda não reintroduzem o fluxo legado de vídeo | `scene-contract.test.mjs` | CSS e sonda não reintroduzem o fluxo legado de vídeo |
+| CT-24-04 | CSS e sonda não reintroduzem o fluxo legado de vídeo | `scene-contract.test.mjs` | CSS e sonda não reintroduzem o fluxo legado de vídeo |
+| CT-24-05 | CSS e sonda não reintroduzem o fluxo legado de vídeo | `scene-contract.test.mjs` | CSS e sonda não reintroduzem o fluxo legado de vídeo |
+| CT-24-06 | CSS e sonda não reintroduzem o fluxo legado de vídeo | `scene-contract.test.mjs` | CSS e sonda não reintroduzem o fluxo legado de vídeo |
+
+**Contagem depois do T6.5:** 109 CT em 5 arquivos de contrato (24 testes) + 15 AS em `app-dialog-state.test.mjs` = 124 regras do inventário, as mesmas de antes. O CT-14-08 e o CT-22-03 (parciais) estão em `project-dialogs-contract.test.mjs`.
+
+**Documentação geral:** `README.md` e `AGENTS.md` §7 ainda descrevem `portfolio-contract.test.mjs` como o contrato completo. Pela Opção A, a atualização fica para a Etapa 9.
+
 ## Etapa 6 / T6.4 — remoção de duplicações e sobreposições
 
 Removidas do contrato **23 regras** (22 depois da correção pós-revisão, que restaurou o CT-14-08; ver abaixo) que já tinham um teste igual ou mais forte rodando no CI. Continuam intactas as regras parciais e permanentes do T6.2, as da Etapa 7 (CT-17-05, CT-21-06, CT-21-07), o CT-17-06 (coberto pelo render dos detalhes, mas mantido por ser permanente no T6.2), o CT-19-06 (seletor do trap de foco) e os regex de CSS.
