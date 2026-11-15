@@ -12,6 +12,7 @@
 | [`performance-baseline.md`](performance-baseline.md) | Método e baseline da auditoria de performance | Vigente; substituída na Etapa 0 da Spec 0003 |
 | [`decisions/`](decisions/) | ADRs: decisões arquiteturais permanentes (`NNNN-slug.md`) | Permanente |
 | [`specs/`](specs/README.md) | Especificações aprovadas, com índice, dependências, invariantes e fluxo Git | Ciclo de vida: aprovada → em andamento → concluída |
+| [`retros/`](retros/) | Retrospectivas das specs concluídas (`NNNN-slug.md`) | Histórico |
 | [`reviews/`](reviews/) | Análises datadas que originaram decisões e specs | Histórico; não é editado depois de publicado, salvo errata |
 | [`security/audits/`](security/audits/) | Auditorias de segurança datadas | Histórico |
 
