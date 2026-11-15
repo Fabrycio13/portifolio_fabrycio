@@ -3,6 +3,7 @@
 // the data moved to the registry (see tests/unit/RASTREABILIDADE.md).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { projects } from '../../src/data/projects.js'
 import { loadModule, render } from './vite-ssr.mjs'
 
 const { default: ProjectDetailsPanel } = await loadModule('/src/components/panels/ProjectDetailsPanel.jsx')
@@ -11,6 +12,18 @@ const noop = () => {}
 const details = slug => render(ProjectDetailsPanel, { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop })
 const gallery = slug => render(ProjectGalleryPanel, { slug, onBack: noop, onClose: noop })
 const includesAll = (html, texts) => { for (const text of texts) assert.ok(html.includes(text), `ausente: ${text}`) }
+
+// D1.8: the preview count is the number of gallery screens, never a number written in the
+// registry. The label must carry no digit, and the rendered count must follow the screens.
+test('contagem da prévia é derivada do número de telas da galeria (D1.8)', () => {
+  for (const { slug, galeria } of projects.filter(project => project.galeria)) {
+    assert.doesNotMatch(galeria.preview.countLabel, /\d/, `${slug}: o rótulo da contagem não pode conter número`)
+    assert.ok(
+      details(slug).includes(`<span class="project-gallery-preview__veil"><span>${galeria.screens.length} ${galeria.preview.countLabel}</span>`),
+      `${slug}: a prévia deve mostrar ${galeria.screens.length} ${galeria.preview.countLabel}`,
+    )
+  }
+})
 
 test('detalhes do People: subtítulo, prévia com 7 telas e sem demo', () => {
   const html = details('people')

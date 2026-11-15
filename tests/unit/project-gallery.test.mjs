@@ -5,15 +5,27 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import { projects } from '../../src/data/projects.js'
 import { loadModule, render } from './vite-ssr.mjs'
 
 const { default: ProjectGalleryPanel } = await loadModule('/src/components/panels/ProjectGalleryPanel.jsx')
 const noop = () => {}
-// Same escaping as react-dom/server for text and attribute values.
-const escape = text => text.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' })[char])
+// A registry text as it appears in render() output: react-dom/server escapes & < > " ' and the
+// shared render() (vite-ssr.mjs) decodes &amp; &quot; &#x27; back, so only < and > stay encoded.
+const asRendered = text => text.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 const pad = number => String(number).padStart(2, '0')
+const { createElement } = createRequire(import.meta.url)('react')
+
+// The expected fragments below must be encoded exactly as render() returns them, in text and in
+// attribute positions, for every character React escapes; otherwise a registry text with one of
+// them would fail the test without any regression in the page.
+test('fragmentos esperados usam a mesma codificação do render, em texto e em atributo', () => {
+  const sample = `A & B <c> "d" 'e'`
+  assert.equal(render(() => sample, {}), asRendered(sample))
+  assert.equal(render(({ value }) => createElement('i', { title: value }), { value: sample }), `<i title="${asRendered(sample)}"></i>`)
+})
 
 for (const { slug, galeria } of projects.filter(project => project.galeria)) {
   test(`galeria de ${slug}: dialog, tema, rótulos e primeira tela vindos do registro`, () => {
@@ -23,17 +35,17 @@ for (const { slug, galeria } of projects.filter(project => project.galeria)) {
     const themeClass = galeria.tema ? `people-gallery ${galeria.tema}-gallery is-open` : 'people-gallery is-open'
     const expected = [
       `<aside class="${themeClass}" role="dialog" aria-modal="true" aria-labelledby="${titleId}">`,
-      `aria-label="${escape(galeria.closeLabel)}"`,
+      `aria-label="${asRendered(galeria.closeLabel)}"`,
       'data-dialog-initial-focus="true"',
-      `<p class="people-gallery__eyebrow">${escape(galeria.eyebrow)}</p>`,
-      `<h2 id="${titleId}">${escape(screens[0].title)}</h2>`,
-      `<span class="people-gallery__badge">${escape(galeria.badge)}</span>`,
+      `<p class="people-gallery__eyebrow">${asRendered(galeria.eyebrow)}</p>`,
+      `<h2 id="${titleId}">${asRendered(screens[0].title)}</h2>`,
+      `<span class="people-gallery__badge">${asRendered(galeria.badge)}</span>`,
       'aria-label="Fechar galeria"',
-      `aria-label="${escape(`${galeria.previousLabel}: ${screens.at(-1).title}`)}"`,
-      `<img src="${escape(screens[0].image)}" alt="${escape(screens[0].alt)}"/>`,
-      `<figcaption><span>01 / ${pad(screens.length)}</span><p>${escape(screens[0].description)}</p></figcaption>`,
-      `aria-label="${escape(`${galeria.nextLabel}: ${screens[1].title}`)}"`,
-      `aria-label="${escape(galeria.navigationLabel)}"`,
+      `aria-label="${asRendered(`${galeria.previousLabel}: ${screens.at(-1).title}`)}"`,
+      `<img src="${asRendered(screens[0].image)}" alt="${asRendered(screens[0].alt)}"/>`,
+      `<figcaption><span>01 / ${pad(screens.length)}</span><p>${asRendered(screens[0].description)}</p></figcaption>`,
+      `aria-label="${asRendered(`${galeria.nextLabel}: ${screens[1].title}`)}"`,
+      `aria-label="${asRendered(galeria.navigationLabel)}"`,
     ]
     let position = 0
     for (const fragment of expected) {
@@ -47,8 +59,8 @@ for (const { slug, galeria } of projects.filter(project => project.galeria)) {
     // one (D1.9). The trailing space of inactive thumbnails is existing markup, kept by the golden.
     const thumbnails = [...html.matchAll(/<button type="button" class="people-gallery__thumbnail[\s\S]*?<\/button>/g)].map(match => match[0])
     assert.deepEqual(thumbnails, screens.map((screen, index) => (
-      `<button type="button" class="people-gallery__thumbnail ${index === 0 ? 'is-active' : ''}" aria-label="${escape(`Abrir ${screen.title}`)}" aria-pressed="${index === 0}">`
-      + `<img src="${escape(screen.image)}" alt=""/><span>${escape(screen.title)}</span></button>`
+      `<button type="button" class="people-gallery__thumbnail ${index === 0 ? 'is-active' : ''}" aria-label="${asRendered(`Abrir ${screen.title}`)}" aria-pressed="${index === 0}">`
+      + `<img src="${asRendered(screen.image)}" alt=""/><span>${asRendered(screen.title)}</span></button>`
     )))
   })
 }

@@ -4,7 +4,16 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
-## Etapa 6 / T6.0 — inventário de regras (antes da reorganização)
+## Etapa 6 / T6.1 — correções pontuais
+
+**IDs do inventário T6.0 afetados: nenhum.** As 176 regras CT/AS continuam no lugar e inalteradas. O T6.1 corrige um auxiliar da camada 2 e acrescenta cobertura.
+
+| Mudança | Regra protegida | Teste | Situação |
+|---|---|---|---|
+| Auxiliar `escape()` de `project-gallery.test.mjs` substituído por `asRendered()` | Os fragmentos esperados usam a mesma codificação do `render()`: o React codifica `& < > " '` e o `render()` de `vite-ssr.mjs` decodifica `&amp; &quot; &#x27;`, então só `<` e `>` continuam codificados | `fragmentos esperados usam a mesma codificação do render, em texto e em atributo` (novo, `project-gallery.test.mjs`) | **Corrigida.** O auxiliar antigo codificava os cinco caracteres e um texto do registro com `&`, aspas ou apóstrofo fazia o teste falhar sem regressão. Comprovado: falhava antes da correção, e com um título de teste `Dashboard & <b> "x" 'y'` o auxiliar antigo falhava em 2 testes e o novo passa |
+| Contagem da prévia (D1.8) | A contagem é `galeria.screens.length`, e o `countLabel` do registro não contém número | `contagem da prévia é derivada do número de telas da galeria (D1.8)` (novo, `project-dialogs-render.test.mjs`) | **Nova cobertura.** Os literais `7 TELAS DO PRODUTO`, `6 TELAS DA DEMO` etc. continuam nos testes de detalhes. Sozinhos, eles não detectavam um número escrito no rótulo do registro (a página mostraria `6 6 TELAS DA DEMO`, que contém o literal) |
+| D1.11 — dados da demo Nexus independentes do registro | — | Nenhum | **Verificado, sem teste novo.** A Spec registra a decisão (D1.11), mas não a inclui entre os testes do §3 nem nos critérios do §6. Situação em `fbf7d13`: `NexusDemoPanel.jsx` importa só `react-icons/fa`, `react` e o próprio CSS; no registro, `demo` da Nexus tem apenas `buttonLabel` |
+
 
 Situação registrada no commit `1c5aec3` (fim da Etapa 5), antes de qualquer mudança da Etapa 6. Cada asserção de `portfolio-contract.test.mjs` (**CT**) e de `app-dialog-state.test.mjs` (**AS**) recebe um ID estável no formato `<arquivo>-<teste>-<asserção>`, numerado pela ordem no arquivo nesse commit. Os IDs não mudam quando as asserções forem movidas ou removidas nos tickets T6.1–T6.5: o destino de cada uma será registrado contra estes IDs.
 
