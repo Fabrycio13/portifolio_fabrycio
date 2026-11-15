@@ -6,13 +6,13 @@ Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.m
 
 ## Etapa 6 / T6.4 — remoção de duplicações e sobreposições
 
-Removidas do contrato **23 regras** que já tinham um teste igual ou mais forte rodando no CI. Continuam intactas as regras parciais e permanentes do T6.2, as da Etapa 7 (CT-17-05, CT-21-06, CT-21-07), o CT-17-06 (coberto pelo render dos detalhes, mas mantido por ser permanente no T6.2), o CT-19-06 (seletor do trap de foco) e os regex de CSS.
+Removidas do contrato **23 regras** (22 depois da correção pós-revisão, que restaurou o CT-14-08; ver abaixo) que já tinham um teste igual ou mais forte rodando no CI. Continuam intactas as regras parciais e permanentes do T6.2, as da Etapa 7 (CT-17-05, CT-21-06, CT-21-07), o CT-17-06 (coberto pelo render dos detalhes, mas mantido por ser permanente no T6.2), o CT-19-06 (seletor do trap de foco) e os regex de CSS.
 
 **Teste novo antes da remoção (grupo C):** em `project-registry.test.mjs`, o teste `galerias têm tema explícito, rótulos e telas válidas e não vazias` ganhou uma asserção que fixa o tema de cada projeto (`people → null`, `cindy → 'cindy'`, `phx → 'phx'`, `nexus → 'nexus'`). Antes dela, trocar o tema da Cindy para `'phx'` passava no `project-registry` (o valor é permitido) e na camada 2 de `project-gallery` (a classe esperada vem do próprio registro); só o contrato detectava. Com ela, o teste falha.
 
-**Prova de equivalência, feita antes de cada remoção:** 16 mutações, cobrindo os 23 IDs, aplicadas no código e testadas contra o contrato antigo e contra o teste substituto, e depois revertidas. O substituto detectou 16/16; o contrato antigo, 15/16. A que ele não detectava é do CT-07-01: remover a captura do gatilho, que o contrato não percebia porque só procurava o nome `lastTriggerRef`.
+**Prova de equivalência, feita antes de cada remoção:** 16 mutações, cobrindo os 23 IDs, aplicadas no código e testadas contra o contrato antigo e contra o teste substituto, e depois revertidas. O substituto detectou 16/16; o contrato antigo, 15/16. A que o contrato não detectava é do CT-07-01: remover a captura do gatilho, que ele não percebia porque só procurava o nome `lastTriggerRef`. Ressalva da correção pós-revisão: a mutação do CT-14-08/CT-19-07 (`aria-pressed` invertido) não representava a falha relevante, então as mutações válidas para as regras que continuam removidas são 15/15.
 
-**Conferência mecânica:** o diff do contrato desde `1c5aec3`, mapeado pela evidência `arquivo:linha` do inventário T6.0, tem 53 asserções removidas: as 30 do T6.3 e exatamente os 23 IDs desta tabela.
+**Conferência mecânica:** o diff do contrato desde `1c5aec3`, mapeado pela evidência `arquivo:linha` do inventário T6.0, tem 53 asserções removidas: as 30 do T6.3 e exatamente os 23 IDs desta tabela. Depois da correção pós-revisão, são 52 (o CT-14-08 voltou).
 
 | ID | Regra | Teste substituto | Mutação que demonstra a equivalência |
 |---|---|---|---|
@@ -24,7 +24,7 @@ Removidas do contrato **23 regras** que já tinham um teste igual ou mais forte 
 | CT-14-03 | App importa a galeria única | `app-dialog-state` `App renderiza a galeria única para o slug do estado…` | Import da galeria fora do alias `@/` |
 | CT-14-04 | App renderiza a galeria pelo slug, com `key` | `app-dialog-state` `App renderiza a galeria única para o slug do estado…` | `key={dialog.slug}` removida |
 | CT-14-05 | Tema da Cindy | `project-registry` `galerias têm tema explícito…` (asserção nova) | Tema da Cindy trocado para `'phx'` |
-| CT-14-08 | Miniaturas indicam a tela ativa | `project-gallery` `galeria de <slug>: dialog, tema, rótulos e primeira tela…` | `aria-pressed` invertido |
+| CT-14-08 | Miniaturas indicam a tela ativa | **Restaurada** na correção pós-revisão (Parcial: `project-gallery` cobre só o estado inicial) | A mutação usada (`aria-pressed` invertido) não representava a falha; ver a correção abaixo |
 | CT-16-01 | A prévia abre a galeria pelo slug | `project-gallery-preview` `prévia da galeria do projeto <slug> abre a galeria "<slug>" pelo identificador` | A prévia envia sempre `'people'` |
 | CT-16-02 | App importa a galeria única | Como CT-14-03 | Como CT-14-03 |
 | CT-16-03 | App renderiza a galeria pelo slug, com `key` | Como CT-14-04 | Como CT-14-04 |
@@ -38,15 +38,30 @@ Removidas do contrato **23 regras** que já tinham um teste igual ou mais forte 
 | CT-19-03 | App importa a galeria única | Como CT-14-03 | Como CT-14-03 |
 | CT-19-04 | App renderiza a galeria pelo slug, com `key` | Como CT-14-04 | Como CT-14-04 |
 | CT-19-05 | Tema do People | `project-registry` (asserção nova) | Tema do People trocado para `'cindy'` |
-| CT-19-07 | Miniaturas indicam a tela ativa | Como CT-14-08 | Como CT-14-08 |
+| CT-19-07 | Miniaturas indicam a tela ativa | CT-14-08 (restaurado no contrato), de que é duplicata exata | — |
 
 **Testes do contrato afetados:**
 - CT-12 (`Projeto People usa GERENCIADOR…`), CT-13 (`Projeto 02 mantém a copy confidencial…`), CT-16 (`Projeto Nexus AI abre uma galeria…`) e CT-18 (`Projeto PHX abre uma galeria…`) ficaram sem asserções e saíram.
 - CT-07: renomeado de `PortfolioContent mantém gerenciamento de foco e Escape nos dialogs` para `PortfolioContent mantém gerenciamento de foco nos dialogs`.
-- CT-14: renomeado de `Projeto Cindy oferece demo local e galeria com capturas da própria demo` para `Projeto Cindy oferece demo local` (restam CT-14-01, CT-14-02 e CT-14-09).
+- CT-14: renomeado de `Projeto Cindy oferece demo local e galeria com capturas da própria demo` para `Projeto Cindy oferece demo local` (restavam CT-14-01, CT-14-02 e CT-14-09). Na correção pós-revisão, passou a `Projeto Cindy oferece demo local e galeria que marca a tela ativa`, com o CT-14-08 de volta.
 - CT-19: renomeado de `Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes` para `trap de foco localiza a galeria aberta pela classe people-gallery` (resta CT-19-06).
 
-**Contagem depois do T6.4:** contrato com 19 testes e 108 chamadas de asserção (antes 23 e 131). Regras do inventário ainda no contrato: 108 CT + 15 AS = 123. Suíte: 85 testes (antes 89; nenhum teste novo, a asserção do tema entrou num teste existente).
+**Contagem no commit `857aeb9`:** contrato com 19 testes e 108 chamadas de asserção (antes 23 e 131). Regras do inventário restantes: 123 = 108 CT, no contrato, + 15 AS, em `app-dialog-state.test.mjs`. Suíte: 85 testes (antes 89; nenhum teste novo, a asserção do tema entrou num teste existente).
+
+### Correção pós-revisão: CT-14-08 restaurado
+
+A revisão independente do `857aeb9` mostrou que o CT-14-08 (`aria-pressed={index === activeIndex}`) não tinha substituto equivalente. O teste de `project-gallery` renderiza só o estado inicial, em que a primeira miniatura é a ativa, então um valor fixo como `aria-pressed={index === 0}` produz o mesmo HTML. A mutação usada no T6.4 (`aria-pressed` invertido) não representava essa falha.
+
+| Mutação em `ProjectGalleryPanel.jsx` | Suíte no `857aeb9` | Contrato com o CT-14-08 restaurado | `project-gallery` (camada 2) |
+|---|---|---|---|
+| `aria-pressed={index === 0}` | **passava** (0 falhas) | falha | passa |
+| `aria-pressed={index !== activeIndex}` | — | falha | falha |
+| `aria-pressed={true}` | — | falha | falha |
+
+- **CT-14-08:** voltou ao contrato, no seu teste de origem, com a mesma asserção de `1c5aec3`. Classificação: **Parcial: permanece**, como o CT-22-03, porque seguir a tela ativa exige estado e não é observável no render estático.
+- **CT-19-07:** continua removido, por ser duplicata exata do CT-14-08.
+- **Classificação anterior:** a tabela do T6.2 não lista o CT-14-08; a classificação "duplicada; sobreposta pela camada 2" vinha do inventário T6.0 e da proposta do T6.4, e fica substituída por esta.
+- **Contagem depois da correção:** contrato com 19 testes e 109 chamadas de asserção. Regras do inventário restantes: **124 = 109 CT**, no contrato, **+ 15 AS**, em `app-dialog-state.test.mjs`. Suíte: 85 testes.
 
 ## Etapa 6 / T6.3 — remoção das asserções substituídas
 

@@ -135,14 +135,18 @@ test('Footer mantém o link público do LinkedIn', async () => {
   assert.match(footer, /https:\/\/www\.linkedin\.com\/in\/fabrycio-bermudes-b79a01216\//)
 })
 
-// The gallery wiring, themes and copy of the project dialogs are checked in app-dialog-state,
-// project-registry, project-gallery, project-gallery-preview and project-dialogs-render.
-test('Projeto Cindy oferece demo local', async () => {
+// The gallery wiring, themes, rendered thumbnails and copy of the project dialogs are checked in the
+// layer-1 and layer-2 tests; only the active-thumbnail rule below stays here.
+test('Projeto Cindy oferece demo local e galeria que marca a tela ativa', async () => {
   const app = await read('src/App.jsx')
+  const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
   const demoHtml = await read('public/nova-cindy-mockup-v2.html')
 
   assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
   assert.match(app, /cindy: CindyDemoPanel/)
+  // The static render only sees the first screen, where a value fixed to the first thumbnail looks
+  // identical; following the active screen needs state, so this source guard stays.
+  assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
   assert.match(demoHtml, /<title>Nova Cindy · Protótipo visual<\/title>/)
 })
 
