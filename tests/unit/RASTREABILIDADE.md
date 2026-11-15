@@ -4,6 +4,60 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
+## Etapa 6 / T6.3 — remoção das asserções substituídas
+
+Removidas do contrato exatamente as **30 regras** classificadas como **substituíveis** no T6.2, e só elas. As regras parciais (CT-22-03) e permanentes (as 17 da tabela do T6.2, incluindo a da Etapa 7, CT-17-05) continuam no contrato sem alteração, assim como as demais regras da Etapa 7 (CT-21-06 e CT-21-07) e todas as que não estão relacionadas a estes dialogs.
+
+**Prova de equivalência, feita antes da remoção:** para cada ID, uma mutação no componente que quebra o comportamento protegido foi aplicada e testada contra o contrato antigo e contra o teste novo, e depois revertida. Resultado: o teste novo detectou **32/32** mutações de comportamento e o contrato antigo, 29/32. As três que o contrato não detectava são do CT-22-01 (item removido da navegação) e do CT-22-04/05 (troca só do rótulo da navegação). Além disso, o CT-22-01 acusava uma refatoração sem efeito na página (renomear a constante `navigationItems`), que o teste novo corretamente não acusa.
+
+**Conferência mecânica:** as 30 linhas removidas do contrato correspondem, pela evidência `arquivo:linha` do inventário T6.0, exatamente aos 30 IDs substituíveis. As linhas do inventário se referem ao contrato como estava em `1c5aec3` (inalterado até `13fa0e0`); no arquivo atual elas não coincidem mais.
+
+O roteiro das mutações e o log ficaram fora do repositório, como os demais artefatos de validação (§7.3). Cada mutação quebrava o comportamento de uma regra no componente: troca de texto, de `href` ou de `src`, remoção de canal, de foco inicial ou de `autoFocus`, troca de handler, de classe ou de rótulo, remoção de item da navegação.
+
+| ID | Regra protegida | Destino (teste que passa a protegê-la) |
+|---|---|---|
+| CT-09-01 | Sobre e Contato têm, cada um, um foco inicial | INFO `Sobre: foco inicial no botão Fechar e fundo com rótulo` · `Contato: foco inicial no botão Fechar; fundo e Fechar fecham` |
+| CT-09-03 | `InfoPanels` usa `autoFocus` | Os mesmos dois testes (`autofocus=""` no botão Fechar) |
+| CT-10-01 | Contato: título aprovado | INFO `Contato: dialog modal nomeado pelo título, com a copy aprovada` |
+| CT-10-02 | Contato: introdução aprovada | INFO `Contato: dialog modal nomeado pelo título, com a copy aprovada` |
+| CT-10-03 | Contato: convite aprovado | INFO `Contato: dialog modal nomeado pelo título, com a copy aprovada` |
+| CT-10-04 | Contato tem exatamente cinco canais | INFO `Contato: exatamente os cinco canais públicos, com destino, rótulo e nova aba` |
+| CT-10-05 | Contato mantém o link público do LinkedIn | INFO `Contato: exatamente os cinco canais públicos, com destino, rótulo e nova aba` |
+| CT-11-01 | Sobre: saudação aprovada | INFO `Sobre: dialog modal nomeado pelo título` |
+| CT-11-02 | Sobre: apresentação aprovada | INFO `Sobre: copy aprovada, stack e CTA para Contato` |
+| CT-11-03 | Sobre: frase sobre engenharia | INFO `Sobre: copy aprovada, stack e CTA para Contato` |
+| CT-11-04 | Sobre: seção "Minha stack" | INFO `Sobre: copy aprovada, stack e CTA para Contato` |
+| CT-11-05 | Sobre: trecho sobre prompts e fluxos inteligentes | INFO `Sobre: copy aprovada, stack e CTA para Contato` |
+| CT-11-06 | Sobre: CTA `CONVERSAR SOBRE UM PROJETO` | INFO `Sobre: copy aprovada, stack e CTA para Contato` |
+| CT-11-07 | CTA do Sobre abre o Contato | INFO `Sobre: fundo e Fechar fecham, CTA abre o Contato` |
+| CT-14-06 | Demo Cindy carrega `/nova-cindy-mockup-v2.html` | DEMO `demo Cindy: dialog modal, título, rótulo e iframe da demo` |
+| CT-14-07 | Demo Cindy tem foco inicial | DEMO `demo Cindy: foco inicial em Fechar; Voltar e Fechar chamam seus handlers` |
+| CT-15-04 | Demo Nexus: selo `DEMO LOCAL · DADOS FICTÍCIOS` | DEMO `demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo` |
+| CT-15-05 | Demo Nexus: "Análise documental inteligente" | DEMO `demo Nexus: dialog modal nomeado pelo título do fluxo, com a copy do estado inicial` |
+| CT-15-06 | Demo Nexus: "Executar fluxo" | DEMO `demo Nexus: dialog modal nomeado pelo título do fluxo, com a copy do estado inicial` |
+| CT-15-07 | Demo Nexus: "Eventos da execução" | DEMO `demo Nexus: dialog modal nomeado pelo título do fluxo, com a copy do estado inicial` |
+| CT-15-08 | Demo Nexus: "Execução atual" | DEMO `demo Nexus: dialog modal nomeado pelo título do fluxo, com a copy do estado inicial` |
+| CT-15-09 | Demo Nexus tem foco inicial | DEMO `demo Nexus: foco inicial em Fechar demo e dois botões de voltar ao projeto` |
+| CT-17-03 | Demo PHX carrega `/phx-demo.html` | DEMO `demo PHX: dialog modal, título, rótulo e iframe da demo` |
+| CT-17-04 | Demo PHX: selo `DEMO INTERATIVA` | DEMO `demo PHX: dialog modal, título, rótulo e iframe da demo` |
+| CT-22-01 | Demo Nexus define os itens de navegação | DEMO `demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo` |
+| CT-22-04 | Demo Nexus: item "Base de conhecimento" | DEMO `demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo` |
+| CT-22-05 | Demo Nexus: item "Documentação" | DEMO `demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo` |
+| CT-23-01 | Demo Nexus tem botão de voltar no topo | DEMO `demo Nexus: foco inicial em Fechar demo e dois botões de voltar ao projeto` |
+| CT-23-02 | Demo Nexus tem selo no topo | DEMO `demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo` |
+| CT-23-03 | Demo Nexus: selo `DEMO INTERATIVA` | DEMO `demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo` |
+
+**Testes do contrato afetados:**
+- CT-11 (`Sobre mantém a copy aprovada e CTA para Contato`): todas as 7 regras eram substituíveis, e o teste saiu.
+- CT-10: renomeado de `Contato mantém a copy aprovada e os cinco canais` para `Footer mantém o link público do LinkedIn`, porque só resta o CT-10-06.
+- CT-23: renomeado de `demo Nexus mantém retorno ao projeto e identificação no topo` para `demo Nexus mantém retorno ao projeto`, porque só resta o CT-23-04.
+- CT-09: renomeado de `dialogs definem um foco inicial nativo` para `detalhes do projeto definem um foco inicial nativo`, porque só restam CT-09-02 e CT-09-04.
+- CT-14, CT-15, CT-17 e CT-22 mantêm o nome e perdem só as asserções substituídas.
+
+**Documentação geral:** `README.md` e `AGENTS.md` §7 ainda dizem que `portfolio-contract.test.mjs` cobre a copy pública, os cinco canais de contato e o foco inicial dos dialogs. Pela decisão da Opção A da Etapa 6, essa descrição só é atualizada na Etapa 9.
+
+**Contagem depois do T6.3:** contrato com 23 testes e 131 chamadas de asserção (antes 24 e 161). Regras do inventário ainda no contrato: 131 CT + 15 AS = 146. As 30 removidas têm destino na tabela acima. Suíte: 89 testes (antes 90).
+
 ## Etapa 6 / T6.2 — camada 2 de Sobre, Contato e demos
 
 Testes novos: `info-dialogs-render.test.mjs` (**INFO**, 7 testes) e `demo-dialogs-render.test.mjs` (**DEMO**, 7 testes). **Nenhuma asserção antiga foi removida ou alterada no T6.2.** A coluna "Cobertura nova" diz se o teste novo é equivalente ou superior à regra antiga. A remoção das regras substituíveis fica para o T6.3/T6.4.

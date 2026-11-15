@@ -121,38 +121,19 @@ test('Serviços têm uma faixa visual de transição abaixo dos cards', async ()
   assert.match(css, /\.services-transition img\s*\{[\s\S]*object-fit: cover;/)
 })
 
-test('dialogs definem um foco inicial nativo', async () => {
-  const infoPanels = await read('src/components/panels/InfoPanels.jsx')
+// The project details are checked here; Sobre and Contato are checked on the rendered HTML in
+// info-dialogs-render.test.mjs.
+test('detalhes do projeto definem um foco inicial nativo', async () => {
   const projectDetails = await read('src/components/panels/ProjectDetailsPanel.jsx')
 
-  assert.equal((infoPanels.match(/data-dialog-initial-focus/g) ?? []).length, 2)
   assert.match(projectDetails, /data-dialog-initial-focus/)
-  assert.match(infoPanels, /autoFocus/)
   assert.match(projectDetails, /autoFocus/)
 })
 
-test('Contato mantém a copy aprovada e os cinco canais', async () => {
-  const source = await read('src/components/panels/InfoPanels.jsx')
+test('Footer mantém o link público do LinkedIn', async () => {
   const footer = await read('src/sections/WaveFooter.jsx')
 
-  assert.match(source, /VAMOS CONSTRUIR ALGO QUE FUNCIONE\./)
-  assert.match(source, /Tem uma ideia para tirar do papel/)
-  assert.match(source, /Escolha um canal abaixo e vamos conversar\./)
-  assert.equal((source.match(/label: '/g) ?? []).length, 5)
-  assert.match(source, /https:\/\/www\.linkedin\.com\/in\/fabrycio-bermudes-b79a01216\//)
   assert.match(footer, /https:\/\/www\.linkedin\.com\/in\/fabrycio-bermudes-b79a01216\//)
-})
-
-test('Sobre mantém a copy aprovada e CTA para Contato', async () => {
-  const source = await read('src/components/panels/InfoPanels.jsx')
-
-  assert.match(source, /Muito prazer!/)
-  assert.match(source, /produtos digitais, sistemas web e automações inteligentes/)
-  assert.match(source, /Acredito que a boa engenharia aparece/)
-  assert.match(source, /Minha stack/)
-  assert.match(source, /prompts estruturados e fluxos inteligentes/)
-  assert.match(source, /CONVERSAR SOBRE UM PROJETO/)
-  assert.match(source, /onClick=\{onOpenContact\}/)
 })
 
 test('Projeto People usa GERENCIADOR DE RECURSOS HUMANOS como subtítulo', async () => {
@@ -170,7 +151,6 @@ test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', asy
 
 test('Projeto Cindy oferece demo local e galeria com capturas da própria demo', async () => {
   const app = await read('src/App.jsx')
-  const demo = await read('src/components/panels/CindyDemoPanel.jsx')
   const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
   const projects = await read('src/data/projects.js')
   const demoHtml = await read('public/nova-cindy-mockup-v2.html')
@@ -180,8 +160,6 @@ test('Projeto Cindy oferece demo local e galeria com capturas da própria demo',
   assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
   assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
   assert.match(projects, /slug: 'cindy'(?:(?!slug: ')[\s\S])*tema: 'cindy'/)
-  assert.match(demo, /src="\/nova-cindy-mockup-v2\.html"/)
-  assert.match(demo, /data-dialog-initial-focus/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
   assert.match(demoHtml, /<title>Nova Cindy · Protótipo visual<\/title>/)
 })
@@ -189,17 +167,10 @@ test('Projeto Cindy oferece demo local e galeria com capturas da própria demo',
 test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhes', async () => {
   const app = await read('src/App.jsx')
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
-  const demo = await read('src/components/panels/NexusDemoPanel.jsx')
 
   assert.match(details, /onOpenDemo/)
   assert.match(app, /import NexusDemoPanel from '@\/components\/panels\/NexusDemoPanel\.jsx'/)
   assert.match(app, /nexus: NexusDemoPanel/)
-  assert.match(demo, /DEMO LOCAL · DADOS FICTÍCIOS/)
-  assert.match(demo, /Análise documental inteligente/)
-  assert.match(demo, /Executar fluxo/)
-  assert.match(demo, /Eventos da execução/)
-  assert.match(demo, /Execução atual/)
-  assert.match(demo, /data-dialog-initial-focus/)
 })
 
 test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async () => {
@@ -215,13 +186,10 @@ test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async (
 
 test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
   const app = await read('src/App.jsx')
-  const demo = await read('src/components/panels/PhxDemoPanel.jsx')
   const projects = await read('src/data/projects.js')
 
   assert.match(app, /import PhxDemoPanel from '@\/components\/panels\/PhxDemoPanel\.jsx'/)
   assert.match(app, /phx: PhxDemoPanel/)
-  assert.match(demo, /src="\/phx-demo\.html"/)
-  assert.match(demo, /DEMO INTERATIVA/)
   assert.match(projects, /project-03\.webp/)
   assert.match(projects, /title: 'LAUDO DE CRÉDITO IMOBILIÁRIO'/)
 })
@@ -290,19 +258,15 @@ test('quatro logos ocupam as etapas, sem substituir as telas dos painéis', asyn
 test('navegação lateral da demo Nexus troca a seção ativa', async () => {
   const demo = await read('src/components/panels/NexusDemoPanel.jsx')
 
-  assert.match(demo, /const navigationItems =/)
+  // The items, labels and badges are covered on the rendered HTML in demo-dialogs-render.test.mjs;
+  // switching sections needs component state, so these source guards stay.
   assert.match(demo, /setActiveSection\(item\.id\)/)
   assert.match(demo, /activeSection === item\.id/)
-  assert.match(demo, /Base de conhecimento/)
-  assert.match(demo, /Documentação/)
 })
 
-test('demo Nexus mantém retorno ao projeto e identificação no topo', async () => {
+test('demo Nexus mantém retorno ao projeto', async () => {
   const demo = await read('src/components/panels/NexusDemoPanel.jsx')
 
-  assert.match(demo, /nexus-demo-topbar__back/)
-  assert.match(demo, /nexus-demo-topbar__badge/)
-  assert.match(demo, /DEMO INTERATIVA/)
   assert.match(demo, /onClick=\{onBack\}/)
 })
 
