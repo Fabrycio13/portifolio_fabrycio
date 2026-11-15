@@ -4,7 +4,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
 import { existsSync } from 'node:fs'
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import * as registry from '../../src/data/projects.js'
 
@@ -46,6 +46,26 @@ test('cada projeto tem card e detalhes completos', () => {
     assert.ok(description.length > 0 && description.every(nonEmpty), `${slug}: descrição`)
     assert.ok(detalhes.features.length > 0, `${slug}: recursos`)
     assert.ok(detalhes.technologies.length > 0 && detalhes.technologies.every(t => nonEmpty(t.label) && nonEmpty(t.stack)), `${slug}: tecnologias`)
+  }
+})
+
+// D1.12 and D1.13: the card had an `image`/`alt` pair that nothing rendered, pointing at the legacy
+// project-01..03 screenshots. Only the unused references are removed here; what happens to the files
+// is pending item P1 of Spec 0001. Gallery screens and previews keep their own image/alt.
+test('cards não têm image nem alt sem consumidor (D1.12)', () => {
+  for (const { slug, card } of projects) {
+    assert.ok(!Object.hasOwn(card, 'image'), `${slug}: card.image sem consumidor`)
+    assert.ok(!Object.hasOwn(card, 'alt'), `${slug}: card.alt sem consumidor`)
+  }
+})
+
+test('código da aplicação não referencia as imagens legadas project-01..03 (D1.13)', async () => {
+  // Every file under src/, so a reference coming back through a component is caught too. Comment
+  // lines are ignored: they document the rule, they do not load the image.
+  const files = (await readdir(resolve(root, 'src'), { recursive: true })).filter(file => /\.(jsx?|css|html)$/.test(file))
+  for (const file of files) {
+    const code = (await readFile(resolve(root, 'src', file), 'utf8')).replace(/^\s*(\/\/|\/?\*).*$/gm, '')
+    assert.doesNotMatch(code, /project-0[1-3]\.webp/, `src/${file.replaceAll('\\', '/')}`)
   }
 })
 

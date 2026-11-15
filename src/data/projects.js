@@ -12,9 +12,6 @@ export const projects = [
       summary: 'Plataforma de recrutamento que organiza vagas, candidatos e etapas seletivas com apoio de IA.',
       logo: '/images/projects/logos/people.webp',
       logoAlt: 'Identidade visual do projeto People',
-      // image/alt não têm consumidor; serão removidos na etapa de remoções (D1.12).
-      image: '/images/projects/project-01.webp',
-      alt: 'Screenshot da plataforma de recrutamento e seleção com IA da People',
     },
     detalhes: {
       description: 'O People é uma plataforma web que ajuda equipes de RH a organizar o recrutamento, desde a publicação de uma vaga até o acompanhamento dos candidatos.',
@@ -102,8 +99,6 @@ export const projects = [
       summary: 'Plataforma que centraliza moradores, encomendas, reservas, ocorrências e comunicados do condomínio.',
       logo: '/images/projects/logos/condominio.webp',
       logoAlt: 'Identidade visual do projeto Gestão Condominial',
-      image: '/images/projects/project-02.webp',
-      alt: 'Screenshot da plataforma de gestão condominial com IA',
     },
     detalhes: {
       description: [
@@ -189,8 +184,6 @@ export const projects = [
       summary: 'Aplicação para preencher dados de crédito imobiliário e gerar laudos com prévia em tempo real.',
       logo: '/images/projects/logos/credito-imobiliario.webp',
       logoAlt: 'Identidade visual do projeto Crédito Imobiliário',
-      image: '/images/projects/project-03.webp',
-      alt: 'Screenshot do gerador de laudos de análise de crédito imobiliário PHX e MDS',
     },
     detalhes: {
       description: 'O Projeto PHX / MDS Crédito Imobiliário é uma aplicação frontend para gerar laudos de análise de crédito imobiliário. Enquanto os dados são preenchidos, o sistema atualiza um preview visual do documento, permitindo gerar e baixar o laudo em PDF.',
@@ -255,8 +248,6 @@ export const projects = [
       summary: 'Fluxos que conectam documentos, busca contextual e agentes para processar tarefas com IA.',
       logo: '/images/projects/logos/nexus-ai.webp',
       logoAlt: 'Identidade visual do projeto Nexus AI',
-      image: '/images/projects/project-04.webp',
-      alt: 'Screenshot da plataforma Nexus AI com fluxo de embeddings, RAG e orquestração de agentes',
     },
     detalhes: {
       description: 'O Nexus AI é um laboratório de processos inteligentes que conecta dados, modelos de linguagem e automações em um único fluxo. O sistema transforma documentos em embeddings, busca o contexto mais relevante e orquestra diferentes agentes para classificar, responder, validar e executar tarefas.',

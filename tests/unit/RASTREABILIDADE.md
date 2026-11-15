@@ -2,7 +2,35 @@
 
 Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos-dialogs-galeria.md#3-testes): toda asserção antiga removida ou alterada aponta para a regra que protegia e para o teste que passou a protegê-la. Nenhuma regra fica sem cobertura.
 
-Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
+Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**; dividido no T6.5 e removido na Etapa 7).
+
+## Etapa 7 — remoções D1.12 e D1.13
+
+**Removido:**
+- os 8 campos `image`/`alt` dos cards em `src/data/projects.js` (um par em cada projeto) e o comentário que anunciava a remoção. Nenhum código lia esses campos: o card usa `title`, `detail`, `summary`, `logo` e `logoAlt`;
+- as referências do registro a `project-01.webp`, `project-02.webp` e `project-03.webp`, que só existiam nesses campos (D1.13);
+- `src/assets/hero.png`, `react.svg` e `vite.svg`, sem nenhum importador (D1.12);
+- `tests/unit/portfolio-contract.test.mjs`, que ficou vazio com a aposentadoria das suas três regras.
+
+**Preservado:** os arquivos `public/images/projects/project-01..03.webp` (até a pendência P1); `project-04.webp` e a sua referência na prévia da galeria da Nexus; `public/images/hero/hero.png` (fallback do hero no `App.jsx`, diferente de `src/assets/hero.png`); todos os `image`/`alt` das telas e das prévias das galerias. O plano `.hermes/…` já tinha sido removido no `661ac52`; o grep confirma que só documentos históricos e a Spec o citam.
+
+| ID | Regra | Situação |
+|---|---|---|
+| CT-17-05 | Registro referencia `project-03.webp` | **Aposentada por decisão** (D1.13). A regra inversa passa a valer |
+| CT-21-06 | Registro referencia `project-01.webp` | **Aposentada por decisão** (D1.12/D1.13). A regra inversa passa a valer |
+| CT-21-07 | Registro referencia `project-02.webp` | **Aposentada por decisão** (D1.12/D1.13). A regra inversa passa a valer |
+
+Essas três regras não perdem cobertura por acidente: a Spec manda remover o que elas protegiam, e elas protegiam a presença das referências só até esta etapa. Com a remoção, os 2 testes que as continham passaram a falhar, como esperado.
+
+**Cobertura nova, em `project-registry.test.mjs` (TDD: os dois testes falhavam antes da remoção e passam depois):**
+- `cards não têm image nem alt sem consumidor (D1.12)`: verifica só a ausência desses dois campos em cada card, sem impor a lista fechada de campos;
+- `código da aplicação não referencia as imagens legadas project-01..03 (D1.13)`: procura em todos os arquivos de `src/`, ignorando linhas de comentário. Comprovado por mutação: uma referência a `project-02.webp` posta num componente faz o teste falhar, e uma citação em comentário não.
+
+**Comparação do bundle, antes e depois:** a única diferença semântica são os 4 pares removidos. Em detalhe: o mesmo conjunto de 38 arquivos em `dist/assets`. Todo o CSS e as 29 fontes estão byte a byte iguais. Os chunks `ScrollTrigger`, `StickyProjects`, `StickyServices` e `WaveFooter` e o `index.html` só diferem nos nomes com hash que importam. O `index.js` antigo, sem os 4 pares `image`/`alt` minificados (483 bytes), é idêntico ao novo depois de trocar os nomes com hash por um marcador (468097 − 483 = 467614 bytes). Nenhuma outra mudança semântica.
+
+**Contagem depois da Etapa 7:** 106 CT em 4 arquivos de contrato + 15 AS em `app-dialog-state.test.mjs` = **121 regras do inventário** (antes 124; 3 aposentadas), mais as 2 regras novas acima, fora do inventário.
+
+**Documentação geral:** `README.md` e `AGENTS.md` §7 ainda citam `portfolio-contract.test.mjs`, que deixou de existir. Pela Opção A, a atualização fica para a Etapa 9.
 
 ## Etapa 6 / T6.5 — divisão do contrato por responsabilidade
 
