@@ -4,6 +4,69 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
+## Etapa 6 / T6.2 — camada 2 de Sobre, Contato e demos
+
+Testes novos: `info-dialogs-render.test.mjs` (**INFO**, 7 testes) e `demo-dialogs-render.test.mjs` (**DEMO**, 7 testes). **Nenhuma asserção antiga foi removida ou alterada no T6.2.** A coluna "Cobertura nova" diz se o teste novo é equivalente ou superior à regra antiga. A remoção das regras substituíveis fica para o T6.3/T6.4.
+
+Observações: (1) a mudança restaura o título "Etapa 6 / T6.0", apagado por engano no `13fa0e0` (T6.1); o conteúdo daquela seção não mudou e continua idêntico ao do `fbf7d13`. (2) Os testes do foco inicial das demos seguem o código e a baseline (botão **Fechar**); o texto da Spec que dizia "Voltar" foi corrigido (ver a seção abaixo).
+
+Situação: **substituível** = a regra antiga pode sair, porque o teste novo cobre a mesma regra no HTML renderizado ou no handler, com força igual ou maior; **parcial** = o teste novo cobre só parte, e a regra antiga fica; **permanece** = regra relacionada a estes dialogs que o teste novo não cobre.
+
+| ID | Regra protegida | Cobertura nova | Situação |
+|---|---|---|---|
+| CT-07-07 | `InfoPanels` importado diretamente (sem lazy) | — (fiação do App) | Permanece |
+| CT-07-10 | CTA de contato do hero existe | — (fiação do App) | Permanece |
+| CT-07-11 | CTA de contato do hero abre o dialog Contato | — (fiação do App; em runtime, smoke `B-hero-contato-…`) | Permanece |
+| CT-09-01 | Sobre e Contato têm, cada um, um foco inicial | INFO `Sobre: foco inicial no botão Fechar…` e `Contato: foco inicial no botão Fechar…`: exatamente um marcador por dialog, no botão Fechar | Substituível (superior: identifica o elemento) |
+| CT-09-03 | `InfoPanels` usa `autoFocus` | Mesmos testes: `autofocus=""` no botão Fechar de cada dialog | Substituível (superior) |
+| CT-10-01 | Contato: título aprovado | INFO `Contato: dialog modal nomeado pelo título, com a copy aprovada` (`<h2 id="contact-title">`) | Substituível (superior) |
+| CT-10-02 | Contato: introdução aprovada | Mesmo teste, parágrafo completo renderizado | Substituível (superior) |
+| CT-10-03 | Contato: convite aprovado | Mesmo teste | Substituível (superior) |
+| CT-10-04 | Contato tem exatamente cinco canais | INFO `Contato: exatamente os cinco canais públicos…`: cinco links renderizados, na ordem, sem canal desativado | Substituível (superior: o contrato não detectou um canal sem link, mutação M3) |
+| CT-10-05 | Contato mantém o link público do LinkedIn | Mesmo teste (`href` exato dos cinco canais) | Substituível (superior) |
+| CT-10-06 | Footer mantém o link público do LinkedIn | — (Footer fora destes dialogs) | Permanece |
+| CT-11-01 | Sobre: saudação aprovada | INFO `Sobre: dialog modal nomeado pelo título` (`<h2 id="about-title">Muito prazer!</h2>`) | Substituível (superior) |
+| CT-11-02 | Sobre: apresentação aprovada | INFO `Sobre: copy aprovada, stack e CTA para Contato` (parágrafo completo) | Substituível (superior) |
+| CT-11-03 | Sobre: frase sobre engenharia | Mesmo teste | Substituível (superior) |
+| CT-11-04 | Sobre: seção "Minha stack" | Mesmo teste (seção com `aria-labelledby` e `h3`) | Substituível (superior) |
+| CT-11-05 | Sobre: trecho sobre prompts e fluxos inteligentes | Mesmo teste (os três itens da stack) | Substituível (superior) |
+| CT-11-06 | Sobre: CTA `CONVERSAR SOBRE UM PROJETO` | Mesmo teste (botão renderizado) | Substituível (superior) |
+| CT-11-07 | CTA do Sobre abre o Contato | INFO `Sobre: fundo e Fechar fecham, CTA abre o Contato` (handler chamado na árvore) | Substituível (superior: comportamento) |
+| CT-14-01 | App importa a demo Cindy | — (fiação do App) | Permanece |
+| CT-14-02 | Mapa de demos: `cindy → CindyDemoPanel` | — (fiação do App) | Permanece |
+| CT-14-06 | Demo Cindy carrega `/nova-cindy-mockup-v2.html` | DEMO `demo Cindy: dialog modal, título, rótulo e iframe da demo` (iframe com `src` e `title`) | Substituível (superior) |
+| CT-14-07 | Demo Cindy tem foco inicial | DEMO `demo Cindy: foco inicial em Fechar…` | Substituível (superior) |
+| CT-14-09 | Mockup da Cindy mantém o título da página | — (arquivo público, fora do render) | Permanece |
+| CT-15-01 | Detalhes oferecem a ação de demo | — (dialog de detalhes) | Permanece |
+| CT-15-02 | App importa a demo Nexus | — (fiação do App) | Permanece |
+| CT-15-03 | Mapa de demos: `nexus → NexusDemoPanel` | — (fiação do App) | Permanece |
+| CT-15-04 | Demo Nexus: selo `DEMO LOCAL · DADOS FICTÍCIOS` | DEMO `demo Nexus: selos e navegação lateral…` | Substituível (superior) |
+| CT-15-05 | Demo Nexus: "Análise documental inteligente" | DEMO `demo Nexus: dialog modal nomeado pelo título do fluxo…` (`h2` com o id do dialog, único) | Substituível (superior) |
+| CT-15-06 | Demo Nexus: "Executar fluxo" | Mesmo teste (botão de execução) | Substituível (superior) |
+| CT-15-07 | Demo Nexus: "Eventos da execução" | Mesmo teste | Substituível (superior) |
+| CT-15-08 | Demo Nexus: "Execução atual" | Mesmo teste (com o estado `CONCLUÍDA`) | Substituível (superior) |
+| CT-15-09 | Demo Nexus tem foco inicial | DEMO `demo Nexus: foco inicial em Fechar demo…` | Substituível (superior) |
+| CT-17-01 | App importa a demo PHX | — (fiação do App) | Permanece |
+| CT-17-02 | Mapa de demos: `phx → PhxDemoPanel` | — (fiação do App) | Permanece |
+| CT-17-03 | Demo PHX carrega `/phx-demo.html` | DEMO `demo PHX: dialog modal, título, rótulo e iframe da demo` | Substituível (superior) |
+| CT-17-04 | Demo PHX: selo `DEMO INTERATIVA` | Mesmo teste (rótulo `phx-demo-panel__label`) | Substituível (superior) |
+| CT-17-05 | Registro referencia `project-03.webp` | — | Permanece (**Etapa 7**) |
+| CT-17-06 | Título `LAUDO DE CRÉDITO IMOBILIÁRIO` no registro | — (dialog de detalhes) | Permanece |
+| CT-22-01 | Demo Nexus define os itens de navegação | DEMO `demo Nexus: selos e navegação lateral com os seis itens…` (seis itens renderizados, em grupos e na ordem) | Substituível (superior) |
+| CT-22-02 | Item de navegação troca a seção ativa | — (exige estado; coberto em runtime pelo smoke `B-nexus-navegacao-troca-secao`, fora do CI) | Permanece |
+| CT-22-03 | Item ativo é indicado pela seção atual | Mesmo teste: no estado inicial, só Fluxos tem `is-active` e `aria-current="page"`. A troca não é observável no render estático | Parcial: permanece |
+| CT-22-04 | Demo Nexus: item "Base de conhecimento" | Mesmo teste (rótulo do botão de navegação) | Substituível (superior) |
+| CT-22-05 | Demo Nexus: item "Documentação" | Mesmo teste (rótulo do botão de navegação; o contrato não detectou a troca do rótulo, mutação M11) | Substituível (superior) |
+| CT-23-01 | Demo Nexus tem botão de voltar no topo | DEMO `demo Nexus: foco inicial em Fechar demo e dois botões de voltar ao projeto` | Substituível (superior) |
+| CT-23-02 | Demo Nexus tem selo no topo | DEMO `demo Nexus: selos e navegação lateral…` | Substituível (superior) |
+| CT-23-03 | Demo Nexus: selo `DEMO INTERATIVA` | Mesmo teste | Substituível (superior) |
+| CT-23-04 | Voltar da demo Nexus chama `onBack` | — (a demo Nexus usa hooks, então o componente não pode ser chamado diretamente para exercitar o handler sem um renderer) | Permanece |
+| AS-01-01 | Mapa de demos cobre exatamente os projetos com demo no registro | — (fiação do App) | Permanece |
+
+Resumo: 48 regras relacionadas a estes dialogs. **30 substituíveis**, 1 parcial (CT-22-03) e 17 que permanecem (fiação do App, Footer, arquivo público, detalhes, Etapa 7 e comportamento com estado da demo Nexus).
+
+**Cobertura nova, sem regra antiga correspondente:** `role`, `aria-modal`, `aria-hidden` e `aria-labelledby` dos 5 dialogs, com o id referenciado único; rótulos dos fundos (`Fechar Sobre`, `Fechar Contato`); rótulo do grupo de canais; `title`, `target` e `rel` dos canais; `title` dos iframes; links "Abrir em nova aba" da Cindy e da PHX; handlers de fundo e Fechar do Sobre e do Contato; handlers de Voltar e Fechar da Cindy e da PHX; `tablist` da demo Nexus.
+
 ## Correção da Spec 0001 — foco inicial das demos (§7.3 e §7.4 C1)
 
 **Decisão do mantenedor:** manter o foco inicial no botão Fechar nas três demos (Cindy, PHX e Nexus). Só o texto descritivo da Spec foi corrigido; código, comportamento, testes e baseline não mudaram.
@@ -27,6 +90,7 @@ Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.m
 | Contagem da prévia (D1.8) | A contagem é `galeria.screens.length`, e o `countLabel` do registro não contém número | `contagem da prévia é derivada do número de telas da galeria (D1.8)` (novo, `project-dialogs-render.test.mjs`) | **Nova cobertura.** Os literais `7 TELAS DO PRODUTO`, `6 TELAS DA DEMO` etc. continuam nos testes de detalhes. Sozinhos, eles não detectavam um número escrito no rótulo do registro (a página mostraria `6 6 TELAS DA DEMO`, que contém o literal) |
 | D1.11 — dados da demo Nexus independentes do registro | — | Nenhum | **Verificado, sem teste novo.** A Spec registra a decisão (D1.11), mas não a inclui entre os testes do §3 nem nos critérios do §6. Situação em `fbf7d13`: `NexusDemoPanel.jsx` importa só `react-icons/fa`, `react` e o próprio CSS; no registro, `demo` da Nexus tem apenas `buttonLabel` |
 
+## Etapa 6 / T6.0 — inventário de regras (antes da reorganização)
 
 Situação registrada no commit `1c5aec3` (fim da Etapa 5), antes de qualquer mudança da Etapa 6. Cada asserção de `portfolio-contract.test.mjs` (**CT**) e de `app-dialog-state.test.mjs` (**AS**) recebe um ID estável no formato `<arquivo>-<teste>-<asserção>`, numerado pela ordem no arquivo nesse commit. Os IDs não mudam quando as asserções forem movidas ou removidas nos tickets T6.1–T6.5: o destino de cada uma será registrado contra estes IDs.
 
