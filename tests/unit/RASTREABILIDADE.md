@@ -10,6 +10,12 @@ Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.m
 |---|---|---|---|
 | — | — | A prévia da People abre a galeria pelo identificador | **Nova cobertura:** `project-gallery-preview.test.mjs` (falhava antes da correção) |
 
+## Etapa 5 / D1 — galeria única (ainda não integrada)
+
+| Teste antigo | Asserção | Regra protegida | Situação |
+|---|---|---|---|
+| — | — | A galeria única reproduz byte a byte cada uma das quatro galerias; o CSS reunido tem as regras atuais, inalteradas, na ordem base → cindy → nexus → phx; projeto sem galeria não renderiza e é diagnosticado em desenvolvimento | **Nova cobertura:** `project-gallery.test.mjs`. A equivalência com as galerias antigas é temporária: no D2, quando elas forem removidas, passa a valer a comparação com o golden da baseline |
+
 ## Etapa 4 / C — App com `EstadoDialog` e módulo de navegação
 
 | Teste antigo (contrato) | Asserção antiga | Regra protegida | Situação / novo local |
