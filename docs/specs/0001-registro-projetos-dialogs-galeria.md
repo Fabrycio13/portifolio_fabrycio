@@ -1,7 +1,7 @@
 # Spec 0001 — Registro de projetos, navegação de dialogs e galeria única
 
 - **Data:** 14 de novembro de 2026
-- **Status:** Aprovada — não iniciada
+- **Status:** Em andamento
 - **Branch:** `refactor/registro-projetos-dialogs`, a partir de `origin/main` atualizada ([Fluxo Git](README.md#fluxo-git-todas-as-specs))
 - **Depende de:** —
 - **Habilita:** [0002](0002-dados-estaticos.md) e [0003](0003-performance-baseada-em-evidencias.md)

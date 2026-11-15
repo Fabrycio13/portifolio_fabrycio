@@ -20,7 +20,7 @@ O projeto combina navegação suave, tipografia animada, seções sticky, cards 
 - Navegação suave com Lenis.
 - Serviços e Projetos com animações sincronizadas ao scroll.
 - Cards sticky controlados por GSAP e ScrollTrigger.
-- Painéis de Sobre, Contato e detalhes dos projetos importados diretamente para evitar flash visual na primeira abertura.
+- Dialogs de Sobre, Contato e dos projetos (detalhes, galeria e demos) importados diretamente para evitar flash visual na primeira abertura.
 - Serviços, Projetos e Footer separados em chunks e carregados por `DeferredSection`.
 - Footer com ondas animadas em canvas e imagem otimizada.
 - Tipografia interativa com `WarpText`, `DecryptedText` e `BlurText`.
@@ -78,11 +78,11 @@ src/
 ├── index.css                     # reset, fontes e documento
 ├── components/
 │   ├── effects/                  # efeitos visuais reutilizáveis
-│   └── panels/                   # dialogs e detalhes de projetos
+│   └── dialogs/                  # Sobre, Contato e dialogs dos projetos
 ├── sections/                     # Serviços, Projetos e Footer
 ├── layouts/                      # boundaries de carregamento
 ├── data/                         # dados estáticos da interface
-└── utils/                        # utilitários de acessibilidade
+└── utils/                        # navegação de dialogs e acessibilidade
 
 tests/unit/                      # contratos de regressão
 scripts/                          # auditorias e ferramentas
@@ -145,14 +145,7 @@ A auditoria mede FPS, long tasks, erros de runtime, canvases, imagens, placehold
 
 ## Testes e limites atuais
 
-Os contratos em `tests/unit/portfolio-contract.test.mjs` verificam:
-
-- operação de teclado dos cards de projetos;
-- foco inicial, `Tab`, `Escape` e retorno de foco dos dialogs;
-- copy pública e os cinco canais de contato;
-- copy do projeto Gestão Condominial com IA;
-- ausência do fluxo legado de vídeo;
-- tap highlight transparente nos elementos interativos.
+Os testes em `tests/unit/` cobrem a navegação entre dialogs, o registro de projetos, o HTML renderizado dos dialogs (textos, links, acessibilidade e foco inicial) e contratos do código-fonte e do CSS para scroll, animação, layout e o fluxo legado de vídeo. O mapa por arquivo está em [`docs/development.md`](docs/development.md#testes).
 
 O repositório atualmente não possui:
 
@@ -168,8 +161,8 @@ Essas áreas não devem ser simuladas na documentação nem criadas apenas para 
 
 - Serviços, Projetos e Footer usam `React.lazy` dentro de `DeferredSection`.
 - Fallbacks estruturais preservam a geometria das seções e reduzem layout shift.
-- Sobre, Contato e detalhes dos projetos são imports diretos para evitar flash visual na primeira abertura.
-- Cards e dados de projetos ficam separados entre `src/data/` e `src/components/panels/`.
+- Os dialogs (Sobre, Contato, detalhes, galeria e demos) são imports diretos para evitar flash visual na primeira abertura.
+- Os dados dos projetos ficam no registro `src/data/projects.js`, separados dos dialogs em `src/components/dialogs/` ([ADR 0002](docs/decisions/0002-registro-de-projetos-e-dialogs.md)).
 - Imagens prioritárias usam WebP com fallback compatível.
 - Imagens fora do primeiro viewport usam carregamento lazy.
 - As métricas de performance devem ser repetidas após mudanças em animações, assets, scroll, canvas ou lazy loading; números antigos não são tratados como garantia permanente.

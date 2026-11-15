@@ -14,11 +14,11 @@
 
 - `src/App.jsx`: shell da aplicação, navegação, composição da página e gerenciamento dos dialogs.
 - `src/components/effects/`: `BlurText`, `DecryptedText` e `WarpText`.
-- `src/components/panels/`: painéis Sobre, Contato e detalhes dos projetos.
+- `src/components/dialogs/`: dialogs Sobre, Contato e dos projetos (detalhes, galeria e demos).
 - `src/sections/`: Serviços, Projetos e Footer, incluindo animações de scroll e canvas.
 - `src/layouts/`: boundaries de carregamento estrutural, como `DeferredSection`.
 - `src/data/`: dados estáticos apresentados pela interface.
-- `src/utils/`: utilitários puros, atualmente relacionados à acessibilidade.
+- `src/utils/`: utilitários puros, atualmente a navegação entre dialogs e a acessibilidade.
 - `public/images/`: hero, footer e imagens dos projetos servidos diretamente pelo Vite.
 - `public/icons/`: logos e favicons.
 - `tests/unit/`: contratos de regressão executados pelo Node test runner.
@@ -65,7 +65,7 @@ Use apenas comandos existentes em `package.json` e configurações verificadas. 
 ## 3. Regras que não podem ser quebradas
 
 - `EXPLORAR MEU TRABALHO` deve continuar apontando para `#servicos`.
-- `ENTRAR EM CONTATO` deve abrir o painel Contato sem desmontar a cena principal.
+- `ENTRAR EM CONTATO` deve abrir o dialog Contato sem desmontar a cena principal.
 - Sobre, Contato e detalhes dos projetos devem continuar como dialogs preservando o contexto visual.
 - Cards de projetos devem continuar operáveis por mouse, toque, `Enter` e `Space`.
 - Dialogs devem preservar foco inicial, focus trap, `Escape` e retorno do foco ao gatilho.
@@ -100,7 +100,7 @@ Use apenas comandos existentes em `package.json` e configurações verificadas. 
 - Comente motivos e restrições pouco óbvias, não o funcionamento autoexplicativo.
 - Preserve contratos públicos e sinalize mudanças incompatíveis.
 - Atualize README e documentação quando alterar arquitetura, caminhos de assets, comandos ou comportamento documentado.
-- Preserve imports diretos dos dialogs pequenos: lazy loading nesses painéis pode reintroduzir flash visual na primeira abertura.
+- Preserve imports diretos dos dialogs pequenos: lazy loading nesses dialogs pode reintroduzir flash visual na primeira abertura.
 - Preserve `DeferredSection` e seus fallbacks estruturais: mudanças podem causar layout shift, alterar âncoras ou quebrar o scroll sticky.
 
 ## 6. Correção de bugs
@@ -108,7 +108,7 @@ Use apenas comandos existentes em `package.json` e configurações verificadas. 
 - Reproduza o problema na rota real quando viável.
 - Confirme se o comportamento é defeito ou decisão intencional antes de editar.
 - Investigue a causa antes de alterar CSS, imports, handlers ou animações.
-- Para bugs visuais, identifique a camada correta: hero, seção sticky, painel, canvas ou footer.
+- Para bugs visuais, identifique a camada correta: hero, seção sticky, dialog, canvas ou footer.
 - Para problemas mobile, verifique `:active`, `:focus`, `:focus-visible`, tap highlight nativo e viewport real antes de mudar o layout.
 - Teste hipóteses com evidências; não aplique mudanças aleatórias.
 - Corrija a causa raiz dentro do escopo.
@@ -124,16 +124,9 @@ Use apenas comandos existentes em `package.json` e configurações verificadas. 
 - Não altere testes apenas para esconder uma regressão introduzida pela mudança.
 - Não exija integração ou E2E enquanto essas suítes não existirem; sinalize a lacuna se ela for relevante para o risco.
 
-### Contrato atual
+### Testes existentes
 
-`tests/unit/portfolio-contract.test.mjs` cobre:
-
-- teclado dos cards de projetos;
-- foco inicial, `Tab`, `Escape` e retorno de foco dos dialogs;
-- copy pública e cinco canais de contato;
-- copy do projeto Gestão Condominial com IA;
-- ausência do fluxo legado de vídeo;
-- tap highlight transparente nos elementos interativos.
+Os testes se dividem em lógica pura, render estático dos dialogs e contratos estáticos do código-fonte e do CSS. Antes de criar, mover ou remover um teste, consulte o mapa por arquivo em `docs/development.md` (seção "Testes") e a origem de cada regra em `tests/unit/RASTREABILIDADE.md`.
 
 ### Validação de navegador
 
@@ -177,7 +170,6 @@ Use apenas comandos existentes em `package.json` e configurações verificadas. 
 - Registre somente decisões confirmadas, motivos, armadilhas recorrentes e partes do código afetadas.
 - Não copie conversas, não duplique documentação e não armazene secrets.
 - Corrija documentação obsoleta quando ela deixar de corresponder ao código.
-- Nesta tarefa, não crie arquivos auxiliares ou registros de decisão porque a mudança está limitada ao `AGENTS.md`.
 
 ## 11. Entrega
 

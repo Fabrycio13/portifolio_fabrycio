@@ -30,9 +30,26 @@ node scripts/perf-audit.mjs http://127.0.0.1:4173/ --duration-ms=5000
 
 ## Testes
 
-Os contratos de regressão ficam em `tests/unit/` e usam o test runner nativo do Node. Eles verificam as interações de teclado, dialogs, copy pública, links sociais e a ausência do fluxo legado de vídeo.
+Os testes ficam em `tests/unit/` e usam o test runner nativo do Node. `npm test` roda todos os arquivos `tests/unit/*.test.mjs`, e o CI executa o mesmo comando. Eles se dividem em três categorias:
 
-A auditoria de performance usa Chrome local e deve ser executada contra a rota real, preferencialmente servida por `vite preview` depois de uma build bem-sucedida.
+| Categoria | Arquivos | O que verificam |
+|---|---|---|
+| Lógica pura (Node, sem Vite) | `dialog-navigation`, `project-registry` | Regras de navegação entre dialogs e invariantes do registro de projetos |
+| Render estático | `project-dialogs-render`, `project-gallery`, `project-gallery-preview`, `info-dialogs-render`, `demo-dialogs-render` | HTML renderizado dos dialogs: textos, links, alt, atributos de acessibilidade, foco inicial e handlers dos botões |
+| Contratos estáticos | `app-dialog-state`, `app-shell-contract`, `project-dialogs-contract`, `project-journey-contract`, `scene-contract` | Regras verificadas no código-fonte e no CSS, onde o render estático não alcança: fiação do `App`, scroll, animação, layout e comportamentos que dependem de estado |
+
+Os testes de render carregam os componentes JSX pelo Vite por meio de `tests/unit/vite-ssr.mjs`. A origem de cada regra e o histórico das mudanças dos testes estão em [`tests/unit/RASTREABILIDADE.md`](../tests/unit/RASTREABILIDADE.md).
+
+A auditoria de performance usa Chrome local e deve ser executada contra a rota real, preferencialmente servida por `vite preview` depois de uma build bem-sucedida. Sem URL, `scripts/perf-audit.mjs` usa `http://127.0.0.1:5182/`; com o preview em outra porta, passe a URL exibida pelo terminal.
+
+### Ferramentas de validação local
+
+Criadas na Spec 0001 para validar mudanças contra uma baseline; rodam localmente, fora do CI, e os artefatos que geram ficam fora do repositório ([Spec 0001 §7](specs/0001-registro-projetos-dialogs-galeria.md#7-protocolos-de-validação-compartilhados)).
+
+- `scripts/dialog-golden.mjs`: renderiza os 13 dialogs e compara o HTML com um golden.
+- `scripts/dialog-smoke.mjs`: smoke de acessibilidade e navegação dos dialogs no Chrome.
+- `scripts/visual-capture.mjs`, `scripts/visual-calibrate.mjs` e `scripts/visual-compare.mjs`: captura, calibração do ruído e comparação visual com tolerância por pixel.
+- `scripts/perf-baseline.mjs` e `scripts/build-sizes.mjs`: medianas da auditoria de performance e tamanhos da build.
 
 ## Alterações visuais
 

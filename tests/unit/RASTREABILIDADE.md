@@ -4,6 +4,10 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**; dividido no T6.5 e removido na Etapa 7).
 
+## Etapa 9 — documentação
+
+**Nenhuma regra de teste criada, removida ou alterada.** A etapa só atualiza documentos: o mapa dos testes por arquivo passou a ficar em `docs/development.md` (seção "Testes"), e README e `AGENTS.md` apontam para ele. A [ADR 0002](../../docs/decisions/0002-registro-de-projetos-e-dialogs.md) registra as decisões da Spec 0001.
+
 ## Etapa 8 — renomeação `panels/` → `dialogs/` e `*Panel` → `*Dialog`
 
 **Nenhuma regra criada, removida ou alterada no sentido.** Os mesmos 90 testes, com os mesmos nomes, passam antes e depois. As 121 regras do inventário continuam valendo; só mudaram, nas asserções e nos caminhos, os nomes da tabela abaixo.
