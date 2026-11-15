@@ -10,6 +10,20 @@ Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.m
 |---|---|---|---|
 | — | — | A prévia da People abre a galeria pelo identificador | **Nova cobertura:** `project-gallery-preview.test.mjs` (falhava antes da correção) |
 
+## Etapa 5 / D2 — galeria única integrada, galerias antigas removidas
+
+| Teste antigo | Asserção antiga | Regra protegida | Situação / novo local |
+|---|---|---|---|
+| `project-gallery.test.mjs` (D1): galeria única reproduz byte a byte a galeria de people, cindy, phx e nexus | HTML da galeria única = HTML da galeria antiga | Markup, textos, alt, rótulos e tema idênticos aos atuais | **Substituída** pelo golden temporário da baseline (§7.3, ids `galeria-*` agora renderizados pela galeria única) e pelo teste de camada 2 `galeria de <slug>: dialog, tema, rótulos e primeira tela vindos do registro` (um por projeto com galeria) |
+| `project-gallery.test.mjs` (D1): CSS reunido = arquivos antigos, na ordem base → cindy → nexus → phx | Regras idênticas às de `People/Cindy/Nexus/PhxGalleryPanel.css` | CSS sem alteração e na ordem do bundle | **Substituída:** os arquivos de origem deixaram de existir. A igualdade foi provada no D1 (`f817047`) e o efeito visual é coberto pelo diff visual das 51 capturas; o teste `CSS da galeria: base antes dos temas…` mantém a ordem, as mesmas regras por tema e o Nexus sem `color` nos botões |
+| `app-dialog-state.test.mjs` (C): mapa de galerias cobre exatamente os projetos com galeria | chaves de `galleryDialogs` = slugs com `galeria` | O App renderiza a galeria de cada projeto que tem galeria | **Substituída** por `App renderiza a galeria única para o slug do estado…` (sem mapa nem galerias por projeto, com `key={dialog.slug}`); quais projetos têm galeria continua em `dialog-navigation.test.mjs`, e a renderização por slug em `project-gallery.test.mjs` |
+| contrato: Projeto Cindy, Nexus, PHX e People abrem a galeria | `cindy/nexus/phx/people: <Projeto>GalleryPanel` e import da galeria de cada projeto | O App renderiza a galeria de cada projeto | **Alteradas** para o import de `ProjectGalleryPanel`, a renderização `<ProjectGalleryPanel key={dialog.slug} slug={dialog.slug}` e o `tema` do projeto no registro |
+| contrato: Cindy e People | `aria-pressed={index === activeIndex}` em `CindyGalleryPanel.jsx` / `PeopleGalleryPanel.jsx` | Miniaturas indicam a tela ativa | **Alteradas** para `ProjectGalleryPanel.jsx`; valor renderizado também verificado na camada 2 |
+| contrato: previews preservam o corte das capturas | `.people-gallery__thumbnail img { object-fit: contain }` em `PeopleGalleryPanel.css` | Miniaturas sem corte | **Alterada** para `ProjectGalleryPanel.css` |
+| `project-dialogs-render.test.mjs`: galerias do People e da Cindy | renderização de `PeopleGalleryPanel` / `CindyGalleryPanel` | Telas sanitizadas, selo e capturas da demo | **Alterada** para `ProjectGalleryPanel` com `slug` |
+
+O reinício na primeira tela a cada abertura (D1.9) segue coberto em runtime pelo smoke (§7.4) e, estaticamente, pela `key={dialog.slug}` e pelo `aria-pressed` da primeira miniatura na camada 2.
+
 ## Etapa 5 / D1 — galeria única (ainda não integrada)
 
 | Teste antigo | Asserção | Regra protegida | Situação |

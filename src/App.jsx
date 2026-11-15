@@ -2,16 +2,13 @@ import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
 import CindyDemoPanel from '@/components/panels/CindyDemoPanel.jsx'
-import CindyGalleryPanel from '@/components/panels/CindyGalleryPanel.jsx'
 import WarpText from '@/components/effects/WarpText.jsx'
 import DecryptedText from '@/components/effects/DecryptedText.jsx'
 import InfoPanels from '@/components/panels/InfoPanels.jsx'
 import NexusDemoPanel from '@/components/panels/NexusDemoPanel.jsx'
-import NexusGalleryPanel from '@/components/panels/NexusGalleryPanel.jsx'
-import PeopleGalleryPanel from '@/components/panels/PeopleGalleryPanel.jsx'
 import PhxDemoPanel from '@/components/panels/PhxDemoPanel.jsx'
-import PhxGalleryPanel from '@/components/panels/PhxGalleryPanel.jsx'
 import ProjectDetailsPanel from '@/components/panels/ProjectDetailsPanel.jsx'
+import ProjectGalleryPanel from '@/components/panels/ProjectGalleryPanel.jsx'
 import { projects } from '@/data/projects.js'
 import { DeferredSection } from '@/layouts/DeferredSection.jsx'
 import { fechar, navegar, voltar } from '@/utils/dialogNavigation.js'
@@ -35,15 +32,9 @@ const menuItems = [
   { label: 'Contato', dialog: 'contato' },
 ]
 
-// Which dialog renders each project's gallery and demo (Spec 0001, D1.7). The navigation module
-// decides whether a gallery or demo exists; these maps only choose the component to render.
-const galleryDialogs = {
-  people: PeopleGalleryPanel,
-  cindy: CindyGalleryPanel,
-  phx: PhxGalleryPanel,
-  nexus: NexusGalleryPanel,
-}
-
+// Which dialog renders each project's demo (Spec 0001, D1.7). The navigation module decides
+// whether a demo exists; this map only chooses the component to render. Galleries need no map:
+// a single dialog renders any project's gallery from the registry (D1.9).
 const demoDialogs = {
   cindy: CindyDemoPanel,
   phx: PhxDemoPanel,
@@ -107,7 +98,6 @@ function PortfolioContent() {
   const goBack = () => applyTransition(voltar(dialog, projects), { voltar: dialog })
   const closeDialog = () => applyTransition(fechar(), null)
 
-  const GalleryDialog = dialog?.tipo === 'galeria' ? galleryDialogs[dialog.slug] : null
   const DemoDialog = dialog?.tipo === 'demo' ? demoDialogs[dialog.slug] : null
 
   useEffect(() => {
@@ -355,7 +345,11 @@ function PortfolioContent() {
         />
       )}
 
-      {GalleryDialog && <GalleryDialog onBack={goBack} onClose={closeDialog} />}
+      {/* Keyed by slug so a gallery always mounts fresh, on its first screen, for each project,
+          as the old per-project components did (D1.9). */}
+      {dialog?.tipo === 'galeria' && (
+        <ProjectGalleryPanel key={dialog.slug} slug={dialog.slug} onBack={goBack} onClose={closeDialog} />
+      )}
 
       {DemoDialog && <DemoDialog onBack={goBack} onClose={closeDialog} />}
 

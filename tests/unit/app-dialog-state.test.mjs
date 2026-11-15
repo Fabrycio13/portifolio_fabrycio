@@ -20,8 +20,13 @@ test('mapa de demos cobre exatamente os projetos com demo no registro', () => {
   assert.deepEqual(mapKeys('demoDialogs').sort(), projects.filter(project => project.demo).map(project => project.slug).sort())
 })
 
-test('mapa de galerias cobre exatamente os projetos com galeria no registro', () => {
-  assert.deepEqual(mapKeys('galleryDialogs').sort(), projects.filter(project => project.galeria).map(project => project.slug).sort())
+// D2: one gallery component fed by the registry replaces the per-project map. Which projects have
+// a gallery is decided by the navigation module (dialog-navigation.test.mjs) and rendered per slug
+// in project-gallery.test.mjs.
+test('App renderiza a galeria única para o slug do estado, sem mapa nem galerias por projeto', () => {
+  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
+  assert.match(app, /dialog\?\.tipo === 'galeria' && \(\s*<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\} onBack=\{goBack\} onClose=\{closeDialog\} \/>\s*\)/)
+  assert.doesNotMatch(app, /galleryDialogs|(People|Cindy|Phx|Nexus)GalleryPanel/)
 })
 
 test('transições passam pelo módulo de navegação, sem preserveTrigger nem estado misto', () => {

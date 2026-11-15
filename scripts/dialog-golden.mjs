@@ -22,10 +22,12 @@ const cases = [
     module: '/src/components/panels/ProjectDetailsPanel.jsx',
     props: { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop },
   })),
-  { id: 'galeria-people', module: '/src/components/panels/PeopleGalleryPanel.jsx', props: { onBack: noop, onClose: noop } },
-  { id: 'galeria-cindy', module: '/src/components/panels/CindyGalleryPanel.jsx', props: { onBack: noop, onClose: noop } },
-  { id: 'galeria-phx', module: '/src/components/panels/PhxGalleryPanel.jsx', props: { onBack: noop, onClose: noop } },
-  { id: 'galeria-nexus', module: '/src/components/panels/NexusGalleryPanel.jsx', props: { onBack: noop, onClose: noop } },
+  // D2: the four galleries are one component; the ids keep comparing against the baseline files.
+  ...['people', 'cindy', 'phx', 'nexus'].map(slug => ({
+    id: `galeria-${slug}`,
+    module: '/src/components/panels/ProjectGalleryPanel.jsx',
+    props: { slug, onBack: noop, onClose: noop },
+  })),
   { id: 'sobre', module: '/src/components/panels/InfoPanels.jsx', props: { activePanel: 'sobre', onClose: noop, onOpenContact: noop } },
   { id: 'contato', module: '/src/components/panels/InfoPanels.jsx', props: { activePanel: 'contato', onClose: noop, onOpenContact: noop } },
   { id: 'demo-cindy', module: '/src/components/panels/CindyDemoPanel.jsx', props: { onBack: noop, onClose: noop } },

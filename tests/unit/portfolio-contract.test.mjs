@@ -171,13 +171,15 @@ test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', asy
 test('Projeto Cindy oferece demo local e galeria com capturas da própria demo', async () => {
   const app = await read('src/App.jsx')
   const demo = await read('src/components/panels/CindyDemoPanel.jsx')
-  const gallery = await read('src/components/panels/CindyGalleryPanel.jsx')
+  const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
+  const projects = await read('src/data/projects.js')
   const demoHtml = await read('public/nova-cindy-mockup-v2.html')
 
   assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
-  assert.match(app, /import CindyGalleryPanel from '@\/components\/panels\/CindyGalleryPanel\.jsx'/)
   assert.match(app, /cindy: CindyDemoPanel/)
-  assert.match(app, /cindy: CindyGalleryPanel/)
+  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
+  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
+  assert.match(projects, /slug: 'cindy'(?:(?!slug: ')[\s\S])*tema: 'cindy'/)
   assert.match(demo, /src="\/nova-cindy-mockup-v2\.html"/)
   assert.match(demo, /data-dialog-initial-focus/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
@@ -203,10 +205,12 @@ test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhe
 test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async () => {
   const app = await read('src/App.jsx')
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const projects = await read('src/data/projects.js')
 
   assert.match(details, /onOpenGallery\(slug\)/)
-  assert.match(app, /import NexusGalleryPanel from '@\/components\/panels\/NexusGalleryPanel\.jsx'/)
-  assert.match(app, /nexus: NexusGalleryPanel/)
+  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
+  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
+  assert.match(projects, /slug: 'nexus'(?:(?!slug: ')[\s\S])*tema: 'nexus'/)
 })
 
 test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
@@ -225,21 +229,25 @@ test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
 test('Projeto PHX abre uma galeria com as telas do laudo', async () => {
   const app = await read('src/App.jsx')
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const projects = await read('src/data/projects.js')
 
   assert.match(details, /onOpenGallery\(slug\)/)
-  assert.match(app, /import PhxGalleryPanel from '@\/components\/panels\/PhxGalleryPanel\.jsx'/)
-  assert.match(app, /phx: PhxGalleryPanel/)
+  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
+  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
+  assert.match(projects, /slug: 'phx'(?:(?!slug: ')[\s\S])*tema: 'phx'/)
 })
 
 test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes', async () => {
   const app = await read('src/App.jsx')
   const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
-  const gallery = await read('src/components/panels/PeopleGalleryPanel.jsx')
+  const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
+  const projects = await read('src/data/projects.js')
 
   assert.match(details, /VER TELAS DO PROJETO/)
   assert.match(details, /onOpenGallery/)
-  assert.match(app, /import PeopleGalleryPanel from '@\/components\/panels\/PeopleGalleryPanel\.jsx'/)
-  assert.match(app, /people: PeopleGalleryPanel/)
+  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
+  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
+  assert.match(projects, /slug: 'people'(?:(?!slug: ')[\s\S])*tema: null/)
   assert.match(app, /\.people-gallery\.is-open/)
   assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
 })
@@ -247,7 +255,7 @@ test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes
 test('previews de projetos destacam a galeria e preservam o corte das capturas', async () => {
   const css = await read('src/App.css')
   const journeyCss = await read('src/sections/StickyProjects.css')
-  const galleryCss = await read('src/components/panels/PeopleGalleryPanel.css')
+  const galleryCss = await read('src/components/panels/ProjectGalleryPanel.css')
   const projectsData = await read('src/data/projects.js')
   const projectsComponent = await read('src/sections/StickyProjects.jsx')
 

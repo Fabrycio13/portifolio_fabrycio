@@ -6,13 +6,10 @@ import assert from 'node:assert/strict'
 import { loadModule, render } from './vite-ssr.mjs'
 
 const { default: ProjectDetailsPanel } = await loadModule('/src/components/panels/ProjectDetailsPanel.jsx')
-const galleries = {
-  people: (await loadModule('/src/components/panels/PeopleGalleryPanel.jsx')).default,
-  cindy: (await loadModule('/src/components/panels/CindyGalleryPanel.jsx')).default,
-}
+const { default: ProjectGalleryPanel } = await loadModule('/src/components/panels/ProjectGalleryPanel.jsx')
 const noop = () => {}
 const details = slug => render(ProjectDetailsPanel, { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop })
-const gallery = slug => render(galleries[slug], { onBack: noop, onClose: noop })
+const gallery = slug => render(ProjectGalleryPanel, { slug, onBack: noop, onClose: noop })
 const includesAll = (html, texts) => { for (const text of texts) assert.ok(html.includes(text), `ausente: ${text}`) }
 
 test('detalhes do People: subtítulo, prévia com 7 telas e sem demo', () => {
