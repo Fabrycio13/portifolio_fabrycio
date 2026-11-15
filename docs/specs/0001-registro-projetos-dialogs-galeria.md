@@ -1,7 +1,7 @@
 # Spec 0001 — Registro de projetos, navegação de dialogs e galeria única
 
 - **Data:** 14 de novembro de 2026
-- **Status:** Aprovada — não iniciada
+- **Status:** Em andamento
 - **Branch:** `refactor/registro-projetos-dialogs`, a partir de `origin/main` atualizada ([Fluxo Git](README.md#fluxo-git-todas-as-specs))
 - **Depende de:** —
 - **Habilita:** [0002](0002-dados-estaticos.md) e [0003](0003-performance-baseada-em-evidencias.md)
@@ -214,7 +214,7 @@ Definidos aqui porque esta spec cria os scripts. As Specs 0002 e 0003 os reutili
 - O **resumo** dos resultados (pass/fail, tolerância calibrada, medianas) vai na descrição da PR e na entrega. Os artefatos não vão.
 - O golden prova equivalência de conteúdo e markup. Foco, teclado, `Escape`, animações e interações têm validações próprias.
 - **Exceção técnica aprovada: `data-dialog-initial-focus`.**
-  - **Fato verificado:** o atributo já existe nos 13 dialogs no `7f53175`, portanto já faz parte do golden. A expectativa é que a exceção **não precise ser usada**: a galeria única e os dialogs renomeados mantêm o atributo no mesmo elemento de hoje (o botão "Voltar" nas galerias e demos, e o equivalente nos demais).
+  - **Fato verificado:** o atributo já existe nos 13 dialogs no `7f53175`, portanto já faz parte do golden. A expectativa é que a exceção **não precise ser usada**: a galeria única e os dialogs renomeados mantêm o atributo no mesmo elemento de hoje (o botão "Voltar ao projeto" nas galerias e o botão de fechar nos demais dialogs: Sobre, Contato, detalhes e as três demos, conforme medido na baseline).
   - **Identidade do elemento focado, registrada na baseline:** para cada um dos 13 dialogs, o smoke grava no manifesto a identidade do elemento que recebe o foco inicial no `7f53175`:
     - tag;
     - papel e nome acessível computados (CDP `Accessibility`);
@@ -270,7 +270,7 @@ Premissa técnica, que não é presumida e é verificada na baseline: eventos de
 
 | # | Teste | Critério |
 |---|---|---|
-| C1 | Foco no "chrome" do dialog (o botão "Voltar", foco inicial, ou o botão de fechar) → `Escape` | **Obrigatório:** fecha, o estado vai a `null` e o foco volta ao gatilho original |
+| C1 | Foco no "chrome" do dialog (o botão de fechar, que é o foco inicial, ou o botão "Voltar ao projeto") → `Escape` | **Obrigatório:** fecha, o estado vai a `null` e o foco volta ao gatilho original |
 | C2 | Foco colocado **dentro** do iframe: clique num elemento focável do conteúdo e, como alternativa, `Tab` a partir do último elemento do chrome → `Escape` | **Registrar** na baseline se fecha ou não. Depois da mudança, o comportamento tem que ser **igual ao da baseline** |
 | C3 | Com o foco dentro do iframe, `Tab` e `Shift+Tab` até sair do conteúdo do iframe | **Registrar** para onde o foco vai, se volta ao chrome do dialog ou se escapa para fora do dialog. Depois da mudança, igual à baseline |
 | C4 | Depois de C2/C3, voltar o foco ao chrome e pressionar `Escape` | **Obrigatório:** fecha e devolve o foco ao gatilho original |
@@ -303,3 +303,26 @@ O [`GLOSSARY.md`](../../GLOSSARY.md) já foi criado com estes termos, mais Cena,
   - Antes de usar, a integridade do zip é conferida pelo `SHASUMS256.txt` oficial.
   - O uso se limita a rodar a prova de viabilidade e os testes da camada 2 no repositório.
   - A pasta é removida ao fim desta spec.
+
+## 10. Resultado da Etapa 10
+
+Validação executada em 15 de novembro de 2026 sobre o `fc2cf31`, contra a baseline `7f53175`, com Node 26.13.0 e 22.23.5 e Chrome 157.0.8103.39. Os artefatos ficam fora do repositório (§7.3).
+
+| # | Critério | Resultado |
+|---|---|---|
+| 1–4 | Estado `null`, rejeições com motivo, "Voltar" e gatilho | Aprovados: testes de navegação e cadeias da parte B do smoke ([§7.4](#74-smoke-de-acessibilidade-e-interação-camada-3)) |
+| 5 | Matriz de acessibilidade do §7.4 | Aprovado: smoke com 318/318 verificações em desktop e mobile; C1 e C4 aprovados; C2, C3 e as 60 observações iguais à baseline |
+| 6–7 | Textos, atributos e prévias | Aprovados: golden 13/13 igual no Node 22 e no Node 26, sem usar a exceção do §7.3 |
+| 8 | Diff visual | Aprovado com uma exceção aceita pelo mantenedor (abaixo) |
+| 9 | Roteiro manual com movimento | **Aprovado com ressalva:** conferência manual em desktop e mobile confirmada pelo mantenedor em 15 de novembro de 2026; ressalva registrada abaixo |
+| 10 | Performance | Aprovado pelo critério formal do §7.2, com a limitação do Hero (abaixo) |
+| 11 | Camada 2 no Node 22 e no Node 26 | Aprovado: 90/90 testes nos dois |
+| 12 | Regras antigas cobertas | Aprovado: os 176 IDs do inventário T6.0 têm destino; restam 121 regras e 3 foram aposentadas por decisão ([rastreabilidade](../../tests/unit/RASTREABILIDADE.md)) |
+
+**Exceção visual.** 50 das 51 capturas passaram na tolerância calibrada, sem mudar máscaras, tolerâncias ou referências. A `desktop-1x/02-servicos` reprovou só na primeira letra dos quatro títulos dos cards de Serviços. Em 5 recapturas intercaladas por build, a própria baseline reprovou contra a sua referência em 4; o estado mais frequente saiu idêntico byte a byte nas duas builds, e o `fc2cf31` reproduziu a referência exata duas vezes. O código de Serviços não mudou nesta spec. A divergência foi aceita como variabilidade preexistente da captura, que as 6 execuções da calibração não cobriram. Isso não demonstra equivalência absoluta, nem nessa cena nem nas regiões mascaradas.
+
+**Performance.** Duas séries intercaladas, com ordens opostas, na mesma porta, com 5 amostras por build e cenário e nenhuma falha técnica. Os critérios binários passaram nos três cenários, e nenhuma métrica contínua atendeu às condições de regressão em nenhuma série: ausência de regressão demonstrada, não equivalência. No Hero, a dispersão da baseline (de 53,99 a 59,94 fps na primeira série) não dá resolução para excluir diferenças pequenas; a mediana do `fc2cf31` ficou abaixo nas duas séries, sempre dentro da faixa da baseline e com os intervalos interquartis sobrepostos. Recursos e long tasks da inicialização não foram medidos (Etapa 0 da Spec 0003).
+
+**Ressalva do critério 9: seta "Voltar ao topo" no mobile.** Na conferência manual, a imagem do Hero pareceu travar durante a subida automática pela seta do Footer, e não na rolagem manual. A seta é uma âncora animada pelo Lenis (`anchors: true`, `lerp: 0.08`). Em emulação mobile, o `7f53175` e o `11724c7` tiveram o mesmo perfil: 60 fps, nenhuma long task e uma desaceleração em degraus de 1 px nos últimos pixels antes do topo, com o Hero na tela. A desaceleração em degraus foi reproduzida nas duas versões e é preexistente. Não foi demonstrada regressão da Spec 0001 nesse mecanismo. A causa exata do travamento visual percebido no aparelho real permanece inconclusiva, porque a emulação não reproduz a GPU, a rasterização nem o navegador de um celular real. Lenis, GSAP, CSS e animações não mudam nesta spec; uma melhoria da rolagem por âncoras fica para uma tarefa separada, com avaliação e testes próprios.
+
+**Encerramento da validação local.** Com a conferência manual confirmada, a validação local da Etapa 10 está encerrada. A CI remota e o Preview da Vercel ainda não foram validados nesta etapa; o status da spec segue "Em andamento" até o merge.

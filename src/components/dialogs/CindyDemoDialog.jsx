@@ -1,7 +1,7 @@
 import { FaArrowLeft, FaExternalLinkAlt, FaTimes } from 'react-icons/fa'
-import './CindyDemoPanel.css'
+import './CindyDemoDialog.css'
 
-export default function CindyDemoPanel({ onBack, onClose }) {
+export default function CindyDemoDialog({ onBack, onClose }) {
   return (
     <aside
       id="cindy-demo"

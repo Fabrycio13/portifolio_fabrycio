@@ -8,7 +8,7 @@
 |---|---|---|
 | [`../GLOSSARY.md`](../GLOSSARY.md) | Linguagem do domínio: cena, dialogs, projetos, slug, gatilho | Vigente; atualizado quando um termo muda |
 | [`architecture.md`](architecture.md) | Arquitetura vigente: estrutura, carregamento, interações e limites de responsabilidade | Vigente; acompanha o código |
-| [`development.md`](development.md) | Requisitos, comandos, gates locais e deploy | Vigente |
+| [`development.md`](development.md) | Requisitos, comandos, gates locais, mapa dos testes, ferramentas de validação local e deploy | Vigente |
 | [`performance-baseline.md`](performance-baseline.md) | Método e baseline da auditoria de performance | Vigente; substituída na Etapa 0 da Spec 0003 |
 | [`decisions/`](decisions/) | ADRs: decisões arquiteturais permanentes (`NNNN-slug.md`) | Permanente |
 | [`specs/`](specs/README.md) | Especificações aprovadas, com índice, dependências, invariantes e fluxo Git | Ciclo de vida: aprovada → em andamento → concluída |
@@ -29,4 +29,4 @@
 2. Investigações de [performance](reviews/2026-11-14-investigacao-performance.md) e de [organização do repositório](reviews/2026-11-14-investigacao-organizacao.md).
 3. [Decisões arquiteturais](reviews/2026-11-14-decisoes-arquiteturais.md): rodadas de decisão e histórico das revisões das specs.
 4. [Specs 0001–0003](specs/README.md): trabalho aprovado.
-5. ADR 0002: será criada na etapa 9 da Spec 0001.
+5. [ADR 0002](decisions/0002-registro-de-projetos-e-dialogs.md): registro de projetos, navegação de dialogs e galeria única (etapa 9 da Spec 0001).

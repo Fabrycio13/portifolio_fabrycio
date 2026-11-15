@@ -16,7 +16,7 @@ import {
   FaTimes,
 } from 'react-icons/fa'
 import { useEffect, useRef, useState } from 'react'
-import './NexusDemoPanel.css'
+import './NexusDemoDialog.css'
 
 const flowNodes = [
   {
@@ -196,7 +196,7 @@ function NexusSection({ section }) {
   )
 }
 
-export default function NexusDemoPanel({ onBack, onClose }) {
+export default function NexusDemoDialog({ onBack, onClose }) {
   const [activeStep, setActiveStep] = useState(flowNodes.length)
   const [isRunning, setIsRunning] = useState(false)
   const [activeTab, setActiveTab] = useState('Pipeline')
