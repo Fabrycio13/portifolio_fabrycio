@@ -1,7 +1,7 @@
 # Spec 0001 — Registro de projetos, navegação de dialogs e galeria única
 
 - **Data:** 14 de novembro de 2026
-- **Status:** Em andamento
+- **Status:** Concluída em 15 de novembro de 2026 ([PR #22](https://github.com/Fabrycio13/portifolio_fabrycio/pull/22), merge `2fc2221`)
 - **Branch:** `refactor/registro-projetos-dialogs`, a partir de `origin/main` atualizada ([Fluxo Git](README.md#fluxo-git-todas-as-specs))
 - **Depende de:** —
 - **Habilita:** [0002](0002-dados-estaticos.md) e [0003](0003-performance-baseada-em-evidencias.md)
@@ -326,3 +326,5 @@ Validação executada em 15 de novembro de 2026 sobre o `fc2cf31`, contra a base
 **Ressalva do critério 9: seta "Voltar ao topo" no mobile.** Na conferência manual, a imagem do Hero pareceu travar durante a subida automática pela seta do Footer, e não na rolagem manual. A seta é uma âncora animada pelo Lenis (`anchors: true`, `lerp: 0.08`). Em emulação mobile, o `7f53175` e o `11724c7` tiveram o mesmo perfil: 60 fps, nenhuma long task e uma desaceleração em degraus de 1 px nos últimos pixels antes do topo, com o Hero na tela. A desaceleração em degraus foi reproduzida nas duas versões e é preexistente. Não foi demonstrada regressão da Spec 0001 nesse mecanismo. A causa exata do travamento visual percebido no aparelho real permanece inconclusiva, porque a emulação não reproduz a GPU, a rasterização nem o navegador de um celular real. Lenis, GSAP, CSS e animações não mudam nesta spec; uma melhoria da rolagem por âncoras fica para uma tarefa separada, com avaliação e testes próprios.
 
 **Encerramento da validação local.** Com a conferência manual confirmada, a validação local da Etapa 10 está encerrada. A CI remota e o Preview da Vercel ainda não foram validados nesta etapa; o status da spec segue "Em andamento" até o merge.
+
+**Encerramento da spec.** A [PR #22](https://github.com/Fabrycio13/portifolio_fabrycio/pull/22) foi mesclada na `main` em 15 de novembro de 2026, no commit `2fc2221`, cuja árvore é idêntica à do `1096c7a` validado. A CI (`validate`) passou no `1096c7a` e no `2fc2221`. No Preview da Vercel do `1096c7a`, o smoke passou 318/318 em três execuções, com as observações iguais à baseline, e as 51 capturas tiveram diff zero. O acesso ao Preview usou o bypass de automação da Vercel por um adaptador temporário fora do repositório; a regra de classificação do adaptador tinha um defeito e a primeira requisição HTTP de cada execução não foi observada diretamente, mas todas as verificações e capturas exigiram o portfólio autenticado. O deploy de produção do `2fc2221` serve os mesmos assets da build validada, e a conferência manual do mantenedor em produção, depois do merge, não encontrou problemas novos. As ressalvas desta seção continuam válidas: variação visual local, limitação da medição de performance no Hero, seta "Voltar ao topo" no mobile e foco nos iframes das demos.
