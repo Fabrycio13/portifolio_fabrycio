@@ -4,6 +4,30 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**; dividido no T6.5 e removido na Etapa 7).
 
+## Etapa 8 — renomeação `panels/` → `dialogs/` e `*Panel` → `*Dialog`
+
+**Nenhuma regra criada, removida ou alterada no sentido.** Os mesmos 90 testes, com os mesmos nomes, passam antes e depois. As 121 regras do inventário continuam valendo; só mudaram, nas asserções e nos caminhos, os nomes da tabela abaixo.
+
+| Antes | Depois |
+|---|---|
+| `src/components/panels/` | `src/components/dialogs/` |
+| `ProjectDetailsPanel.jsx` | `ProjectDetailsDialog.jsx` |
+| `ProjectGalleryPanel.jsx` / `.css` | `ProjectGalleryDialog.jsx` / `.css` |
+| `CindyDemoPanel.jsx` / `.css` | `CindyDemoDialog.jsx` / `.css` |
+| `PhxDemoPanel.jsx` / `.css` | `PhxDemoDialog.jsx` / `.css` |
+| `NexusDemoPanel.jsx` / `.css` | `NexusDemoDialog.jsx` / `.css` |
+| `InfoPanels.jsx` | `InfoDialogs.jsx` |
+| `AboutPanel` (função interna do `InfoDialogs.jsx`) | `AboutDialog` |
+| `ContactPanel` (função interna do `InfoDialogs.jsx`) | `ContactDialog` |
+
+**Decisões do mantenedor:** os 4 arquivos CSS acompanham os componentes (só o nome do arquivo muda; classes e seletores internos, intactos); as mensagens de diagnóstico em DEV passam a citar os nomes `*Dialog`; README, `AGENTS.md` e demais documentos gerais ficam para a Etapa 9 (Opção A). As funções internas `AboutPanel` e `ContactPanel`, que não estão na lista da D1.14, também foram renomeadas (`AboutDialog` e `ContactDialog`), para manter a consistência com o termo **Dialog** do `GLOSSARY.md`; não são exportadas e não aparecem no bundle.
+
+**Prova de que só mudaram caminhos e nomes:** cada um dos 10 arquivos renomeados e dos 10 modificados (`src/App.jsx`, 8 testes e `scripts/dialog-golden.mjs`) tem exatamente o conteúdo de `cd9321d` com o mapa de substituição aplicado, e nenhum outro arquivo mudou. Os 4 CSS não mudaram de conteúdo. A ordem dos imports no `App.jsx` é a mesma.
+
+**Evidências:** o Git reconhece os 10 arquivos como renomeados (similaridade de 93% a 100%); o build saiu **byte a byte idêntico** (38/38 arquivos de `dist/assets` e o `index.html`, com os mesmos hashes), porque os identificadores são reduzidos pelo minificador, o código de DEV sai do bundle e os caminhos não aparecem nele; golden 13/13 com os mesmos ids.
+
+**Continuam com o nome antigo, de propósito:** as classes CSS `*-demo-panel*` e `info-panel*` e o seletor `.info-panel.is-open` (fazem parte do markup); a prop `activePanel` do `InfoDialogs` (mudá-la alteraria a interface do componente); os comentários do CSS da galeria que citam os arquivos antigos das galerias; as seções históricas desta rastreabilidade, inclusive a T6.0.
+
 ## Etapa 7 — remoções D1.12 e D1.13
 
 **Removido:**

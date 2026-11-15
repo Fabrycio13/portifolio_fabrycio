@@ -10,7 +10,7 @@ import { resolve } from 'node:path'
 import { projects } from '../../src/data/projects.js'
 import { loadModule, render } from './vite-ssr.mjs'
 
-const { default: ProjectGalleryPanel } = await loadModule('/src/components/panels/ProjectGalleryPanel.jsx')
+const { default: ProjectGalleryDialog } = await loadModule('/src/components/dialogs/ProjectGalleryDialog.jsx')
 const noop = () => {}
 // A registry text as it appears in render() output: react-dom/server escapes & < > " ' and the
 // shared render() (vite-ssr.mjs) decodes &amp; &quot; &#x27; back, so only < and > stay encoded.
@@ -29,7 +29,7 @@ test('fragmentos esperados usam a mesma codificação do render, em texto e em a
 
 for (const { slug, galeria } of projects.filter(project => project.galeria)) {
   test(`galeria de ${slug}: dialog, tema, rótulos e primeira tela vindos do registro`, () => {
-    const html = render(ProjectGalleryPanel, { slug, onBack: noop, onClose: noop })
+    const html = render(ProjectGalleryDialog, { slug, onBack: noop, onClose: noop })
     const { screens } = galeria
     const titleId = `${slug}-gallery-title`
     const themeClass = galeria.tema ? `people-gallery ${galeria.tema}-gallery is-open` : 'people-gallery is-open'
@@ -70,7 +70,7 @@ test('galeria de projeto inexistente não renderiza e é diagnosticada em desenv
   const calls = []
   console.error = (...args) => calls.push(args)
   try {
-    assert.equal(render(ProjectGalleryPanel, { slug: 'inexistente', onBack: noop, onClose: noop }), '')
+    assert.equal(render(ProjectGalleryDialog, { slug: 'inexistente', onBack: noop, onClose: noop }), '')
   } finally {
     console.error = original
   }
@@ -79,7 +79,7 @@ test('galeria de projeto inexistente não renderiza e é diagnosticada em desenv
 })
 
 test('CSS da galeria: base antes dos temas cindy → nexus → phx, mesmas regras por tema e Nexus sem color nos botões', async () => {
-  const css = (await readFile(resolve(import.meta.dirname, '../../src/components/panels/ProjectGalleryPanel.css'), 'utf8'))
+  const css = (await readFile(resolve(import.meta.dirname, '../../src/components/dialogs/ProjectGalleryDialog.css'), 'utf8'))
     .replaceAll('\r\n', '\n')
     .replace(/\/\*[\s\S]*?\*\//g, '')
   const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, selector, body]) => ({ selector: selector.trim(), body }))

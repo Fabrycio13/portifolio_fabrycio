@@ -19,20 +19,20 @@ const noop = () => {}
 const cases = [
   ...['people', 'cindy', 'phx', 'nexus'].map(slug => ({
     id: `detalhes-${slug}`,
-    module: '/src/components/panels/ProjectDetailsPanel.jsx',
+    module: '/src/components/dialogs/ProjectDetailsDialog.jsx',
     props: { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop },
   })),
   // D2: the four galleries are one component; the ids keep comparing against the baseline files.
   ...['people', 'cindy', 'phx', 'nexus'].map(slug => ({
     id: `galeria-${slug}`,
-    module: '/src/components/panels/ProjectGalleryPanel.jsx',
+    module: '/src/components/dialogs/ProjectGalleryDialog.jsx',
     props: { slug, onBack: noop, onClose: noop },
   })),
-  { id: 'sobre', module: '/src/components/panels/InfoPanels.jsx', props: { activePanel: 'sobre', onClose: noop, onOpenContact: noop } },
-  { id: 'contato', module: '/src/components/panels/InfoPanels.jsx', props: { activePanel: 'contato', onClose: noop, onOpenContact: noop } },
-  { id: 'demo-cindy', module: '/src/components/panels/CindyDemoPanel.jsx', props: { onBack: noop, onClose: noop } },
-  { id: 'demo-phx', module: '/src/components/panels/PhxDemoPanel.jsx', props: { onBack: noop, onClose: noop } },
-  { id: 'demo-nexus', module: '/src/components/panels/NexusDemoPanel.jsx', props: { onBack: noop, onClose: noop } },
+  { id: 'sobre', module: '/src/components/dialogs/InfoDialogs.jsx', props: { activePanel: 'sobre', onClose: noop, onOpenContact: noop } },
+  { id: 'contato', module: '/src/components/dialogs/InfoDialogs.jsx', props: { activePanel: 'contato', onClose: noop, onOpenContact: noop } },
+  { id: 'demo-cindy', module: '/src/components/dialogs/CindyDemoDialog.jsx', props: { onBack: noop, onClose: noop } },
+  { id: 'demo-phx', module: '/src/components/dialogs/PhxDemoDialog.jsx', props: { onBack: noop, onClose: noop } },
+  { id: 'demo-nexus', module: '/src/components/dialogs/NexusDemoDialog.jsx', props: { onBack: noop, onClose: noop } },
 ]
 
 const render = async () => {

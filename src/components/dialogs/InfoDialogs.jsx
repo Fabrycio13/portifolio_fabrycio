@@ -52,7 +52,7 @@ const contactLinks = [
   },
 ]
 
-function AboutPanel({ onClose, onOpenContact }) {
+function AboutDialog({ onClose, onOpenContact }) {
   return (
     <aside
       id="sobre"
@@ -112,7 +112,7 @@ function AboutPanel({ onClose, onOpenContact }) {
   )
 }
 
-function ContactPanel({ onClose }) {
+function ContactDialog({ onClose }) {
   return (
     <aside
       id="contato"
@@ -185,8 +185,8 @@ function ContactPanel({ onClose }) {
   )
 }
 
-export default function InfoPanels({ activePanel, onClose, onOpenContact }) {
-  if (activePanel === 'sobre') return <AboutPanel onClose={onClose} onOpenContact={onOpenContact} />
-  if (activePanel === 'contato') return <ContactPanel onClose={onClose} />
+export default function InfoDialogs({ activePanel, onClose, onOpenContact }) {
+  if (activePanel === 'sobre') return <AboutDialog onClose={onClose} onOpenContact={onOpenContact} />
+  if (activePanel === 'contato') return <ContactDialog onClose={onClose} />
   return null
 }

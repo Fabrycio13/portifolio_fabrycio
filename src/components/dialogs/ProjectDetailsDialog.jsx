@@ -35,13 +35,13 @@ const featureIcons = {
   'vote-yea': FaVoteYea,
 }
 
-export default function ProjectDetailsPanel({ slug, onClose, onOpenDemo, onOpenGallery }) {
+export default function ProjectDetailsDialog({ slug, onClose, onOpenDemo, onOpenGallery }) {
   const project = projects.find(item => item.slug === slug)
 
   // Navigation only opens known slugs, so this guard should be unreachable. It still protects
   // production from rendering a broken dialog, and reports the inconsistency in development (D1.3).
   if (!project) {
-    if (import.meta.env.DEV) console.error('ProjectDetailsPanel: projeto inexistente no registro:', slug)
+    if (import.meta.env.DEV) console.error('ProjectDetailsDialog: projeto inexistente no registro:', slug)
     return null
   }
 

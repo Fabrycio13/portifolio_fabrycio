@@ -6,11 +6,11 @@ import assert from 'node:assert/strict'
 import { projects } from '../../src/data/projects.js'
 import { loadModule, render } from './vite-ssr.mjs'
 
-const { default: ProjectDetailsPanel } = await loadModule('/src/components/panels/ProjectDetailsPanel.jsx')
-const { default: ProjectGalleryPanel } = await loadModule('/src/components/panels/ProjectGalleryPanel.jsx')
+const { default: ProjectDetailsDialog } = await loadModule('/src/components/dialogs/ProjectDetailsDialog.jsx')
+const { default: ProjectGalleryDialog } = await loadModule('/src/components/dialogs/ProjectGalleryDialog.jsx')
 const noop = () => {}
-const details = slug => render(ProjectDetailsPanel, { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop })
-const gallery = slug => render(ProjectGalleryPanel, { slug, onBack: noop, onClose: noop })
+const details = slug => render(ProjectDetailsDialog, { slug, onClose: noop, onOpenDemo: noop, onOpenGallery: noop })
+const gallery = slug => render(ProjectGalleryDialog, { slug, onBack: noop, onClose: noop })
 const includesAll = (html, texts) => { for (const text of texts) assert.ok(html.includes(text), `ausente: ${text}`) }
 
 // D1.8: the preview count is the number of gallery screens, never a number written in the
@@ -64,7 +64,7 @@ test('projeto inexistente não renderiza e é diagnosticado em desenvolvimento (
   const calls = []
   console.error = (...args) => calls.push(args)
   try {
-    assert.equal(render(ProjectDetailsPanel, { slug: 'inexistente', onClose: noop, onOpenDemo: noop, onOpenGallery: noop }), '')
+    assert.equal(render(ProjectDetailsDialog, { slug: 'inexistente', onClose: noop, onOpenDemo: noop, onOpenGallery: noop }), '')
   } finally {
     console.error = original
   }

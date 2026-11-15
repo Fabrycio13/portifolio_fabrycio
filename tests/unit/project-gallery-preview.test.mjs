@@ -5,14 +5,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { loadModule, render } from './vite-ssr.mjs'
 
-const { default: ProjectDetailsPanel } = await loadModule('/src/components/panels/ProjectDetailsPanel.jsx')
+const { default: ProjectDetailsDialog } = await loadModule('/src/components/dialogs/ProjectDetailsDialog.jsx')
 const { projects } = await loadModule('/src/data/projects.js')
 
 // The icon map is private to the details dialog (D1.6). A key missing from it makes React fail to
 // render, and a rendered feature without its icon would drop the SVG, so both cases fail here.
 test('mapa de ícones cobre todas as chaves usadas no registro', () => {
   for (const { slug, detalhes } of projects) {
-    const html = render(ProjectDetailsPanel, { slug, onClose() {}, onOpenDemo() {}, onOpenGallery() {} })
+    const html = render(ProjectDetailsDialog, { slug, onClose() {}, onOpenDemo() {}, onOpenGallery() {} })
     const items = html.match(/<li class="project-features__item">[\s\S]*?<\/li>/g) ?? []
     assert.equal(items.length, detalhes.features.length, `${slug}: recursos renderizados`)
     items.forEach((item, index) => {
@@ -33,7 +33,7 @@ const findElements = (node, predicate, found = []) => {
 for (const gallery of ['people', 'cindy', 'phx', 'nexus']) {
   test(`prévia da galeria do projeto ${gallery} abre a galeria "${gallery}" pelo identificador`, () => {
     const calls = []
-    const tree = ProjectDetailsPanel({
+    const tree = ProjectDetailsDialog({
       slug: gallery,
       onClose: () => {},
       onOpenDemo: () => {},

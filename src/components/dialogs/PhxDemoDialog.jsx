@@ -1,7 +1,7 @@
 import { FaArrowLeft, FaExternalLinkAlt, FaTimes } from 'react-icons/fa'
-import './PhxDemoPanel.css'
+import './PhxDemoDialog.css'
 
-export default function PhxDemoPanel({ onBack, onClose }) {
+export default function PhxDemoDialog({ onBack, onClose }) {
   return (
     <aside
       id="phx-demo"

@@ -7,9 +7,9 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { loadModule, render } from './vite-ssr.mjs'
 
-const { default: CindyDemoPanel } = await loadModule('/src/components/panels/CindyDemoPanel.jsx')
-const { default: PhxDemoPanel } = await loadModule('/src/components/panels/PhxDemoPanel.jsx')
-const { default: NexusDemoPanel } = await loadModule('/src/components/panels/NexusDemoPanel.jsx')
+const { default: CindyDemoDialog } = await loadModule('/src/components/dialogs/CindyDemoDialog.jsx')
+const { default: PhxDemoDialog } = await loadModule('/src/components/dialogs/PhxDemoDialog.jsx')
+const { default: NexusDemoDialog } = await loadModule('/src/components/dialogs/NexusDemoDialog.jsx')
 const noop = () => {}
 // Icons are decorative SVG markup from react-icons; the rules here are about text and attributes.
 const withoutIcons = html => html.replace(/<svg[\s\S]*?<\/svg>/g, '')
@@ -33,7 +33,7 @@ const clickButton = (root, label) => {
 }
 
 test('demo Cindy: dialog modal, título, rótulo e iframe da demo', () => {
-  const html = demo(CindyDemoPanel)
+  const html = demo(CindyDemoDialog)
   assert.ok(html.startsWith('<aside id="cindy-demo" class="info-panel is-open cindy-demo-panel" role="dialog" aria-modal="true" aria-hidden="false" aria-labelledby="cindy-demo-title">'))
   assert.equal(count(html, 'id="cindy-demo-title"'), 1)
   includesAll(html, [
@@ -45,21 +45,21 @@ test('demo Cindy: dialog modal, título, rótulo e iframe da demo', () => {
 })
 
 test('demo Cindy: foco inicial em Fechar; Voltar e Fechar chamam seus handlers', () => {
-  const html = demo(CindyDemoPanel)
+  const html = demo(CindyDemoDialog)
   assert.equal(count(html, 'data-dialog-initial-focus'), 1)
   includesAll(html, [
     '<button type="button">Voltar ao projeto</button>',
     '<button type="button" class="cindy-demo-panel__close" data-dialog-initial-focus="true" autofocus="">Fechar</button>',
   ])
   const calls = []
-  const root = CindyDemoPanel({ onBack: () => calls.push('voltar'), onClose: () => calls.push('fechar') })
+  const root = CindyDemoDialog({ onBack: () => calls.push('voltar'), onClose: () => calls.push('fechar') })
   clickButton(root, 'Voltar ao projeto')
   clickButton(root, 'Fechar')
   assert.deepEqual(calls, ['voltar', 'fechar'])
 })
 
 test('demo PHX: dialog modal, título, rótulo e iframe da demo', () => {
-  const html = demo(PhxDemoPanel)
+  const html = demo(PhxDemoDialog)
   assert.ok(html.startsWith('<aside id="phx-demo" class="info-panel is-open phx-demo-panel" role="dialog" aria-modal="true" aria-hidden="false" aria-labelledby="phx-demo-title">'))
   assert.equal(count(html, 'id="phx-demo-title"'), 1)
   includesAll(html, [
@@ -71,21 +71,21 @@ test('demo PHX: dialog modal, título, rótulo e iframe da demo', () => {
 })
 
 test('demo PHX: foco inicial em Fechar; Voltar e Fechar chamam seus handlers', () => {
-  const html = demo(PhxDemoPanel)
+  const html = demo(PhxDemoDialog)
   assert.equal(count(html, 'data-dialog-initial-focus'), 1)
   includesAll(html, [
     '<button type="button" class="phx-demo-panel__back">Voltar ao projeto</button>',
     '<button type="button" class="phx-demo-panel__close" data-dialog-initial-focus="true" autofocus="">Fechar</button>',
   ])
   const calls = []
-  const root = PhxDemoPanel({ onBack: () => calls.push('voltar'), onClose: () => calls.push('fechar') })
+  const root = PhxDemoDialog({ onBack: () => calls.push('voltar'), onClose: () => calls.push('fechar') })
   clickButton(root, 'Voltar ao projeto')
   clickButton(root, 'Fechar')
   assert.deepEqual(calls, ['voltar', 'fechar'])
 })
 
 test('demo Nexus: dialog modal nomeado pelo título do fluxo, com a copy do estado inicial', () => {
-  const html = demo(NexusDemoPanel)
+  const html = demo(NexusDemoDialog)
   assert.ok(html.startsWith('<aside id="nexus-demo" class="info-panel is-open nexus-demo-panel" role="dialog" aria-modal="true" aria-hidden="false" aria-labelledby="nexus-demo-title">'))
   // The section views reuse this id; only one may be rendered at a time.
   assert.equal(count(html, 'id="nexus-demo-title"'), 1)
@@ -99,7 +99,7 @@ test('demo Nexus: dialog modal nomeado pelo título do fluxo, com a copy do esta
 })
 
 test('demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo', () => {
-  const html = demo(NexusDemoPanel)
+  const html = demo(NexusDemoDialog)
   includesAll(html, [
     '<span class="nexus-demo-local-badge">DEMO LOCAL · DADOS FICTÍCIOS</span>',
     '<span class="nexus-demo-topbar__badge">DEMO INTERATIVA</span>',
@@ -116,7 +116,7 @@ test('demo Nexus: selos e navegação lateral com os seis itens, Fluxos ativo', 
 })
 
 test('demo Nexus: foco inicial em Fechar demo e dois botões de voltar ao projeto', () => {
-  const html = demo(NexusDemoPanel)
+  const html = demo(NexusDemoDialog)
   assert.equal(count(html, 'data-dialog-initial-focus'), 1)
   includesAll(html, [
     '<button type="button" data-dialog-initial-focus="true" autofocus=""> Fechar demo</button>',

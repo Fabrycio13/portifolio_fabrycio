@@ -14,14 +14,14 @@ const read = relativePath => readFile(resolve(root, relativePath), 'utf8')
 // The project details are checked here; Sobre and Contato are checked on the rendered HTML in
 // info-dialogs-render.test.mjs.
 test('detalhes do projeto definem um foco inicial nativo', async () => {
-  const projectDetails = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const projectDetails = await read('src/components/dialogs/ProjectDetailsDialog.jsx')
 
   assert.match(projectDetails, /data-dialog-initial-focus/)
   assert.match(projectDetails, /autoFocus/)
 })
 
 test('detalhes do projeto oferecem a ação de demo', async () => {
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
+  const details = await read('src/components/dialogs/ProjectDetailsDialog.jsx')
 
   assert.match(details, /onOpenDemo/)
 })
@@ -34,7 +34,7 @@ test('título do laudo PHX está no registro', async () => {
 
 test('prévia da galeria e miniaturas preservam o corte das capturas', async () => {
   const css = await read('src/App.css')
-  const galleryCss = await read('src/components/panels/ProjectGalleryPanel.css')
+  const galleryCss = await read('src/components/dialogs/ProjectGalleryDialog.css')
 
   assert.match(css, /\.project-gallery-preview img\s*\{[\s\S]*aspect-ratio: 4 \/ 3;[\s\S]*object-fit: contain;/)
   assert.match(css, /\.project-gallery-preview__veil strong\s*\{[\s\S]*border-radius: 999px;[\s\S]*background: #78aebc;/)
@@ -42,7 +42,7 @@ test('prévia da galeria e miniaturas preservam o corte das capturas', async () 
 })
 
 test('galeria marca a miniatura da tela ativa', async () => {
-  const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
+  const gallery = await read('src/components/dialogs/ProjectGalleryDialog.jsx')
 
   // The static render only sees the first screen, where a value fixed to the first thumbnail looks
   // identical; following the active screen needs state, so this source guard stays.
@@ -56,7 +56,7 @@ test('mockup da demo Cindy mantém o título da página', async () => {
 })
 
 test('navegação lateral da demo Nexus troca a seção ativa', async () => {
-  const demo = await read('src/components/panels/NexusDemoPanel.jsx')
+  const demo = await read('src/components/dialogs/NexusDemoDialog.jsx')
 
   // The items, labels and badges are covered on the rendered HTML in demo-dialogs-render.test.mjs;
   // switching sections needs component state, so these source guards stay.
@@ -65,7 +65,7 @@ test('navegação lateral da demo Nexus troca a seção ativa', async () => {
 })
 
 test('demo Nexus mantém retorno ao projeto', async () => {
-  const demo = await read('src/components/panels/NexusDemoPanel.jsx')
+  const demo = await read('src/components/dialogs/NexusDemoDialog.jsx')
 
   assert.match(demo, /onClick=\{onBack\}/)
 })

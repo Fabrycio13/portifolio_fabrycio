@@ -1,22 +1,22 @@
 // Layer 2 (Spec 0001 §3): the Sobre and Contato dialogs, asserted on the rendered HTML (copy,
 // links, ARIA, initial focus) and on the handlers of their buttons. Replaces source-text checks
-// of InfoPanels.jsx (see tests/unit/RASTREABILIDADE.md, T6.2).
+// of InfoDialogs.jsx (see tests/unit/RASTREABILIDADE.md, T6.2).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { loadModule, render } from './vite-ssr.mjs'
 
-const { default: InfoPanels } = await loadModule('/src/components/panels/InfoPanels.jsx')
+const { default: InfoDialogs } = await loadModule('/src/components/dialogs/InfoDialogs.jsx')
 const noop = () => {}
 // Icons are decorative SVG markup from react-icons; the rules here are about text and attributes.
 const withoutIcons = html => html.replace(/<svg[\s\S]*?<\/svg>/g, '')
-const dialog = activePanel => withoutIcons(render(InfoPanels, { activePanel, onClose: noop, onOpenContact: noop }))
+const dialog = activePanel => withoutIcons(render(InfoDialogs, { activePanel, onClose: noop, onOpenContact: noop }))
 const count = (html, fragment) => html.split(fragment).length - 1
 
 // The rendered element tree, to call the handlers React would call on click. Calling the function
 // components directly only works because Sobre and Contato use no hooks; if one gains a hook, this
 // helper must move to a real renderer instead of being worked around.
 const tree = props => {
-  const element = InfoPanels(props)
+  const element = InfoDialogs(props)
   return element.type(element.props)
 }
 const findAll = (node, predicate, found = []) => {

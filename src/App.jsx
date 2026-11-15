@@ -1,14 +1,14 @@
 import './App.css'
 import 'lenis/dist/lenis.css'
 import { ReactLenis } from 'lenis/react'
-import CindyDemoPanel from '@/components/panels/CindyDemoPanel.jsx'
+import CindyDemoDialog from '@/components/dialogs/CindyDemoDialog.jsx'
 import WarpText from '@/components/effects/WarpText.jsx'
 import DecryptedText from '@/components/effects/DecryptedText.jsx'
-import InfoPanels from '@/components/panels/InfoPanels.jsx'
-import NexusDemoPanel from '@/components/panels/NexusDemoPanel.jsx'
-import PhxDemoPanel from '@/components/panels/PhxDemoPanel.jsx'
-import ProjectDetailsPanel from '@/components/panels/ProjectDetailsPanel.jsx'
-import ProjectGalleryPanel from '@/components/panels/ProjectGalleryPanel.jsx'
+import InfoDialogs from '@/components/dialogs/InfoDialogs.jsx'
+import NexusDemoDialog from '@/components/dialogs/NexusDemoDialog.jsx'
+import PhxDemoDialog from '@/components/dialogs/PhxDemoDialog.jsx'
+import ProjectDetailsDialog from '@/components/dialogs/ProjectDetailsDialog.jsx'
+import ProjectGalleryDialog from '@/components/dialogs/ProjectGalleryDialog.jsx'
 import { projects } from '@/data/projects.js'
 import { DeferredSection } from '@/layouts/DeferredSection.jsx'
 import { fechar, navegar, voltar } from '@/utils/dialogNavigation.js'
@@ -36,9 +36,9 @@ const menuItems = [
 // whether a demo exists; this map only chooses the component to render. Galleries need no map:
 // a single dialog renders any project's gallery from the registry (D1.9).
 const demoDialogs = {
-  cindy: CindyDemoPanel,
-  phx: PhxDemoPanel,
-  nexus: NexusDemoPanel,
+  cindy: CindyDemoDialog,
+  phx: PhxDemoDialog,
+  nexus: NexusDemoDialog,
 }
 
 function AnimatedMenuLink({ label, href = '#', onClick }) {
@@ -337,7 +337,7 @@ function PortfolioContent() {
 
       {/* Exactly one dialog renders at a time: the state names a single dialog or none. */}
       {dialog?.tipo === 'projeto' && (
-        <ProjectDetailsPanel
+        <ProjectDetailsDialog
           slug={dialog.slug}
           onClose={closeDialog}
           onOpenDemo={slug => openDialog({ tipo: 'demo', slug })}
@@ -348,13 +348,13 @@ function PortfolioContent() {
       {/* Keyed by slug so a gallery always mounts fresh, on its first screen, for each project,
           as the old per-project components did (D1.9). */}
       {dialog?.tipo === 'galeria' && (
-        <ProjectGalleryPanel key={dialog.slug} slug={dialog.slug} onBack={goBack} onClose={closeDialog} />
+        <ProjectGalleryDialog key={dialog.slug} slug={dialog.slug} onBack={goBack} onClose={closeDialog} />
       )}
 
       {DemoDialog && <DemoDialog onBack={goBack} onClose={closeDialog} />}
 
       {(dialog?.tipo === 'sobre' || dialog?.tipo === 'contato') && (
-        <InfoPanels
+        <InfoDialogs
           activePanel={dialog.tipo}
           onClose={closeDialog}
           onOpenContact={() => openDialog({ tipo: 'contato' })}

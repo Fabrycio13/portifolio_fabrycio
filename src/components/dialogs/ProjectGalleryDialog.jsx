@@ -1,20 +1,20 @@
 import { FaArrowLeft, FaArrowRight, FaTimes } from 'react-icons/fa'
 import { useState } from 'react'
 import { projects } from '@/data/projects.js'
-import './ProjectGalleryPanel.css'
+import './ProjectGalleryDialog.css'
 
 // Single project gallery (Spec 0001, D1.9). Screens, final alt text and labels come from the
 // registry; the theme class comes from the explicit `tema` field, never from the slug (D1.9).
 // The current class names (`people-gallery*`, `*-gallery`) are kept on purpose (D1.10).
 // The gallery always opens on its first screen, because the dialog unmounts when it closes.
-export default function ProjectGalleryPanel({ slug, onBack, onClose }) {
+export default function ProjectGalleryDialog({ slug, onBack, onClose }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const galeria = projects.find(project => project.slug === slug)?.galeria
 
   // Navigation only opens galleries that exist, so this guard should be unreachable; it keeps
   // production from rendering a broken dialog and reports the inconsistency in development.
   if (!galeria) {
-    if (import.meta.env.DEV) console.error('ProjectGalleryPanel: projeto sem galeria no registro:', slug)
+    if (import.meta.env.DEV) console.error('ProjectGalleryDialog: projeto sem galeria no registro:', slug)
     return null
   }
 

@@ -24,8 +24,8 @@ test('mapa de demos cobre exatamente os projetos com demo no registro', () => {
 // a gallery is decided by the navigation module (dialog-navigation.test.mjs) and rendered per slug
 // in project-gallery.test.mjs.
 test('App renderiza a galeria única para o slug do estado, sem mapa nem galerias por projeto', () => {
-  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
-  assert.match(app, /dialog\?\.tipo === 'galeria' && \(\s*<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\} onBack=\{goBack\} onClose=\{closeDialog\} \/>\s*\)/)
+  assert.match(app, /import ProjectGalleryDialog from '@\/components\/dialogs\/ProjectGalleryDialog\.jsx'/)
+  assert.match(app, /dialog\?\.tipo === 'galeria' && \(\s*<ProjectGalleryDialog key=\{dialog\.slug\} slug=\{dialog\.slug\} onBack=\{goBack\} onClose=\{closeDialog\} \/>\s*\)/)
   assert.doesNotMatch(app, /galleryDialogs|(People|Cindy|Phx|Nexus)GalleryPanel/)
 })
 

@@ -18,8 +18,8 @@ test('PortfolioContent mantém gerenciamento de foco nos dialogs', async () => {
   assert.match(source, /const firstElement = focusableElements\[0\]/)
   assert.match(source, /firstElement\.focus\(\)/)
   assert.match(source, /lastTriggerRef\.current\?\.focus\(\)/)
-  assert.match(source, /import InfoPanels from '@\/components\/panels\/InfoPanels\.jsx'/)
-  assert.match(source, /import ProjectDetailsPanel from '@\/components\/panels\/ProjectDetailsPanel\.jsx'/)
+  assert.match(source, /import InfoDialogs from '@\/components\/dialogs\/InfoDialogs\.jsx'/)
+  assert.match(source, /import ProjectDetailsDialog from '@\/components\/dialogs\/ProjectDetailsDialog\.jsx'/)
   assert.match(source, /className="hero__cta" href="#servicos"/)
   assert.match(source, /className="hero__cta hero__cta--contact"/)
   assert.match(source, /onClick=\{\(\) => openDialog\(\{ tipo: 'contato' \}\)\}/)
@@ -29,12 +29,12 @@ test('PortfolioContent mantém gerenciamento de foco nos dialogs', async () => {
 test('mapa de demos aponta cada projeto para o seu componente', async () => {
   const app = await read('src/App.jsx')
 
-  assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
-  assert.match(app, /cindy: CindyDemoPanel/)
-  assert.match(app, /import NexusDemoPanel from '@\/components\/panels\/NexusDemoPanel\.jsx'/)
-  assert.match(app, /nexus: NexusDemoPanel/)
-  assert.match(app, /import PhxDemoPanel from '@\/components\/panels\/PhxDemoPanel\.jsx'/)
-  assert.match(app, /phx: PhxDemoPanel/)
+  assert.match(app, /import CindyDemoDialog from '@\/components\/dialogs\/CindyDemoDialog\.jsx'/)
+  assert.match(app, /cindy: CindyDemoDialog/)
+  assert.match(app, /import NexusDemoDialog from '@\/components\/dialogs\/NexusDemoDialog\.jsx'/)
+  assert.match(app, /nexus: NexusDemoDialog/)
+  assert.match(app, /import PhxDemoDialog from '@\/components\/dialogs\/PhxDemoDialog\.jsx'/)
+  assert.match(app, /phx: PhxDemoDialog/)
 })
 
 test('trap de foco localiza a galeria aberta pela classe people-gallery', async () => {
