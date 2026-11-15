@@ -4,6 +4,50 @@ Registro obrigatório da [Spec 0001 §3](../../docs/specs/0001-registro-projetos
 
 Arquivo de origem das asserções antigas: `tests/unit/portfolio-contract.test.mjs` (abreviado como **contrato**).
 
+## Etapa 6 / T6.4 — remoção de duplicações e sobreposições
+
+Removidas do contrato **23 regras** que já tinham um teste igual ou mais forte rodando no CI. Continuam intactas as regras parciais e permanentes do T6.2, as da Etapa 7 (CT-17-05, CT-21-06, CT-21-07), o CT-17-06 (coberto pelo render dos detalhes, mas mantido por ser permanente no T6.2), o CT-19-06 (seletor do trap de foco) e os regex de CSS.
+
+**Teste novo antes da remoção (grupo C):** em `project-registry.test.mjs`, o teste `galerias têm tema explícito, rótulos e telas válidas e não vazias` ganhou uma asserção que fixa o tema de cada projeto (`people → null`, `cindy → 'cindy'`, `phx → 'phx'`, `nexus → 'nexus'`). Antes dela, trocar o tema da Cindy para `'phx'` passava no `project-registry` (o valor é permitido) e na camada 2 de `project-gallery` (a classe esperada vem do próprio registro); só o contrato detectava. Com ela, o teste falha.
+
+**Prova de equivalência, feita antes de cada remoção:** 16 mutações, cobrindo os 23 IDs, aplicadas no código e testadas contra o contrato antigo e contra o teste substituto, e depois revertidas. O substituto detectou 16/16; o contrato antigo, 15/16. A que ele não detectava é do CT-07-01: remover a captura do gatilho, que o contrato não percebia porque só procurava o nome `lastTriggerRef`.
+
+**Conferência mecânica:** o diff do contrato desde `1c5aec3`, mapeado pela evidência `arquivo:linha` do inventário T6.0, tem 53 asserções removidas: as 30 do T6.3 e exatamente os 23 IDs desta tabela.
+
+| ID | Regra | Teste substituto | Mutação que demonstra a equivalência |
+|---|---|---|---|
+| CT-07-01 | App guarda o gatilho | `app-dialog-state` `gatilho só é capturado quando o módulo indica abertura a partir de null` | Renomear a ref (os dois falham) e remover a captura do gatilho (só o substituto falha) |
+| CT-07-02 | App trata `Escape` | `app-dialog-state` `Escape fecha pelo módulo de navegação` | `event.key === 'Escape'` trocado por `'Esc'` |
+| CT-12-01 | Subtítulo do People | `project-dialogs-render` `detalhes do People: subtítulo, prévia com 7 telas e sem demo` | Subtítulo alterado no registro |
+| CT-13-01 | Título da Gestão Condominial | `project-dialogs-render` `detalhes da Gestão Condominial: copy confidencial aprovada…` | Título alterado no registro |
+| CT-13-02 | Subtítulo da Gestão Condominial | `project-dialogs-render` `detalhes da Gestão Condominial: copy confidencial aprovada…` | Subtítulo alterado no registro |
+| CT-14-03 | App importa a galeria única | `app-dialog-state` `App renderiza a galeria única para o slug do estado…` | Import da galeria fora do alias `@/` |
+| CT-14-04 | App renderiza a galeria pelo slug, com `key` | `app-dialog-state` `App renderiza a galeria única para o slug do estado…` | `key={dialog.slug}` removida |
+| CT-14-05 | Tema da Cindy | `project-registry` `galerias têm tema explícito…` (asserção nova) | Tema da Cindy trocado para `'phx'` |
+| CT-14-08 | Miniaturas indicam a tela ativa | `project-gallery` `galeria de <slug>: dialog, tema, rótulos e primeira tela…` | `aria-pressed` invertido |
+| CT-16-01 | A prévia abre a galeria pelo slug | `project-gallery-preview` `prévia da galeria do projeto <slug> abre a galeria "<slug>" pelo identificador` | A prévia envia sempre `'people'` |
+| CT-16-02 | App importa a galeria única | Como CT-14-03 | Como CT-14-03 |
+| CT-16-03 | App renderiza a galeria pelo slug, com `key` | Como CT-14-04 | Como CT-14-04 |
+| CT-16-04 | Tema da Nexus | `project-registry` (asserção nova) | Tema da Nexus trocado para `'cindy'` |
+| CT-18-01 | A prévia abre a galeria pelo slug | Como CT-16-01 | Como CT-16-01 |
+| CT-18-02 | App importa a galeria única | Como CT-14-03 | Como CT-14-03 |
+| CT-18-03 | App renderiza a galeria pelo slug, com `key` | Como CT-14-04 | Como CT-14-04 |
+| CT-18-04 | Tema da PHX | `project-registry` (asserção nova) | Tema da PHX trocado para `'nexus'` |
+| CT-19-01 | Prévia com `VER TELAS DO PROJETO` | `project-dialogs-render` `detalhes do People…` | Rótulo da prévia alterado |
+| CT-19-02 | Detalhes oferecem a ação de galeria | `project-gallery-preview` (o handler da prévia é chamado) | `onOpenGallery` removido dos detalhes |
+| CT-19-03 | App importa a galeria única | Como CT-14-03 | Como CT-14-03 |
+| CT-19-04 | App renderiza a galeria pelo slug, com `key` | Como CT-14-04 | Como CT-14-04 |
+| CT-19-05 | Tema do People | `project-registry` (asserção nova) | Tema do People trocado para `'cindy'` |
+| CT-19-07 | Miniaturas indicam a tela ativa | Como CT-14-08 | Como CT-14-08 |
+
+**Testes do contrato afetados:**
+- CT-12 (`Projeto People usa GERENCIADOR…`), CT-13 (`Projeto 02 mantém a copy confidencial…`), CT-16 (`Projeto Nexus AI abre uma galeria…`) e CT-18 (`Projeto PHX abre uma galeria…`) ficaram sem asserções e saíram.
+- CT-07: renomeado de `PortfolioContent mantém gerenciamento de foco e Escape nos dialogs` para `PortfolioContent mantém gerenciamento de foco nos dialogs`.
+- CT-14: renomeado de `Projeto Cindy oferece demo local e galeria com capturas da própria demo` para `Projeto Cindy oferece demo local` (restam CT-14-01, CT-14-02 e CT-14-09).
+- CT-19: renomeado de `Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes` para `trap de foco localiza a galeria aberta pela classe people-gallery` (resta CT-19-06).
+
+**Contagem depois do T6.4:** contrato com 19 testes e 108 chamadas de asserção (antes 23 e 131). Regras do inventário ainda no contrato: 108 CT + 15 AS = 123. Suíte: 85 testes (antes 89; nenhum teste novo, a asserção do tema entrou num teste existente).
+
 ## Etapa 6 / T6.3 — remoção das asserções substituídas
 
 Removidas do contrato exatamente as **30 regras** classificadas como **substituíveis** no T6.2, e só elas. As regras parciais (CT-22-03) e permanentes (as 17 da tabela do T6.2, incluindo a da Etapa 7, CT-17-05) continuam no contrato sem alteração, assim como as demais regras da Etapa 7 (CT-21-06 e CT-21-07) e todas as que não estão relacionadas a estes dialogs.

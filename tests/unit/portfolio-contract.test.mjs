@@ -95,11 +95,10 @@ test('fallback de Projetos reserva as mesmas etapas em telas baixas', async () =
   }
 })
 
-test('PortfolioContent mantém gerenciamento de foco e Escape nos dialogs', async () => {
+// Capturing the trigger and closing with Escape are checked in app-dialog-state.test.mjs.
+test('PortfolioContent mantém gerenciamento de foco nos dialogs', async () => {
   const source = await read('src/App.jsx')
 
-  assert.match(source, /lastTriggerRef/)
-  assert.match(source, /event\.key === 'Escape'/)
   assert.match(source, /event\.key !== 'Tab'/)
   assert.match(source, /const firstElement = focusableElements\[0\]/)
   assert.match(source, /firstElement\.focus\(\)/)
@@ -136,31 +135,14 @@ test('Footer mantém o link público do LinkedIn', async () => {
   assert.match(footer, /https:\/\/www\.linkedin\.com\/in\/fabrycio-bermudes-b79a01216\//)
 })
 
-test('Projeto People usa GERENCIADOR DE RECURSOS HUMANOS como subtítulo', async () => {
-  const projects = await read('src/data/projects.js')
-
-  assert.match(projects, /detail: 'GERENCIADOR DE RECURSOS HUMANOS'/)
-})
-
-test('Projeto 02 mantém a copy confidencial de Gestão Condominial com IA', async () => {
-  const projects = await read('src/data/projects.js')
-
-  assert.match(projects, /GESTÃO CONDOMINIAL COM IA/)
-  assert.match(projects, /detail: 'ADMINISTRAÇÃO DE CONDOMÍNIOS'/)
-})
-
-test('Projeto Cindy oferece demo local e galeria com capturas da própria demo', async () => {
+// The gallery wiring, themes and copy of the project dialogs are checked in app-dialog-state,
+// project-registry, project-gallery, project-gallery-preview and project-dialogs-render.
+test('Projeto Cindy oferece demo local', async () => {
   const app = await read('src/App.jsx')
-  const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
-  const projects = await read('src/data/projects.js')
   const demoHtml = await read('public/nova-cindy-mockup-v2.html')
 
   assert.match(app, /import CindyDemoPanel from '@\/components\/panels\/CindyDemoPanel\.jsx'/)
   assert.match(app, /cindy: CindyDemoPanel/)
-  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
-  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
-  assert.match(projects, /slug: 'cindy'(?:(?!slug: ')[\s\S])*tema: 'cindy'/)
-  assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
   assert.match(demoHtml, /<title>Nova Cindy · Protótipo visual<\/title>/)
 })
 
@@ -173,17 +155,6 @@ test('Projeto Nexus AI oferece uma demo interativa a partir do painel de detalhe
   assert.match(app, /nexus: NexusDemoPanel/)
 })
 
-test('Projeto Nexus AI abre uma galeria coerente com a demo interativa', async () => {
-  const app = await read('src/App.jsx')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
-  const projects = await read('src/data/projects.js')
-
-  assert.match(details, /onOpenGallery\(slug\)/)
-  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
-  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
-  assert.match(projects, /slug: 'nexus'(?:(?!slug: ')[\s\S])*tema: 'nexus'/)
-})
-
 test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
   const app = await read('src/App.jsx')
   const projects = await read('src/data/projects.js')
@@ -194,30 +165,10 @@ test('Projeto PHX oferece a demo local do gerador de laudo', async () => {
   assert.match(projects, /title: 'LAUDO DE CRÉDITO IMOBILIÁRIO'/)
 })
 
-test('Projeto PHX abre uma galeria com as telas do laudo', async () => {
+test('trap de foco localiza a galeria aberta pela classe people-gallery', async () => {
   const app = await read('src/App.jsx')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
-  const projects = await read('src/data/projects.js')
 
-  assert.match(details, /onOpenGallery\(slug\)/)
-  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
-  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
-  assert.match(projects, /slug: 'phx'(?:(?!slug: ')[\s\S])*tema: 'phx'/)
-})
-
-test('Projeto People abre uma galeria de telas sanitizadas a partir dos detalhes', async () => {
-  const app = await read('src/App.jsx')
-  const details = await read('src/components/panels/ProjectDetailsPanel.jsx')
-  const gallery = await read('src/components/panels/ProjectGalleryPanel.jsx')
-  const projects = await read('src/data/projects.js')
-
-  assert.match(details, /VER TELAS DO PROJETO/)
-  assert.match(details, /onOpenGallery/)
-  assert.match(app, /import ProjectGalleryPanel from '@\/components\/panels\/ProjectGalleryPanel\.jsx'/)
-  assert.match(app, /<ProjectGalleryPanel key=\{dialog\.slug\} slug=\{dialog\.slug\}/)
-  assert.match(projects, /slug: 'people'(?:(?!slug: ')[\s\S])*tema: null/)
   assert.match(app, /\.people-gallery\.is-open/)
-  assert.match(gallery, /aria-pressed=\{index === activeIndex\}/)
 })
 
 test('previews de projetos destacam a galeria e preservam o corte das capturas', async () => {

@@ -64,6 +64,12 @@ test('chaves de ícone são texto e existem na biblioteca de ícones', () => {
 })
 
 test('galerias têm tema explícito, rótulos e telas válidas e não vazias', () => {
+  // Each project keeps its own theme. Allowed values alone would accept a swapped theme, and the
+  // layer-2 gallery test derives the expected class from the registry, so the binding is fixed here.
+  assert.deepEqual(
+    Object.fromEntries(projects.filter(project => project.galeria).map(({ slug, galeria }) => [slug, galeria.tema])),
+    { people: null, cindy: 'cindy', phx: 'phx', nexus: 'nexus' },
+  )
   const themes = new Set([null, 'cindy', 'phx', 'nexus'])
   for (const { slug, galeria } of projects) {
     if (galeria === null) continue
