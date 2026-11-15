@@ -303,3 +303,22 @@ O [`GLOSSARY.md`](../../GLOSSARY.md) já foi criado com estes termos, mais Cena,
   - Antes de usar, a integridade do zip é conferida pelo `SHASUMS256.txt` oficial.
   - O uso se limita a rodar a prova de viabilidade e os testes da camada 2 no repositório.
   - A pasta é removida ao fim desta spec.
+
+## 10. Resultado da Etapa 10
+
+Validação executada em 15 de novembro de 2026 sobre o `fc2cf31`, contra a baseline `7f53175`, com Node 26.13.0 e 22.23.5 e Chrome 157.0.8103.39. Os artefatos ficam fora do repositório (§7.3).
+
+| # | Critério | Resultado |
+|---|---|---|
+| 1–4 | Estado `null`, rejeições com motivo, "Voltar" e gatilho | Aprovados: testes de navegação e cadeias da parte B do smoke ([§7.4](#74-smoke-de-acessibilidade-e-interação-camada-3)) |
+| 5 | Matriz de acessibilidade do §7.4 | Aprovado: smoke com 318/318 verificações em desktop e mobile; C1 e C4 aprovados; C2, C3 e as 60 observações iguais à baseline |
+| 6–7 | Textos, atributos e prévias | Aprovados: golden 13/13 igual no Node 22 e no Node 26, sem usar a exceção do §7.3 |
+| 8 | Diff visual | Aprovado com uma exceção aceita pelo mantenedor (abaixo) |
+| 9 | Roteiro manual com movimento | **Pendente** da conferência do mantenedor em desktop e mobile |
+| 10 | Performance | Aprovado pelo critério formal do §7.2, com a limitação do Hero (abaixo) |
+| 11 | Camada 2 no Node 22 e no Node 26 | Aprovado: 90/90 testes nos dois |
+| 12 | Regras antigas cobertas | Aprovado: os 176 IDs do inventário T6.0 têm destino; restam 121 regras e 3 foram aposentadas por decisão ([rastreabilidade](../../tests/unit/RASTREABILIDADE.md)) |
+
+**Exceção visual.** 50 das 51 capturas passaram na tolerância calibrada, sem mudar máscaras, tolerâncias ou referências. A `desktop-1x/02-servicos` reprovou só na primeira letra dos quatro títulos dos cards de Serviços. Em 5 recapturas intercaladas por build, a própria baseline reprovou contra a sua referência em 4; o estado mais frequente saiu idêntico byte a byte nas duas builds, e o `fc2cf31` reproduziu a referência exata duas vezes. O código de Serviços não mudou nesta spec. A divergência foi aceita como variabilidade preexistente da captura, que as 6 execuções da calibração não cobriram. Isso não demonstra equivalência absoluta, nem nessa cena nem nas regiões mascaradas.
+
+**Performance.** Duas séries intercaladas, com ordens opostas, na mesma porta, com 5 amostras por build e cenário e nenhuma falha técnica. Os critérios binários passaram nos três cenários, e nenhuma métrica contínua atendeu às condições de regressão em nenhuma série: ausência de regressão demonstrada, não equivalência. No Hero, a dispersão da baseline (de 53,99 a 59,94 fps na primeira série) não dá resolução para excluir diferenças pequenas; a mediana do `fc2cf31` ficou abaixo nas duas séries, sempre dentro da faixa da baseline e com os intervalos interquartis sobrepostos. Recursos e long tasks da inicialização não foram medidos (Etapa 0 da Spec 0003).

@@ -21,11 +21,11 @@ npm run build
 git diff --check
 ```
 
-Auditoria complementar:
+Auditoria complementar, com o preview num terminal e a auditoria em outro:
 
 ```bash
+npm run preview -- --host 127.0.0.1 --port 5182
 npm run perf:audit
-node scripts/perf-audit.mjs http://127.0.0.1:4173/ --duration-ms=5000
 ```
 
 ## Testes
@@ -40,7 +40,7 @@ Os testes ficam em `tests/unit/` e usam o test runner nativo do Node. `npm test`
 
 Os testes de render carregam os componentes JSX pelo Vite por meio de `tests/unit/vite-ssr.mjs`. A origem de cada regra e o histórico das mudanças dos testes estão em [`tests/unit/RASTREABILIDADE.md`](../tests/unit/RASTREABILIDADE.md).
 
-A auditoria de performance usa Chrome local e deve ser executada contra a rota real, preferencialmente servida por `vite preview` depois de uma build bem-sucedida. Sem URL, `scripts/perf-audit.mjs` usa `http://127.0.0.1:5182/`; com o preview em outra porta, passe a URL exibida pelo terminal.
+A auditoria de performance usa Chrome local e deve ser executada contra a rota real, preferencialmente servida por `vite preview` depois de uma build bem-sucedida. Sem URL, `scripts/perf-audit.mjs` usa `http://127.0.0.1:5182/`, enquanto `npm run preview` sem `--port` sobe na porta 4173, padrão do Vite. Com o preview em outra porta, passe a URL exibida pelo terminal: `node scripts/perf-audit.mjs <url> --duration-ms=5000`.
 
 ### Ferramentas de validação local
 

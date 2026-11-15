@@ -58,7 +58,7 @@ node scripts/perf-audit.mjs <url-do-preview> --projects --duration-ms=5000
 node scripts/perf-audit.mjs <url-do-preview> --footer --duration-ms=5000
 ```
 
-A auditoria exige Chrome local e uma build servida por `vite preview`. O script sem URL usa `http://127.0.0.1:5182/`; se o preview estiver em outra porta, informe a URL explicitamente. Nunca simule um resultado quando Chrome, servidor ou outra dependência da auditoria não estiver disponível.
+A auditoria exige Chrome local e uma build servida por `vite preview`. Sem URL, o script usa `http://127.0.0.1:5182/`, mas `npm run preview` sobe por padrão na porta 4173 do Vite. Para usar `npm run perf:audit` sem argumentos, sirva com `npm run preview -- --host 127.0.0.1 --port 5182`; em qualquer outra porta, informe a URL exibida pelo preview. Nunca simule um resultado quando Chrome, servidor ou outra dependência da auditoria não estiver disponível.
 
 Use apenas comandos existentes em `package.json` e configurações verificadas. Não apresente uma verificação como aprovada sem executá-la.
 

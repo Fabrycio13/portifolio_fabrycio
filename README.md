@@ -114,7 +114,7 @@ O Vite exibirá a URL local no terminal. Não presuma a porta: use a URL informa
 | `npm test` | Executa os contratos em `tests/unit/` com o runner nativo do Node. |
 | `npm run build` | Gera a build de produção em `dist/`. |
 | `npm run preview` | Serve a build de produção localmente. |
-| `npm run perf:audit` | Executa a auditoria de performance usando Chrome e a URL padrão do script. |
+| `npm run perf:audit` | Executa a auditoria de performance usando Chrome e a URL padrão do script, `http://127.0.0.1:5182/` (o `npm run preview` sem `--port` usa a 4173). |
 
 ### Validação local
 
